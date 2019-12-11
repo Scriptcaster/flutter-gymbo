@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,6 +28,8 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 String name;
 String email;
 String imageUrl;
+Object weeks;
+Object days;
 
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -49,6 +52,15 @@ Future<String> signInWithGoogle() async {
   name = user.displayName;
   email = user.email;
   imageUrl = user.photoUrl;
+  weeks = Firestore.instance.collection("data").document(user.uid).collection('weeks').snapshots();
+  days = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks').document('1pdecpw2DdGPnM3Fqo8T').collection('days').snapshots();
+
+
+  // print(weeks);
+  // for (var item in theData) {
+  //   print(item);
+  // }
+  
 
   // Only taking the first part of the name, i.e., First Name
   if (name.contains(" ")) {
