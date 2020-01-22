@@ -34,12 +34,12 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("weeks").snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          List<DocumentSnapshot> documents = snapshot.data.documents;
-          return CustomWeek(weeks: documents);
-        },
-    ),
+            stream: Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("weeks").snapshots(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              List<DocumentSnapshot> documents = snapshot.data.documents;
+              return CustomWeek(weeks: documents);
+            },
+        ),
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () => setState(() => _count++),

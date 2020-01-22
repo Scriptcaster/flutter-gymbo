@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../task.dart';
 
 class CustomCard extends StatelessWidget {
   CustomCard({@required this.title, this.description});
@@ -48,4 +47,7 @@ class CustomCard extends StatelessWidget {
               ],
             )));
   }
+}
+
+class TaskPage {
 }

@@ -56,7 +56,8 @@ class WeekPage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DayPage(
-                              id: id,
+                              weekId: id,
+                              dayId: doc['id'],
                               date: doc['date'],
                               target: doc['target'],
                               exercises: doc['exercises']
