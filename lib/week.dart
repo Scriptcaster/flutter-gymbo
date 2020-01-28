@@ -55,7 +55,7 @@ class WeekPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DayPage(
+                            builder: (context) => DayScreen(
                               weekId: id,
                               dayId: doc['id'],
                               date: doc['date'],
