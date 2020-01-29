@@ -312,11 +312,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://cdn.cocoapods.org/:
-    - AppAuth
     - FirebaseCore
-    - GoogleUtilities
-    - GTMSessionFetcher
-    - nanopb
   https://github.com/cocoapods/specs.git:
     - abseil
     - AppAuth

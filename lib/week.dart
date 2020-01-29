@@ -19,13 +19,22 @@ class WeekPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text( 
-          "Week " + date.toString()
+          date.toString()
           // dateString
           // DateFormat('yyyy-MM-dd').format(
           //   (new DateTime.fromMillisecondsSinceEpoch((date*1000).toInt()))
           // )
           // 
-           ),
+        ),
+         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks').document(id).delete();
+              Navigator.pop(context);
+            },
+          )
+        ],
         // title: Text( (date.toInt()).toString() ),
       ),
       body: Center(
@@ -52,6 +61,7 @@ class WeekPage extends StatelessWidget {
                       subtitle: Text(doc['target']),
                       trailing: Icon(Icons.keyboard_arrow_right),
                        onTap: () {
+                        print(doc.documentID);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

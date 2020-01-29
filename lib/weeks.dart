@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'week.dart';
 
 class CustomWeek extends StatelessWidget {
   CustomWeek({this.weeks, this.firestore});
   final List<DocumentSnapshot> weeks;
   final Firestore firestore;
+
+  // String formatTimestamp(int timestamp) {
+  //     var format = new DateFormat('d MMM, hh:mm a');
+  //     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  //     return format.format(date);
+  //   }
+  
   List<Widget> _getChildren() {
     List<Widget> children = [];
     // print(documents[0]['number']);
     // documents.sort((a, b) => compare(a['number'], b['number']));
-    weeks.sort((b,a) => a['number'].compareTo(b['number']));
+    weeks.sort((b,a) => a['date'].compareTo(b['date']));
     weeks.forEach((doc) {
+      print(doc.documentID);
       children.add(
-        ProjectsExpansionTile(projectKey: doc.documentID, date: doc['number'], firestore: firestore),
+        ProjectsExpansionTile(
+          projectKey: doc.documentID,
+          date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
+          // date: doc['date'].toDate(), 
+          firestore: firestore
+        ),
       );
     });
     return children;
@@ -43,7 +57,7 @@ class ProjectsExpansionTile extends StatelessWidget {
         child: Column(
           children: <Widget>[ 
             ListTile(
-              title: Text('Week ' + date.toString()),
+              title: Text(date.toString()),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 Navigator.push(

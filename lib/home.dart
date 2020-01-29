@@ -1,36 +1,84 @@
-// Copyright (c) 2019 Souvik Biswas
-
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'weeks.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({this.firestore});
   final Firestore firestore;
   @override
-  Widget build(BuildContext context) {
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  final weeksCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("weeks");
+  addWeek() {
+    print(widget.firestore);
+    // setState(() {
+    //   // exercises.add({'name': 'New Exercise', 'sets': [{'set': 4, 'weight': 25, 'rep': 8}], 'volume': 800});
+    // });
+  }
+
+  Future<void> createCommitment() async {
+    DocumentReference docRef = await weeksCollection.add({
+      'date': new DateTime.now(),
+      'number': 1,
+    });
+
+    weeksCollection.document(docRef.documentID).updateData(
+      {'id': docRef.documentID}
+    );
+    
+    DocumentReference monRef = await weeksCollection.document(docRef.documentID).collection('days').add({ 
+      'index': 0, 
+      'date': 'Monday', 
+      'target': 'Chest & Triceps', 
+      'exercises': [{
+        'name': 'Bench Press',
+        'volume': 5760,
+        'sets': [{
+          'weight': 120,
+          'set': 4,
+          'rep': 12,
+        }]
+      }]
+    });
+    weeksCollection.document(docRef.documentID).collection('days').document(monRef.documentID).updateData(
+      {'id': monRef.documentID}
+    );
+
+    DocumentReference tueRef = await weeksCollection.document(docRef.documentID).collection('days').add({ 
+      'index': 0, 
+      'date': 'Tuesday', 
+      'target': 'Legs & Abs', 
+      'exercises': [{
+        'name': 'Bench Press',
+        'volume': 5760,
+        'sets': [{
+          'weight': 120,
+          'set': 4,
+          'rep': 12,
+        }]
+      }]
+    });
+    weeksCollection.document(docRef.documentID).collection('days').document(tueRef.documentID).updateData(
+      {'id': tueRef.documentID}
+    );
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sample Code'),
+        title: const Text('My Weeks'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              createCommitment();
+            },
+          )
+        ],
       ),
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
@@ -48,6 +96,5 @@ class HomeScreen extends StatelessWidget {
       // ),
     );
 
-   
   }
 }
