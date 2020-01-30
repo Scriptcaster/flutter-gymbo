@@ -25,7 +25,7 @@ class _StartDayScreenState extends State<DayScreen> {
   }
   
   addExercise() {
-    print(exercises);
+    // print(exercises);
     setState(() {
       exercises.add({'name': 'New Exercise', 'sets': [{'set': 4, 'weight': 25, 'rep': 8}], 'volume': 800});
     });

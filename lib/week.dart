@@ -61,7 +61,7 @@ class WeekPage extends StatelessWidget {
                       subtitle: Text(doc['target']),
                       trailing: Icon(Icons.keyboard_arrow_right),
                        onTap: () {
-                        print(doc.documentID);
+                        // print(doc.documentID);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

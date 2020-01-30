@@ -59,7 +59,7 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
   void updateData() {
     editableDay[index]['name'] = controller.text;
     editableDay[index]['sets'] = editableSets;
-    print(databaseReference);
+    // print(databaseReference);
     try {
       databaseReference.collection('data').document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks').document(weekId).collection('days').document(dayId).updateData(
         {'exercises': editableDay}

@@ -20,11 +20,12 @@ class CustomWeek extends StatelessWidget {
     // documents.sort((a, b) => compare(a['number'], b['number']));
     weeks.sort((b,a) => a['date'].compareTo(b['date']));
     weeks.forEach((doc) {
-      print(doc.documentID);
+      // print(doc.documentID);
       children.add(
         ProjectsExpansionTile(
           projectKey: doc.documentID,
-          date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
+          date: doc['id'], 
+          // date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
           // date: doc['date'].toDate(), 
           firestore: firestore
         ),
