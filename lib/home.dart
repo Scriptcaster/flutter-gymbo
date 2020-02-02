@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'weeks.dart';
+import 'models/day.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({this.firestore});
@@ -20,8 +21,24 @@ class _HomeScreenState extends State<HomeScreen> {
   
   Future<void> createCommitment() async {
 
-    var id = new Random();
-    print(id.nextInt(100));
+  // weeksCollection.snapshots().listen(
+  //     (data) => print(data.documents[1].data['id'])
+  //   );
+
+
+    // List myArray = [];
+    // weeksCollection.document('brj1DuECwtpxoSWj9Ps5').collection('days').snapshots().listen(
+    //   (data) => 
+    //   // print('grower ${data.documents[0].data}')
+    //   data.documents.forEach((talk){
+    //     // myArray.add(talk.data['name']);
+    //     // print(talk.data['name']);
+    //     print(talk.data['exercises']);
+    //   }),
+    // );
+
+    // var id = new Random();
+    // print(id.nextInt(100));
     // this.weeksCollection.doc(id).set({ id: id, date:Date.now() / 1000});
     // if (array == undefined) {
     //     this.weeksCollection.doc(id).collection('days').add({ id: '', index: 0, date: 'Monday', target: 'Chest & Triceps', volume: 0 });
@@ -57,45 +74,174 @@ class _HomeScreenState extends State<HomeScreen> {
     //   }
     // });
 
-    // DocumentReference weekRef = await weeksCollection.add({
-    //   'date': new DateTime.now(),
-    //   'number': i++,
-    // });
-    // weeksCollection.document(weekRef.documentID).updateData({'id': weekRef.documentID});
+    QuerySnapshot weeksQuerySnapshot = await weeksCollection.orderBy('date', descending: false).getDocuments();
+    print('LATEST ID ' + weeksQuerySnapshot.documents.last['id']);
 
-    // weeksCollection.document(weekRef.documentID).updateData({'id': weekRef.documentID});
-    // DocumentReference monRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
-    //   'index': 0, 
-    //   'date': 'Monday', 
-    //   'target': 'Chest & Triceps', 
-    //   'exercises': [{
-    //     'name': 'Bench Press',
-    //     'volume': 5760,
-    //     'sets': [{
-    //       'weight': 120,
-    //       'set': 4,
-    //       'rep': 12,
-    //     }]
-    //   }]
-    // });
-    // weeksCollection.document(weekRef.documentID).collection('days').document(monRef.documentID).updateData({'id': monRef.documentID});
+    QuerySnapshot weekQuerySnapshot = await weeksCollection.document(weeksQuerySnapshot.documents.last['id']).collection('days').getDocuments();
+    // print('LATEST EXERCISES ' + weekQuerySnapshot.documents[0]['exercises']);
 
-    // DocumentReference tueRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
-    //   'index': 1, 
-    //   'date': 'Tuesday', 
-    //   'target': 'Legs & Abs', 
-    //   'exercises': [{
-    //     'name': 'Bench Press',
-    //     'volume': 5760,
-    //     'sets': [{
-    //       'weight': 120,
-    //       'set': 4,
-    //       'rep': 12,
-    //     }]
-    //   }]
-    // });
-    // weeksCollection.document(weekRef.documentID).collection('days').document(tueRef.documentID).updateData({'id': tueRef.documentID});
+    DocumentReference weekRef = await weeksCollection.add({
+      'date': new DateTime.now(),
+      'number': i++,
+    });
+    weeksCollection.document(weekRef.documentID).updateData({'id': weekRef.documentID});
 
+    // weekQuerySnapshot.documents.sort((a, b) => a.length.compareTo(b.length));
+    //  weekQuerySnapshot.documents.sort();
+    List lastExercises = [];
+    
+    
+    if(weeksQuerySnapshot.documents.last['id'] == null) {
+     print('YAHOOOOOOO');
+    } 
+
+     weekQuerySnapshot.documents.forEach((day){
+        lastExercises.add(day.data);
+      });
+      lastExercises.sort((a, b) => a['index'].compareTo(b['index']));
+
+    // print();
+
+    print(lastExercises);
+    // print(lastExercises[1]['index']);
+    // print(lastExercises[2]['index']);
+    // print(lastExercises[3]['index']);
+    // print(lastExercises[4]['index']);
+    // print(lastExercises[5]['index']);
+    // print(lastExercises[6]['index']);
+
+  
+    // weekQuerySnapshot.documents.forEach((day){
+    //   print(day['date']);
+    // });
+    // Object exercises;
+
+    List defaultExercises = [{
+      'name': 'Bench Press',
+      'volume': 5760,
+      'sets': [{
+        'weight': 120,
+        'set': 4,
+        'rep': 12,
+      }]
+    }];
+
+    if(weeksQuerySnapshot.documents.last['id'] != null) {
+
+      DocumentReference monRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 0, 
+        'date': 'Monday', 
+        'target': 'Chest & Triceps', 
+        'exercises': lastExercises[0]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(monRef.documentID).updateData({'id': monRef.documentID});
+
+      DocumentReference tueRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 1, 
+        'date': 'Tuesday', 
+        'target': 'Legs & Abs', 
+        'exercises': lastExercises[1]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(tueRef.documentID).updateData({'id': tueRef.documentID});
+
+      DocumentReference wedRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 2, 
+        'date': 'Wednesday', 
+        'target': 'Day Off', 
+        'exercises': lastExercises[2]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(wedRef.documentID).updateData({'id': wedRef.documentID});
+
+      DocumentReference thuRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 3, 
+        'date': 'Thursday', 
+        'target': 'Back & Biceps', 
+        'exercises': lastExercises[3]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(thuRef.documentID).updateData({'id': thuRef.documentID});
+
+      DocumentReference friRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 4, 
+        'date': 'Friday', 
+        'target': 'Shoulders & Abs', 
+        'exercises': lastExercises[4]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(friRef.documentID).updateData({'id': friRef.documentID});
+
+      DocumentReference satRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 5, 
+        'date': 'Saturday', 
+        'target': 'Day Off', 
+        'exercises': lastExercises[5]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(satRef.documentID).updateData({'id': satRef.documentID});
+
+      DocumentReference sunRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 6, 
+        'date': 'Sunday', 
+        'target': 'Day Off', 
+        'exercises': lastExercises[6]['exercises']
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(sunRef.documentID).updateData({'id': sunRef.documentID});
+   
+    } else {
+
+      DocumentReference monRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 0, 
+        'date': 'Monday', 
+        'target': 'Chest & Triceps', 
+        'exercises': defaultExercises
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(monRef.documentID).updateData({'id': monRef.documentID});
+
+      DocumentReference tueRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 1, 
+        'date': 'Tuesday', 
+        'target': 'Legs & Abs', 
+        'exercises': defaultExercises,
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(tueRef.documentID).updateData({'id': tueRef.documentID});
+
+      DocumentReference wedRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 2, 
+        'date': 'Wednesday', 
+        'target': 'Day Off', 
+        'exercises': defaultExercises,
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(wedRef.documentID).updateData({'id': wedRef.documentID});
+
+      DocumentReference thuRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 3, 
+        'date': 'Thursday', 
+        'target': 'Back & Biceps', 
+        'exercises': defaultExercises,
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(thuRef.documentID).updateData({'id': thuRef.documentID});
+
+      DocumentReference friRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 4, 
+        'date': 'Friday', 
+        'target': 'Shoulders & Abs', 
+        'exercises': defaultExercises,
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(friRef.documentID).updateData({'id': friRef.documentID});
+
+      DocumentReference satRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 5, 
+        'date': 'Saturday', 
+        'target': 'Day Off', 
+        'exercises': defaultExercises,
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(satRef.documentID).updateData({'id': satRef.documentID});
+
+      DocumentReference sunRef = await weeksCollection.document(weekRef.documentID).collection('days').add({ 
+        'index': 6, 
+        'date': 'Sunday', 
+        'target': 'Day Off', 
+        'exercises': defaultExercises,
+      });
+      weeksCollection.document(weekRef.documentID).collection('days').document(sunRef.documentID).updateData({'id': sunRef.documentID});
+    }
   }
 
   @override
@@ -106,9 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
-              createCommitment();
-            },
+            onPressed: () => createCommitment(),
           )
         ],
       ),

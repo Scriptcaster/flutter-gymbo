@@ -3,14 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'day.dart';
 import 'package:intl/intl.dart';
 
-
-
 class WeekPage extends StatelessWidget {
   WeekPage({ @required this.id, this.date });
-
   final id;
   final date;
-
   // final dateFormatter = DateFormat('yyyy-MM-dd');
   // final dateString = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -70,7 +66,7 @@ class WeekPage extends StatelessWidget {
                               dayId: doc['id'],
                               date: doc['date'],
                               target: doc['target'],
-                              exercises: doc['exercises']
+                              exercises: doc['exercises'],
                             ),
                           ),
                         );
