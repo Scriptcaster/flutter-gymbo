@@ -24,8 +24,8 @@ class CustomWeek extends StatelessWidget {
       children.add(
         ProjectsExpansionTile(
           projectKey: doc.documentID,
-          date: doc['id'], 
-          // date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
+          // date: doc['id'], 
+          date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
           // date: doc['date'].toDate(), 
           firestore: firestore
         ),

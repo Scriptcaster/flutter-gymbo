@@ -15,7 +15,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final weeksCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("weeks");
- 
+  final exercisesCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("exercises");
+
   var i = 0;
   var weeksId;
   
@@ -74,11 +75,18 @@ class _HomeScreenState extends State<HomeScreen> {
     //   }
     // });
 
-    QuerySnapshot weeksQuerySnapshot = await weeksCollection.orderBy('date', descending: false).getDocuments();
-    print('LATEST ID ' + weeksQuerySnapshot.documents.last['id']);
+    // weekQuerySnapshot.documents.forEach((day){
+    //   print(day['date']);
+    // });
+    // Object exercises;
 
+    // if(weeksQuerySnapshot.documents.last['id'] == null) {
+    //  print('YAHOOOOOOO');
+    // } 
+
+    QuerySnapshot weeksQuerySnapshot = await weeksCollection.orderBy('date', descending: false).getDocuments();
+    // QuerySnapshot exercisesQuerySnapshot = await exercisesCollection.getDocuments();
     QuerySnapshot weekQuerySnapshot = await weeksCollection.document(weeksQuerySnapshot.documents.last['id']).collection('days').getDocuments();
-    // print('LATEST EXERCISES ' + weekQuerySnapshot.documents[0]['exercises']);
 
     DocumentReference weekRef = await weeksCollection.add({
       'date': new DateTime.now(),
@@ -86,35 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     weeksCollection.document(weekRef.documentID).updateData({'id': weekRef.documentID});
 
-    // weekQuerySnapshot.documents.sort((a, b) => a.length.compareTo(b.length));
-    //  weekQuerySnapshot.documents.sort();
     List lastExercises = [];
-    
-    
-    if(weeksQuerySnapshot.documents.last['id'] == null) {
-     print('YAHOOOOOOO');
-    } 
+    weekQuerySnapshot.documents.forEach((day){
+      lastExercises.add(day.data);
+    });
+    lastExercises.sort((a, b) => a['index'].compareTo(b['index']));
 
-     weekQuerySnapshot.documents.forEach((day){
-        lastExercises.add(day.data);
-      });
-      lastExercises.sort((a, b) => a['index'].compareTo(b['index']));
-
-    // print();
-
-    print(lastExercises);
-    // print(lastExercises[1]['index']);
-    // print(lastExercises[2]['index']);
-    // print(lastExercises[3]['index']);
-    // print(lastExercises[4]['index']);
-    // print(lastExercises[5]['index']);
-    // print(lastExercises[6]['index']);
-
-  
-    // weekQuerySnapshot.documents.forEach((day){
-    //   print(day['date']);
-    // });
-    // Object exercises;
 
     List defaultExercises = [{
       'name': 'Bench Press',
@@ -242,6 +227,14 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       weeksCollection.document(weekRef.documentID).collection('days').document(sunRef.documentID).updateData({'id': sunRef.documentID});
     }
+
+    lastExercises.forEach((item) {
+      item['exercises'].forEach((exercise) {
+        if(exercise['volume'] > exercise['bestVolume']) {
+          exercisesCollection.document(exercise['bestVolumeId']).updateData({'bestVolume': exercise['volume'] });
+        }
+      });
+    });
   }
 
   @override

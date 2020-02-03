@@ -67,6 +67,7 @@ class WeekPage extends StatelessWidget {
                               date: doc['date'],
                               target: doc['target'],
                               exercises: doc['exercises'],
+                              cardio: doc['cardio'],
                             ),
                           ),
                         );

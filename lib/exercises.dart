@@ -5,11 +5,11 @@ class CreateChildrenSets extends StatefulWidget {
   final Object index;
   final Object exercises;
   final Object sets;
-  final String name;
+  final String exerciseName;
   final String weekId;
   final String dayId;
   final VoidCallback onDelete;
-  CreateChildrenSets(this.index, this.exercises, this.name, this.sets, this.weekId, this.dayId, {this.onDelete});
+  CreateChildrenSets(this.index, this.exercises, this.exerciseName, this.sets, this.weekId, this.dayId, {this.onDelete});
   @override
   _CreateChildrenSetsState createState() => _CreateChildrenSetsState(this.onDelete);
 }
@@ -18,8 +18,6 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
   _CreateChildrenSetsState(this.onDelete);
   List _exercises = [];
   List _sets = [];
-  String name;
-  // String _bestExercisesId;
 
   final VoidCallback onDelete;
   final weeksReference = Firestore.instance.collection('data').document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks');
@@ -27,21 +25,17 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
 
   List<Color> colors = [Colors.blue, Colors.white, Colors.white];
   List<bool> _selected = [true, false, false];
-  TextEditingController controller = TextEditingController();
+  TextEditingController _exerciseNameController = TextEditingController();
 
   Future<void> getExercises() async {
     QuerySnapshot exercisesQuerySnapshot = await exerciseReference.getDocuments();
     QuerySnapshot weekQuerySnapshot = await weeksReference.orderBy('date', descending: true).getDocuments();
     exercisesQuerySnapshot.documents.forEach((item) {
-      if (item['name'] == controller.text) {
+      if (item['name'] == _exerciseNameController.text) {
         setState(() {
-          print(item['bestVolume']);
           _exercises[widget.index]['bestVolume'] = item['bestVolume'];
           _exercises[widget.index]['bestVolumeId'] = item['id'];
         });
-        
-        // exerciseReference.document(item['id']).updateData({'bestVolume': _exercises[widget.index]['volume']});
-        // weeksReference.document(item['id']).updateData({'bestVolumeId': item['id']});
       }
     });
     // print( weekQuerySnapshot.documents[1]['id']);
@@ -49,7 +43,7 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
     QuerySnapshot daysQuerySnapshot = await weeksReference.document(weekQuerySnapshot.documents[1]['id']).collection('days').getDocuments();
     daysQuerySnapshot.documents.forEach((item) {
        item.data['exercises'].forEach((item) {
-         if (item['name'] == controller.text) {
+         if (item['name'] == _exerciseNameController.text) {
           // print(item['name']);
           setState(() {
             _exercises[widget.index]['previousVolume'] = item['volume'];
@@ -78,15 +72,14 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
   void initState() {
     _exercises.addAll(widget.exercises);
     _sets.addAll(_exercises[widget.index]['sets']);
-    controller.text = widget.name; 
-    // print(_exercises[widget.index]['bestVolumeId']);
+    _exerciseNameController.text = widget.exerciseName; 
     super.initState();
   }
 
   @override
   void didUpdateWidget(CreateChildrenSets oldWidget) {
     if (oldWidget != widget) {
-      controller.text = widget.name; 
+      _exerciseNameController.text = widget.exerciseName; 
       _sets.clear();
       _sets.addAll(widget.sets);
     }
@@ -145,16 +138,16 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [ 
+      children: [
         Container(
-          padding: EdgeInsets.only(top: 15.0, bottom: 5.0, left: 40.0, right: 40.0),
+          padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 40.0, right: 40.0),
           child: TextField(
             style: new TextStyle(fontSize: 20.0, color: Colors.blue),
             keyboardType: TextInputType.text,
-            controller: controller,
+            controller: _exerciseNameController,
             onSubmitted: (value) {
-              name = value;
-              _exercises[widget.index]['name'] = controller.text;
+              // _exerciseName = value;
+              _exercises[widget.index]['name'] = _exerciseNameController.text;
               getExercises();
             }
           ),
