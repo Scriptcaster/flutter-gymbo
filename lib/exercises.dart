@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'models/exercise.dart';
 
 class CreateChildrenSets extends StatefulWidget {
   final Object index;
@@ -18,61 +19,59 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
   _CreateChildrenSetsState(this.onDelete);
   List _exercises = [];
   List _sets = [];
-
   final VoidCallback onDelete;
-  final weeksReference = Firestore.instance.collection('data').document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks');
-  final exerciseReference = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("exercises");
-
   List<Color> colors = [Colors.blue, Colors.white, Colors.white];
   List<bool> _selected = [true, false, false];
   TextEditingController _exerciseNameController = TextEditingController();
 
   Future<void> getExercises() async {
-    QuerySnapshot exercisesQuerySnapshot = await exerciseReference.getDocuments();
-    QuerySnapshot weekQuerySnapshot = await weeksReference.orderBy('date', descending: true).getDocuments();
-    exercisesQuerySnapshot.documents.forEach((item) {
+    final _exerciseCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("exercises");
+    QuerySnapshot _exercisesQuerySnapshot = await _exerciseCollection.getDocuments();
+    Object _newExercise;
+    _exercisesQuerySnapshot.documents.forEach((item) {
       if (item['name'] == _exerciseNameController.text) {
         setState(() {
           _exercises[widget.index]['bestVolume'] = item['bestVolume'];
           _exercises[widget.index]['bestVolumeId'] = item['id'];
         });
+      } else {
+        // Get Values to Create a New Exercise
+        _newExercise = new Exercise(
+          name: _exerciseNameController.text,
+          bestVolume: _exercises[widget.index]['volume']
+        ).toJson();
+        setState(() {
+          _exercises[widget.index]['bestVolume'] = _exercises[widget.index]['volume'];
+          _exercises[widget.index]['previousVolume'] = _exercises[widget.index]['volume'];
+        });
       }
     });
-    // print( weekQuerySnapshot.documents[1]['id']);
 
-    QuerySnapshot daysQuerySnapshot = await weeksReference.document(weekQuerySnapshot.documents[1]['id']).collection('days').getDocuments();
-    daysQuerySnapshot.documents.forEach((item) {
+    // Create A New Exercise
+    DocumentReference _newExerciseRef = await _exerciseCollection.add(_newExercise);
+    _exerciseCollection.document(_newExerciseRef.documentID).updateData({'id': _newExerciseRef.documentID});
+
+    // Set Previous Volume
+    final _weeksReference = Firestore.instance.collection('data').document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks');
+    QuerySnapshot _weekQuerySnapshot = await _weeksReference.orderBy('date', descending: true).getDocuments();
+    QuerySnapshot _daysQuerySnapshot = await _weeksReference.document(_weekQuerySnapshot.documents[1]['id']).collection('days').getDocuments();
+    _daysQuerySnapshot.documents.forEach((item) {
        item.data['exercises'].forEach((item) {
          if (item['name'] == _exerciseNameController.text) {
-          // print(item['name']);
           setState(() {
             _exercises[widget.index]['previousVolume'] = item['volume'];
           });
          }
        });
     });
-
-
-    //  weekQuerySnapshot.documents[1]['exercises'].forEach((item) {
-    //    print(item);
-    //   // if (item['name'] == controller.text) {
-    //     // setState(() {
-    //     //   _exercises[widget.index]['bestVolume'] = item['bestVolume'];
-    //     //   _exercises[widget.index]['bestVolumeId'] = item['id'];
-    //     // });
-        
-    //     // exerciseReference.document(item['id']).updateData({'bestVolume': _exercises[widget.index]['volume']});
-    //     // weeksReference.document(item['id']).updateData({'bestVolumeId': item['id']});
-    //   // }
-    // });
-
   }
 
   @override
   void initState() {
     _exercises.addAll(widget.exercises);
     _sets.addAll(_exercises[widget.index]['sets']);
-    _exerciseNameController.text = widget.exerciseName; 
+    _exerciseNameController.text = widget.exerciseName;
+    getExercises(); 
     super.initState();
   }
 
