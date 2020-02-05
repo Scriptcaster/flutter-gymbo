@@ -51,7 +51,7 @@ class ProjectsExpansionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PageStorageKey _projectKey = PageStorageKey('$projectKey');
+    // PageStorageKey _projectKey = PageStorageKey('$projectKey');
     return Card(
       child: Container(
         padding: const EdgeInsets.only(top: 5.0),

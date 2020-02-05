@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gymbo/home.dart';
-import 'login_page.dart';
-import 'sign_in.dart';
+import 'login.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,8 +12,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      // home: LoginPage(),
-      home: getCurrentUser() != null ? LoginPage() : HomeScreen(),
+      home: Login(),
+      // home: getCurrentUser() != null ? LoginPage() : HomeScreen(),
     );
   }
 }
