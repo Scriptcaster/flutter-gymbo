@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'exercises.dart';
 
-class DayScreen extends StatefulWidget {
-  DayScreen({@required this.weekId, this.dayId, this.date, this.target, this.exercises, this.cardio });
+class Day extends StatefulWidget {
+  Day({@required this.uid, this.weekId, this.dayId, this.date, this.target, this.exercises, this.cardio });
+  final uid;
   final weekId;
   final dayId;
   final date;
@@ -11,10 +12,10 @@ class DayScreen extends StatefulWidget {
   final exercises;
   final cardio;
   @override
-  _StartDayScreenState createState() => _StartDayScreenState();
+  _StartDayState createState() => _StartDayState();
 }
 
-class _StartDayScreenState extends State<DayScreen> { _StartDayScreenState();
+class _StartDayState extends State<Day> { _StartDayState();
   List exercises = [];
   TextEditingController _targetNameController = TextEditingController();
   int _cardio;
@@ -38,7 +39,7 @@ class _StartDayScreenState extends State<DayScreen> { _StartDayScreenState();
   @override
   void dispose() {
     try {
-      Firestore.instance.collection('data').document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks').document(widget.weekId).collection('days').document(widget.dayId).updateData(
+      Firestore.instance.collection('data').document(widget.uid).collection('weeks').document(widget.weekId).collection('days').document(widget.dayId).updateData(
         {'exercises': exercises, 'target': _targetNameController.text, 'cardio': _cardio}
       );
     } catch (e) {
@@ -125,7 +126,7 @@ class _StartDayScreenState extends State<DayScreen> { _StartDayScreenState();
               child: new ListView.builder(
                 itemCount: exercises.length,
                 itemBuilder: (context, index) {
-                  return CreateChildrenSets(index, exercises, exercises[index]['name'], exercises[index]['sets'], widget.weekId, widget.dayId, onDelete: () => removeItem(index));
+                  return CreateChildrenSets(widget.uid, index, exercises, exercises[index]['name'], exercises[index]['sets'], widget.weekId, widget.dayId, onDelete: () => removeItem(index));
                 },
               ),
             )

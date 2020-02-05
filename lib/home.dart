@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'functions/create_week.dart';
@@ -42,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => createWeek(),
+            onPressed: () => createWeek(_profile['uid']),
           )
         ],
       ),
@@ -51,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
           stream: Firestore.instance.collection("data").document(_profile['uid']).collection("weeks").snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             List<DocumentSnapshot> documents = snapshot.data.documents;
-            return CustomWeek(weeks: documents);
+            return Weeks(uid:_profile['uid'], weeks: documents);
           },
         ),
       ),

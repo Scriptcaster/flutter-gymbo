@@ -29,13 +29,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
   // final documentId = await getUID();
 
-final weeksCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("weeks");
-final exercisesCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("exercises");
+// final weeksCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("weeks");
+// final exercisesCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("exercises");
 
 var i = 0;
 var weeksId;
 
-Future<void> createWeek() async {
+Future<void> createWeek(String uid) async {
+
+    final weeksCollection = Firestore.instance.collection("data").document(uid).collection("weeks");
+    final exercisesCollection = Firestore.instance.collection("data").document(uid).collection("exercises");
     
     QuerySnapshot weeksQuerySnapshot = await weeksCollection.orderBy('date', descending: false).getDocuments();
     QuerySnapshot weekQuerySnapshot = await weeksCollection.document(weeksQuerySnapshot.documents.last['id']).collection('days').getDocuments();

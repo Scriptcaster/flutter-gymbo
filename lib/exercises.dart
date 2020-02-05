@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'models/exercise.dart';
 
 class CreateChildrenSets extends StatefulWidget {
+  final Object uid;
   final Object index;
   final Object exercises;
   final Object sets;
@@ -10,7 +11,8 @@ class CreateChildrenSets extends StatefulWidget {
   final String weekId;
   final String dayId;
   final VoidCallback onDelete;
-  CreateChildrenSets(this.index, this.exercises, this.exerciseName, this.sets, this.weekId, this.dayId, {this.onDelete});
+  CreateChildrenSets(this.uid, this.index, this.exercises, this.exerciseName, this.sets, this.weekId, this.dayId, {this.onDelete});
+  
   @override
   _CreateChildrenSetsState createState() => _CreateChildrenSetsState(this.onDelete);
 }
@@ -25,7 +27,7 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
   TextEditingController _exerciseNameController = TextEditingController();
 
   Future<void> getExercises() async {
-    final _exerciseCollection = Firestore.instance.collection("data").document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection("exercises");
+    final _exerciseCollection = Firestore.instance.collection("data").document(widget.uid).collection("exercises");
     QuerySnapshot _exercisesQuerySnapshot = await _exerciseCollection.getDocuments();
     Object _newExercise;
     _exercisesQuerySnapshot.documents.forEach((item) {
@@ -52,7 +54,7 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
     _exerciseCollection.document(_newExerciseRef.documentID).updateData({'id': _newExerciseRef.documentID});
 
     // Set Previous Volume
-    final _weeksReference = Firestore.instance.collection('data').document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2').collection('weeks');
+    final _weeksReference = Firestore.instance.collection('data').document(widget.uid).collection('weeks');
     QuerySnapshot _weekQuerySnapshot = await _weeksReference.orderBy('date', descending: true).getDocuments();
     QuerySnapshot _daysQuerySnapshot = await _weeksReference.document(_weekQuerySnapshot.documents[1]['id']).collection('days').getDocuments();
     _daysQuerySnapshot.documents.forEach((item) {

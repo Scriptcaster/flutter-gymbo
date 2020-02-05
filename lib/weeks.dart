@@ -3,17 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'week.dart';
 
-class CustomWeek extends StatelessWidget {
-  CustomWeek({this.weeks, this.firestore});
+class Weeks extends StatelessWidget {
+  Weeks({this.uid, this.weeks, this.firestore});
   final List<DocumentSnapshot> weeks;
   final Firestore firestore;
+  final String uid;
 
-  // String formatTimestamp(int timestamp) {
-  //     var format = new DateFormat('d MMM, hh:mm a');
-  //     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-  //     return format.format(date);
-  //   }
-  
   List<Widget> _getChildren() {
     List<Widget> children = [];
     // print(documents[0]['number']);
@@ -23,7 +18,8 @@ class CustomWeek extends StatelessWidget {
       // print(doc.documentID);
       children.add(
         ProjectsExpansionTile(
-          projectKey: doc.documentID,
+          uid: uid,
+          weekId: doc.documentID,
           // date: doc['id'], 
           date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
           // date: doc['date'].toDate(), 
@@ -43,15 +39,14 @@ class CustomWeek extends StatelessWidget {
 }
 
 class ProjectsExpansionTile extends StatelessWidget {
-  ProjectsExpansionTile({this.projectKey, this.date, this.firestore});
-
-  final String projectKey;
+  ProjectsExpansionTile({this.uid, this.weekId, this.date, this.firestore});
+  final String uid;
+  final String weekId;
   final Object date;
   final Firestore firestore;
 
   @override
   Widget build(BuildContext context) {
-    // PageStorageKey _projectKey = PageStorageKey('$projectKey');
     return Card(
       child: Container(
         padding: const EdgeInsets.only(top: 5.0),
@@ -64,10 +59,7 @@ class ProjectsExpansionTile extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WeekPage(
-                      id: projectKey,
-                      date: date,
-                    ),
+                    builder: (context) => Week(uid: uid, id: weekId, date: date,),
                   ),
                 );
               },
@@ -78,14 +70,21 @@ class ProjectsExpansionTile extends StatelessWidget {
     );
   }
 }
+
+  // String formatTimestamp(int timestamp) {
+  //     var format = new DateFormat('d MMM, hh:mm a');
+  //     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  //     return format.format(date);
+  //   }
+
           // children: <Widget>[
-          //   Text(projectKey),
+          //   Text(weekId),
           //   StreamBuilder(
           //       stream: Firestore.instance
           //           .collection("data")
           //           .document('Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2')
           //           .collection('weeks')
-          //           .document(projectKey)
+          //           .document(weekId)
           //           .collection('days')
           //           .snapshots(),
           //       builder: (BuildContext context,
