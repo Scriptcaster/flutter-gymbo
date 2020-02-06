@@ -30,50 +30,53 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
     final _exerciseCollection = Firestore.instance.collection("data").document(widget.uid).collection("exercises");
     QuerySnapshot _exercisesQuerySnapshot = await _exerciseCollection.getDocuments();
     Object _newExercise;
-    _exercisesQuerySnapshot.documents.forEach((item) {
+    _exercisesQuerySnapshot.documents.forEach((item) async {
       if (item['name'] == _exerciseNameController.text) {
+        print(item['name']);
         setState(() {
           _exercises[widget.index]['bestVolume'] = item['bestVolume'];
           _exercises[widget.index]['bestVolumeId'] = item['id'];
         });
-      } else {
-        // Get Values to Create a New Exercise
-        _newExercise = new Exercise(
-          name: _exerciseNameController.text,
-          bestVolume: _exercises[widget.index]['volume']
-        ).toJson();
-        setState(() {
-          _exercises[widget.index]['bestVolume'] = _exercises[widget.index]['volume'];
-          _exercises[widget.index]['previousVolume'] = _exercises[widget.index]['volume'];
-        });
-      }
+      } 
     });
 
+    _newExercise = new Exercise(name: _exerciseNameController.text, bestVolume: _exercises[widget.index]['volume']).toJson();
+    var countExercises = _exercisesQuerySnapshot.documents.where((item) => item['name'] == _exerciseNameController.text);
     // Create A New Exercise
-    DocumentReference _newExerciseRef = await _exerciseCollection.add(_newExercise);
-    _exerciseCollection.document(_newExerciseRef.documentID).updateData({'id': _newExerciseRef.documentID});
+    if(countExercises.length == 0) {
+      DocumentReference _newExerciseRef = await _exerciseCollection.add(_newExercise);
+      _exerciseCollection.document(_newExerciseRef.documentID).updateData({'id': _newExerciseRef.documentID});
+    }
 
     // Set Previous Volume
     final _weeksReference = Firestore.instance.collection('data').document(widget.uid).collection('weeks');
     QuerySnapshot _weekQuerySnapshot = await _weeksReference.orderBy('date', descending: true).getDocuments();
-    QuerySnapshot _daysQuerySnapshot = await _weeksReference.document(_weekQuerySnapshot.documents[1]['id']).collection('days').getDocuments();
-    _daysQuerySnapshot.documents.forEach((item) {
-       item.data['exercises'].forEach((item) {
-         if (item['name'] == _exerciseNameController.text) {
-          setState(() {
-            _exercises[widget.index]['previousVolume'] = item['volume'];
-          });
-         }
-       });
-    });
+    if (_weekQuerySnapshot.documents.length > 1) {
+      QuerySnapshot _daysQuerySnapshot = await _weeksReference.document(_weekQuerySnapshot.documents[1]['id']).collection('days').getDocuments();
+      _daysQuerySnapshot.documents.forEach((item) {
+        item.data['exercises'].forEach((item) {
+          if (item['name'] == _exerciseNameController.text) {
+            setState(() {
+              _exercises[widget.index]['previousVolume'] = item['volume'];
+            });
+          }
+        });
+      });
+    } else {
+      setState(() {
+        _exercises[widget.index]['previousVolume'] = 0;
+      });
+    }
+   
   }
 
   @override
   void initState() {
     _exercises.addAll(widget.exercises);
+    print(_exercises[widget.index]['sets']);
     _sets.addAll(_exercises[widget.index]['sets']);
     _exerciseNameController.text = widget.exerciseName;
-    getExercises(); 
+    // getExercises(); 
     super.initState();
   }
 
