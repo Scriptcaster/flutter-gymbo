@@ -20,8 +20,8 @@ class Weeks extends StatelessWidget {
         ProjectsExpansionTile(
           uid: uid,
           weekId: doc.documentID,
-          // date: doc['id'], 
-          date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
+          date: doc['id'], 
+          // date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
           // date: doc['date'].toDate(), 
           firestore: firestore
         ),

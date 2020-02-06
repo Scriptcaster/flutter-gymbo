@@ -8,6 +8,18 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+
+  @override
+  void initState() {
+    authService.profile.listen((state) => setState(() => _profile = state));
+    authService.loading.listen((state) => setState(() => _loading = state));
+    print(_profile);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +33,21 @@ class _LoginState extends State<Login> {
               FlutterLogo(size: 150),
               SizedBox(height: 50),
               _signInButton(),
+
+              IconButton(
+                icon: Icon(Icons.person_outline),
+                onPressed: () {
+                  print(_profile['username']);
+                },
+              ),
+
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                   authService.signOutGoogle();
+                },
+              ),
+
             ],
           ),
         ),
@@ -32,14 +59,24 @@ class _LoginState extends State<Login> {
     return OutlineButton(
       splashColor: Colors.grey,
       onPressed: () {
+        // authService.signInWithGoogle();
         authService.signInWithGoogle().whenComplete(() {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return HomeScreen();
-              },
-            ),
-          );
+          // Navigator.of(context).push(
+
+           
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(uid: _profile['uid']),
+                  ),
+                );
+              
+            // MaterialPageRoute(
+            //   builder: (context) {
+            //     return Home();
+            //   },
+            // ),
+          // );
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
@@ -54,12 +91,8 @@ class _LoginState extends State<Login> {
             Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey,
-                ),
+              child: Text( 'Sign in with Google',
+                style: TextStyle(fontSize: 20, color: Colors.grey),
               ),
             )
           ],
@@ -68,3 +101,5 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
+

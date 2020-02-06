@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'exercises.dart';
 
 class Day extends StatefulWidget {
-  Day({@required this.uid, this.weekId, this.dayId, this.date, this.target, this.exercises, this.cardio });
+  Day({this.uid, this.weekId, this.dayId, this.date, this.target, this.exercises, this.cardio });
   final uid;
   final weekId;
   final dayId;
@@ -22,9 +22,11 @@ class _StartDayState extends State<Day> { _StartDayState();
 
   @override
   void initState() {
-    exercises.addAll(widget.exercises);
     _targetNameController.text = widget.target;
-    
+
+    if(widget.exercises != null) {
+      exercises.addAll(widget.exercises);
+    }
     if (widget.cardio == null) {
       _cardio = 0;
     } else {

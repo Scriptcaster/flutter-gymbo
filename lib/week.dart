@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'day.dart';
-import 'package:intl/intl.dart';
 
 class Week extends StatelessWidget {
   Week({ @required this.uid, this.id, this.date });
@@ -48,7 +47,7 @@ class Week extends StatelessWidget {
                 documents.forEach((doc) {
                   surveysList.add(ListTile(
                     title: Text(doc['date']),
-                    subtitle: Text(doc['target']),
+                    subtitle: Text(doc['target'].toString()),
                     trailing: Icon(Icons.keyboard_arrow_right),
                       onTap: () {
                       Navigator.push(

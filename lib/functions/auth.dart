@@ -11,8 +11,6 @@ class AuthService {
 
   String name;
   String email;
-  Object weeks;
-  Object days;
 
   // Future getCurrentUid() async {
   //   FirebaseUser _user = await FirebaseAuth.instance.currentUser();
@@ -49,17 +47,21 @@ class AuthService {
 
     updateUserData(user);
 
+    // updateData(user);
+
     loading.add(false);
+
+    // _db.collection("data").document(user.uid).set('exercises')
+
+    // DocumentReference monRef = await Firestore.instance.collection("data").add({'id': 'ok'});
+    // Firestore.instance.collection("data").document(monRef.documentID).updateData({'id': monRef.documentID});
     
     // Checking if email and name is null
     assert(user.email != null);
     assert(user.displayName != null);
     name = user.displayName;
     email = user.email;
-    
-    weeks = Firestore.instance.collection("data").document(user.uid).collection('weeks').snapshots();
-    days = Firestore.instance.collection("data").document(user.uid).collection('weeks').document('1pdecpw2DdGPnM3Fqo8T').collection('days').snapshots();
-    
+        
     // Only taking the first part of the name, i.e., First Name
     if (name.contains(" ")) {
       name = name.substring(0, name.indexOf(" "));
@@ -78,6 +80,13 @@ class AuthService {
       'email': user.email,
     }, merge: true);
   }
+
+  // void updateData(FirebaseUser user) async {
+  //   DocumentReference ref = _db.collection('data').document(user.uid);
+  //   return ref.setData({
+  //     'id': user.uid,
+  //   }, merge: true);
+  // }
 
   void signOutGoogle() async {
     await googleSignIn.signOut();

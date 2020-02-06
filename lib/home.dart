@@ -4,24 +4,15 @@ import 'functions/create_week.dart';
 import 'functions/auth.dart';
 import 'weeks.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({this.firestore});
+class Home extends StatefulWidget {
+  Home({ this.uid, this.firestore });
+  final Object uid;
   final Firestore firestore;
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeState createState() => _HomeState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  Map<String, dynamic> _profile;
-  bool _loading = false;
-
-  @override
-  void initState() {
-    authService.profile.listen((state) => setState(() => _profile = state));
-    authService.loading.listen((state) => setState(() => _loading = state));
-    super.initState();
-  }
-
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,22 +27,31 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
-        title: Text(_profile['uid'].toString()),
-        // title: Text('My Weeks'),
+        title: Text(widget.uid.toString()),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => createWeek(_profile['uid']),
+            onPressed: () => createWeek(widget.uid),
           )
         ],
       ),
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection("data").document(_profile['uid']).collection("weeks").snapshots(),
+
+          stream: Firestore.instance.collection("data").document(
+            widget.uid
+            // 'Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2'
+          ).collection("weeks").snapshots(),
+         
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             List<DocumentSnapshot> documents = snapshot.data.documents;
-            return Weeks(uid:_profile['uid'], weeks: documents);
+            return Weeks(
+              uid: widget.uid, 
+              // uid: 'Xi2BQ9KuCwOR2MeHIHUPH5G7bTc2',
+              weeks: documents
+            );
           },
+          
         ),
       ),
     );
