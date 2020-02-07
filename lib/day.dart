@@ -35,7 +35,7 @@ class _StartDayState extends State<Day> { _StartDayState();
     super.initState();
   }
 
-  void addExercise() => setState(() => exercises.add({'name': 'New Exercise', 'sets': [{'set': 4, 'weight': 25, 'rep': 8}], 'volume': 800}));
+  void addExercise() => setState(() => exercises.add({'name': 'New Exercise', 'sets': [{'set': 0, 'weight': 0, 'rep': 0}], 'volume': 0, 'bestVolume': 0, 'previousVolume': 0}));
   void removeItem(index) => setState(() => this.exercises.removeAt(index));
   
   @override

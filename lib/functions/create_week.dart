@@ -5,19 +5,14 @@ var i = 0;
 Future<void> createWeek(String uid) async {
 
   final weeksCollection = Firestore.instance.collection("data").document(uid).collection("weeks");
-
   QuerySnapshot weeksQuerySnapshot = await weeksCollection.orderBy('date', descending: false).getDocuments();
-  if(weeksQuerySnapshot.documents.length > 0) {
-    
-    QuerySnapshot weekQuerySnapshot = await weeksCollection.document(weeksQuerySnapshot.documents.last['id']).collection('days').getDocuments();
 
+  if(weeksQuerySnapshot.documents.length > 0) {
+    QuerySnapshot weekQuerySnapshot = await weeksCollection.document(weeksQuerySnapshot.documents.last['id']).collection('days').getDocuments();
     DocumentReference weekRef = await weeksCollection.add({ 'date': new DateTime.now(), 'number': i++,});
     weeksCollection.document(weekRef.documentID).updateData({'id': weekRef.documentID});
-
     List lastExercises = [];
-
     weekQuerySnapshot.documents.forEach((day){ lastExercises.add(day.data); });
-
     lastExercises.sort((a, b) => a['index'].compareTo(b['index']));
 
     DocumentReference monRef = await weeksCollection.document(weekRef.documentID).collection('days').add({'index': 0, 'date': 'Monday', 'target': lastExercises[0]['target'], 'exercises': lastExercises[0]['exercises']});
