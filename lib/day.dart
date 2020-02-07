@@ -41,9 +41,7 @@ class _StartDayState extends State<Day> { _StartDayState();
   @override
   void dispose() {
     try {
-      Firestore.instance.collection('data').document(widget.uid).collection('weeks').document(widget.weekId).collection('days').document(widget.dayId).updateData(
-        {'exercises': exercises, 'target': _targetNameController.text, 'cardio': _cardio}
-      );
+      Firestore.instance.collection('data').document(widget.uid).collection('weeks').document(widget.weekId).collection('days').document(widget.dayId).updateData({'exercises': exercises, 'target': _targetNameController.text, 'cardio': _cardio});
     } catch (e) {
       print(e.toString());
     }
@@ -103,7 +101,6 @@ class _StartDayState extends State<Day> { _StartDayState();
                       Text("minutes")
                     ],
                   ),
-
                   onPressed: () => setState(() => _cardio+=1),
                 ),
 

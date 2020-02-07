@@ -38,57 +38,34 @@ class Week extends StatelessWidget {
           children: <Widget>[
             StreamBuilder(
               stream: Firestore.instance.collection("data").document(uid).collection('weeks').document(id).collection('days').snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) return const Text('Loading...');
                 List<DocumentSnapshot> documents = snapshot.data.documents;
                 List<Widget> surveysList = [];
                 documents.sort((a,b) => a['index'].compareTo(b['index']));
                 documents.forEach((doc) {
-                  surveysList.add(ListTile(
-                    title: Text(doc['date']),
-                    subtitle: Text(doc['target'].toString()),
-                    trailing: Icon(Icons.keyboard_arrow_right),
-                      onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Day( uid: uid, weekId: id, dayId: doc['id'], date: doc['date'], target: doc['target'], exercises: doc['exercises'], cardio: doc['cardio'] ),
-                        ),
-                      );
-                    },
-                  ));
-
-                  // PageStorageKey _surveyKey =
-                  //     new PageStorageKey('${doc.documentID}');
-                  // if (doc['id'] == id) { 
-                  //   doc['exercises'].forEach((exercise) {
-                  //     surveysList.add(ListTile(
-                  //       // key: _surveyKey,
-                  //       title: Text(exercise['name'].toString()),
-                  //     ));
-                  //   });
-                  // }
+                  surveysList.add(
+                    ListTile(
+                      title: Text(doc['date']),
+                      subtitle: Text(doc['target'].toString()),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                        onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Day( uid: uid, weekId: id, dayId: doc['id'], date: doc['date'], target: doc['target'], exercises: doc['exercises'], cardio: doc['cardio'] ),
+                          ),
+                        );
+                      },
+                    )
+                  );
                 });
                 return Column(children: surveysList);
               }
             ),
           ],
         )
-
-          // child: Column(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: <Widget>[
-          //     Text('description'),
-          //     RaisedButton(
-          //         child: Text('Back To HomeScreen'),
-          //         color: Theme.of(context).primaryColor,
-          //         textColor: Colors.white,
-          //         onPressed: () => Navigator.pop(context)),
-          //   ],
-          // ),
-          ),
+      ),
     );
   }
 }

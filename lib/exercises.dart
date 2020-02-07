@@ -72,20 +72,23 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
       return i;
     }
 
+    print(_weekQuerySnapshot.documents[previousCounter() - 2]['id']);
+
     if (_weekQuerySnapshot.documents.length > 1 && previousCounter() != 1) {
+      print('Update Previous Volume');
       QuerySnapshot _daysQuerySnapshot = await _weeksReference.document(_weekQuerySnapshot.documents[previousCounter() - 2]['id']).collection('days').getDocuments();
       _daysQuerySnapshot.documents.forEach((item) {
         if (item.data['exercises'] != null) {
+          
            item.data['exercises'].forEach((item) {
+            
             if (item['name'] == _exerciseNameController.text) {
+              print(item['name']);
+               print(_exerciseNameController.text);
               setState(() {
                 _exercises[widget.index]['previousVolume'] = item['volume'];
               });
-            } else {
-              setState(() {
-                _exercises[widget.index]['previousVolume'] = 0;
-              });
-            }
+            } 
           });
         }
       });

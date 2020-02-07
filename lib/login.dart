@@ -34,19 +34,19 @@ class _LoginState extends State<Login> {
               SizedBox(height: 50),
               _signInButton(),
 
-              IconButton(
-                icon: Icon(Icons.person_outline),
-                onPressed: () {
-                  print(_profile['username']);
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.person_outline),
+              //   onPressed: () {
+              //     print(_profile['username']);
+              //   },
+              // ),
 
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                   authService.signOutGoogle();
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.delete),
+              //   onPressed: () {
+              //      authService.signOutGoogle();
+              //   },
+              // ),
 
             ],
           ),

@@ -20,9 +20,7 @@ class Weeks extends StatelessWidget {
         ProjectsExpansionTile(
           uid: uid,
           weekId: doc.documentID,
-          date: doc['id'], 
-          // date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
-          // date: doc['date'].toDate(), 
+          date: DateFormat('yMMMMd').format(doc['date'].toDate()), 
           firestore: firestore
         ),
       );
@@ -54,6 +52,7 @@ class ProjectsExpansionTile extends StatelessWidget {
           children: <Widget>[ 
             ListTile(
               title: Text(date.toString()),
+              subtitle: Text(weekId.toString()),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 Navigator.push(
