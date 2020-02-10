@@ -60,9 +60,7 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
     // Set Previous Volume
     final _weeksReference = Firestore.instance.collection('data').document(widget.uid).collection('weeks');
     QuerySnapshot _weekQuerySnapshot = await _weeksReference.orderBy('date', descending: true).getDocuments();
-
     _weekQuerySnapshot.documents.sort((a, b) => a['date'].compareTo(b['date']));
-    
     previousCounter() {
       var i = 0;
       for(var item in _weekQuerySnapshot.documents) {
@@ -71,17 +69,12 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
       }
       return i;
     }
-
-    print(_weekQuerySnapshot.documents[previousCounter() - 2]['id']);
-
     if (_weekQuerySnapshot.documents.length > 1 && previousCounter() != 1) {
       print('Update Previous Volume');
       QuerySnapshot _daysQuerySnapshot = await _weeksReference.document(_weekQuerySnapshot.documents[previousCounter() - 2]['id']).collection('days').getDocuments();
       _daysQuerySnapshot.documents.forEach((item) {
         if (item.data['exercises'] != null) {
-          
            item.data['exercises'].forEach((item) {
-            
             if (item['name'] == _exerciseNameController.text) {
               print(item['name']);
                print(_exerciseNameController.text);
@@ -97,7 +90,6 @@ class _CreateChildrenSetsState extends State<CreateChildrenSets> {
         _exercises[widget.index]['previousVolume'] = 0;
       });
     }
-   
   }
 
   @override
