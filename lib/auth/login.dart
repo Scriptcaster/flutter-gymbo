@@ -6,6 +6,14 @@ import '../home.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
+// import 'package:flutter_biopass/flutter_biopass.dart';
+
+// import 'package:flutter_keychain/flutter_keychain.dart';
+
+// import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
   final localAuth = LocalAuthentication();
@@ -19,6 +27,10 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
 
+  // final bioPass = BioPass();
+
+  final storage = new FlutterSecureStorage();
+
   @override
   initState() {
     emailInputController = new TextEditingController();
@@ -26,42 +38,23 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  // final LocalAuthentication auth = LocalAuthentication();
+  // Create storage
+  // final storage = new FlutterSecureStorage();
+  // var _prefs = SharedPreferences.getInstance();
 
-  // bool _canCheckBiometrics;
-
-  // List<BiometricType> _availableBiometrics;
-
-  // String _authorized = 'Not Authorized';
-
-  // bool _isAuthenticating = false;
-
-  // _checkBiometrics() async {
-  //   bool canCheckBiometrics;
-  //   try {
-  //     canCheckBiometrics = await auth.canCheckBiometrics;
-  //   } on PlatformException catch (e) {
-  //     print(e);
-  //   }
-  //   print(canCheckBiometrics);
-  //   // setState(() {
-  //   //   _canCheckBiometricsResult = checkResult;
-  //   //   _getAvailableBiometricsResult = getResult;
-  //   // });
+  // Future<bool> _setMobileToken(String username, String password) async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   prefs.setString("username", username);
+  //   prefs.setString("userID", password);
   // }
-  
-  // BIOMETRIC LOGIN
-  // final LocalAuthentication _localAuthentication = LocalAuthentication();
-  // bool _canCheckBiometricsResult;
-  // List<BiometricType> _getAvailableBiometricsResult;
 
   final _localAuthentication = LocalAuthentication();
 
   // To check if any type of biometric authentication hardware is available.
   Future<bool> _isBiometricAvailable() async {
 
-    final checkResult = await widget.localAuth.canCheckBiometrics;
-    final getResult = await widget.localAuth.getAvailableBiometrics();
+    // final checkResult = await widget.localAuth.canCheckBiometrics;
+    // final getResult = await widget.localAuth.getAvailableBiometrics();
 
     bool isAvailable = false;
     try {
@@ -91,8 +84,7 @@ class _LoginPageState extends State<LoginPage> {
     bool isAuthenticated = false;
     try {
       isAuthenticated = await _localAuthentication.authenticateWithBiometrics(
-        localizedReason:
-            "Please authenticate to view your transaction overview",
+        localizedReason: "Please authenticate to view your transaction overview",
         useErrorDialogs: true,
         stickyAuth: true,
       );
@@ -102,38 +94,29 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
     isAuthenticated ? print('User is authenticated!') : print('User is not authenticated.');
     if (isAuthenticated) {
-
+      Map<String, String> allValues = await storage.readAll();
       final FirebaseAuth auth = FirebaseAuth.instance;
-      AuthResult result = await auth.signInWithEmailAndPassword(email: 'oliver@email.com', password: 'tgi86shift');
+      AuthResult result = await auth.signInWithEmailAndPassword(email: allValues['email'], password: allValues['password']);
       final FirebaseUser currentUser = result.user;
       Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
         Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) => HomePage(
-            title: result["fname"] + "'s Weeks",
+            title: result["email"],
             uid: currentUser.uid,
           )
         ))
       ).catchError((err) => print(err));
-
     }
   }
 
   String emailValidator(String value) {
     Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
-    } else {
-      return null;
-    }
+    if (!regex.hasMatch(value)) { return 'Email format is invalid'; } else { return null; }
   }
 
   String pwdValidator(String value) {
-    if (value.length < 8) {
-      return 'Password must be longer than 8 characters';
-    } else {
-      return null;
-    }
+    if (value.length < 8) { return 'Password must be longer than 8 characters'; } else { return null; }
   }
 
   @override
@@ -169,11 +152,14 @@ class _LoginPageState extends State<LoginPage> {
                     if (_loginFormKey.currentState.validate()) {
                       final FirebaseAuth auth = FirebaseAuth.instance;
                       AuthResult result = await auth.signInWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+                      await storage.deleteAll();
+                      await storage.write(key: 'email', value:  emailInputController.text);
+                      await storage.write(key: 'password', value: pwdInputController.text);
                       final FirebaseUser currentUser = result.user;
                       Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
                         Navigator.pushReplacement(context, MaterialPageRoute(
                           builder: (context) => HomePage(
-                            title: result["fname"] + "'s Weeks",
+                            title: result["email"],
                             uid: currentUser.uid,
                           )
                         ))
@@ -199,6 +185,16 @@ class _LoginPageState extends State<LoginPage> {
                     }
                   },
                 ),
+
+                // FlatButton(
+                //   child: Text("TEST"),
+                //   onPressed: () async {
+                //     await storage.deleteAll();
+                //     await storage.write(key: 'email', value: 'oliver@email.com');
+                //     await storage.write(key: 'password', value: 'tgi86shift');
+                //   },
+                // ),
+
               ],
             ),
           )
