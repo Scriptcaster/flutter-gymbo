@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../home.dart';
+import 'register.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -20,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final _localAuthentication = LocalAuthentication();
   final storage = new FlutterSecureStorage();
 
-  bool _isLoginForm = true;
+  // bool _isLoginForm = true;
   bool _isLoading = false;
   String _errorMessage;
 
@@ -41,13 +42,12 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  void toggleFormMode() {
-    // resetForm();
-    setState(() {
-      _isLoginForm = !_isLoginForm;
-    });
-  }
-
+  // void toggleFormMode() {
+  //   // resetForm();
+  //   setState(() {
+  //     _isLoginForm = !_isLoginForm;
+  //   });
+  // }
 
   // To check if any type of biometric authentication hardware is available.
   Future<bool> _isBiometricAvailable() async {
@@ -122,8 +122,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     if (_loginFormKey.currentState.validate()) {
       try {
-        if (_isLoginForm) {
-
+        // if (_isLoginForm) {
           final FirebaseAuth auth = FirebaseAuth.instance;
           AuthResult result = await auth.signInWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
           await storage.deleteAll();
@@ -139,32 +138,32 @@ class _LoginPageState extends State<LoginPage> {
             ))
           ).catchError((err) => print(err));
 
-        } else {
+        // } else {
 
-          await storage.deleteAll();
-          await storage.write(key: 'email', value:  emailInputController.text);
-          await storage.write(key: 'password', value: pwdInputController.text);
-          final FirebaseAuth auth = FirebaseAuth.instance;
-          AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
-          final FirebaseUser currentUser = result.user;
-          Firestore.instance.collection("users").document(currentUser.uid).setData({
-            "uid": currentUser.uid,
-            "email": emailInputController.text,
-          }).then((result) => {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(
-                title: emailInputController.text,
-                uid: currentUser.uid,
-              )
-            ), (_) => false),
-          emailInputController.clear(),
-          pwdInputController.clear(),
-        })
-        .catchError((err) => print(err));
+        //   await storage.deleteAll();
+        //   await storage.write(key: 'email', value:  emailInputController.text);
+        //   await storage.write(key: 'password', value: pwdInputController.text);
+        //   final FirebaseAuth auth = FirebaseAuth.instance;
+        //   AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+        //   final FirebaseUser currentUser = result.user;
+        //   Firestore.instance.collection("users").document(currentUser.uid).setData({
+        //     "uid": currentUser.uid,
+        //     "email": emailInputController.text,
+        //   }).then((result) => {
+        //   Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => HomePage(
+        //         title: emailInputController.text,
+        //         uid: currentUser.uid,
+        //       )
+        //     ), (_) => false),
+        //   emailInputController.clear(),
+        //   pwdInputController.clear(),
+        // })
+        // .catchError((err) => print(err));
 
-        }
+        // }
         setState(() {
           _isLoading = false;
         });
@@ -184,24 +183,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget showLogo() {
-    // if (!_isLoading) {
-      return new Hero(
-        tag: 'hero',
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            radius: 60.0,
-            child: Image.asset('assets/google_logo.png'),
-          ),
+    return new Hero(
+      tag: 'hero',
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 60.0, 0.0, 0.0),
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 80.0,
+          child: Image.asset('assets/logo.png'),
         ),
-      );
-    // }
+      ),
+    );
   }
 
   Widget showEmailInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: new TextFormField(
         decoration: new InputDecoration(
         hintText: 'Email',
@@ -218,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget showPasswordInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
       child: new TextFormField(
           decoration: new InputDecoration(
           hintText: 'Password',
@@ -235,16 +232,19 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget showPrimaryButton() {
     return new Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+      padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 15.0),
       child: SizedBox(
         height: 40.0,
         child: new RaisedButton(
-          elevation: 5.0,
+          elevation: 2.0,
           shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0)),
           color: Colors.blue,
-          child: new Text(_isLoginForm ? 'Login' : 'Create account',
-              style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+          child: new Text(
+            // _isLoginForm ? 
+            'Login',
+            // : 'Create account',
+            style: new TextStyle(fontSize: 20.0, color: Colors.white)),
           onPressed: validateAndSubmit,
         ),
       )
@@ -254,9 +254,43 @@ class _LoginPageState extends State<LoginPage> {
   Widget showSecondaryButton() {
     return new FlatButton(
       child: new Text(
-          _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-          style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-      onPressed: toggleFormMode
+        // _isLoginForm ? 
+        'Create an account', 
+        // : 'Have an account? Sign in',
+        style: new TextStyle(fontSize: 14.0, fontWeight: FontWeight.w300)),
+      onPressed: () {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => 
+            RegisterPage(
+              email: emailInputController.text,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(0.0, 1.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          )
+        );
+      },
+    );
+  }
+
+  Widget showFingerprintButton() {
+    return new IconButton(
+      color: Colors.blue,
+      icon: Icon(Icons.fingerprint),
+      onPressed: () async {
+        if (await _isBiometricAvailable()) {
+          await _getListOfBiometricTypes();
+          await _authenticateUser();
+        }
+      },
     );
   }
 
@@ -265,10 +299,10 @@ class _LoginPageState extends State<LoginPage> {
       return new Text(
         _errorMessage,
         style: TextStyle(
-            fontSize: 13.0,
-            color: Colors.red,
-            height: 1.0,
-            fontWeight: FontWeight.w300),
+          fontSize: 13.0,
+          color: Colors.red,
+          height: 1.0,
+          fontWeight: FontWeight.w300),
       );
     } else {
       return new Container(
@@ -282,19 +316,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Login Screen"),
-         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.fingerprint),
-            onPressed: () async {
-              if (await _isBiometricAvailable()) {
-                await _getListOfBiometricTypes();
-                await _authenticateUser();
-              }
-            },
-          )
-        ],
       ),
-
       body: Stack(
         children: <Widget>[
          Container(
@@ -310,6 +332,7 @@ class _LoginPageState extends State<LoginPage> {
                   showPasswordInput(),
                   showPrimaryButton(),
                   showSecondaryButton(),
+                  showFingerprintButton(),
                   // showErrorMessage(),
                 ],
               ),
@@ -319,5 +342,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 }

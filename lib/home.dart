@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     taskTitleInputController = new TextEditingController();
     taskDescripInputController = new TextEditingController();
     // this.getCurrentUser();
+    print(widget.title);
     super.initState();
   }
 

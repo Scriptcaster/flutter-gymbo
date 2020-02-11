@@ -5,16 +5,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../home.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({Key key}) : super(key: key);
-
+  RegisterPage({Key key, this.email}) : super(key: key);
+  final String email;
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
-  TextEditingController firstNameInputController;
-  TextEditingController lastNameInputController;
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   TextEditingController confirmPwdInputController;
@@ -23,11 +21,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   initState() {
-    firstNameInputController = new TextEditingController();
-    lastNameInputController = new TextEditingController();
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
     confirmPwdInputController = new TextEditingController();
+    emailInputController.text = widget.email;
     super.initState();
   }
 
@@ -65,26 +62,6 @@ class _RegisterPageState extends State<RegisterPage> {
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(
-                    labelText: 'First Name*', hintText: "John"),
-                controller: firstNameInputController,
-                validator: (value) {
-                  if (value.length < 3) {
-                    return "Please enter a valid first name.";
-                  }
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                    labelText: 'Last Name*', hintText: "Doe"),
-                controller: lastNameInputController,
-                validator: (value) {
-                  if (value.length < 3) {
-                    return "Please enter a valid last name.";
-                  }
-                }
-              ),
-              TextFormField(
-                decoration: InputDecoration(
                   labelText: 'Email*', hintText: "john.doe@gmail.com"
                 ),
                 controller: emailInputController,
@@ -107,63 +84,63 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: true,
                 validator: pwdValidator,
               ),
-              RaisedButton(
-                child: Text("Register"),
-                color: Theme.of(context).primaryColor,
-                textColor: Colors.white,
-                onPressed: () async {
-                  if (_registerFormKey.currentState.validate()) {
-                    if (pwdInputController.text == confirmPwdInputController.text) {
-                      await storage.deleteAll();
-                      await storage.write(key: 'email', value:  emailInputController.text);
-                      await storage.write(key: 'password', value: pwdInputController.text);
-                      final FirebaseAuth auth = FirebaseAuth.instance;
-                      AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
-                      final FirebaseUser currentUser = result.user;
-                      // FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text).then((currentUser) => 
-                      Firestore.instance.collection("users").document(currentUser.uid).setData({
-                        "uid": currentUser.uid,
-                        "fname": firstNameInputController.text,
-                        "surname": lastNameInputController.text,
-                        "email": emailInputController.text,
-                      }).then((result) => {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(
-                            title: emailInputController.text,
-                            uid: currentUser.uid,
-                          )
-                        ), (_) => false),
-                      firstNameInputController.clear(),
-                      lastNameInputController.clear(),
-                      emailInputController.clear(),
-                      pwdInputController.clear(),
-                      confirmPwdInputController.clear()
-                    })
-                    .catchError((err) => print(err));
-                    // .catchError((err) => print(err)
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Error"),
-                            content: Text("The passwords do not match"),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text("Close"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            ],
-                          );
-                        });
-                      }
-                    }
-                  },
-                ),
+              showPrimaryButton(),
+              // RaisedButton(
+              //   elevation: 2.0,
+              //   shape: new RoundedRectangleBorder(
+              //       borderRadius: new BorderRadius.circular(30.0)),
+              //   color: Colors.blue,
+              //   child: Text("Register"),
+              //   textColor: Colors.white,
+              //   onPressed: () async {
+              //     if (_registerFormKey.currentState.validate()) {
+              //       if (pwdInputController.text == confirmPwdInputController.text) {
+              //         await storage.deleteAll();
+              //         await storage.write(key: 'email', value:  emailInputController.text);
+              //         await storage.write(key: 'password', value: pwdInputController.text);
+              //         final FirebaseAuth auth = FirebaseAuth.instance;
+              //         AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+              //         final FirebaseUser currentUser = result.user;
+              //         // FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text).then((currentUser) => 
+              //         Firestore.instance.collection("users").document(currentUser.uid).setData({
+              //           "uid": currentUser.uid,
+              //           "email": emailInputController.text,
+              //         }).then((result) => {
+              //         Navigator.pushAndRemoveUntil(
+              //           context,
+              //           MaterialPageRoute(
+              //             builder: (context) => HomePage(
+              //               title: emailInputController.text,
+              //               uid: currentUser.uid,
+              //             )
+              //           ), (_) => false),
+              //         emailInputController.clear(),
+              //         pwdInputController.clear(),
+              //         confirmPwdInputController.clear()
+              //       })
+              //       .catchError((err) => print(err));
+              //       // .catchError((err) => print(err)
+              //     } else {
+              //       showDialog(
+              //           context: context,
+              //           builder: (BuildContext context) {
+              //             return AlertDialog(
+              //               title: Text("Error"),
+              //               content: Text("The passwords do not match"),
+              //               actions: <Widget>[
+              //                 FlatButton(
+              //                   child: Text("Close"),
+              //                   onPressed: () {
+              //                     Navigator.of(context).pop();
+              //                   },
+              //                 )
+              //               ],
+              //             );
+              //           });
+              //         }
+              //       }
+              //     },
+              //   ),
                 Text("Already have an account?"),
                 FlatButton(
                   child: Text("Login here!"),
@@ -178,4 +155,74 @@ class _RegisterPageState extends State<RegisterPage> {
       )
     );
   }
+
+
+  Widget showPrimaryButton() {
+    return new Padding(
+      padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 15.0),
+      child: SizedBox(
+        height: 40.0,
+        child: new RaisedButton(
+          elevation: 2.0,
+          shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0)),
+          color: Colors.blue,
+          child: new Text(
+            // _isLoginForm ? 
+            'Sign Up',
+            // : 'Create account',
+            style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+             onPressed: () async {
+              if (_registerFormKey.currentState.validate()) {
+                if (pwdInputController.text == confirmPwdInputController.text) {
+                  await storage.deleteAll();
+                  await storage.write(key: 'email', value:  emailInputController.text);
+                  await storage.write(key: 'password', value: pwdInputController.text);
+                  final FirebaseAuth auth = FirebaseAuth.instance;
+                  AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+                  final FirebaseUser currentUser = result.user;
+                  // FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text).then((currentUser) => 
+                  Firestore.instance.collection("users").document(currentUser.uid).setData({
+                    "uid": currentUser.uid,
+                    "email": emailInputController.text,
+                  }).then((result) => {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(
+                        title: 'Home',
+                        uid: currentUser.uid,
+                      )
+                    ), (_) => false),
+                  emailInputController.clear(),
+                  pwdInputController.clear(),
+                  confirmPwdInputController.clear()
+                })
+                .catchError((err) => print(err));
+                // .catchError((err) => print(err)
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Error"),
+                        content: Text("The passwords do not match"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("Close"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      );
+                    });
+                  }
+                }
+              },
+        ),
+      )
+    );
+  }
+
 }
