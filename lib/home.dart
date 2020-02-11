@@ -124,17 +124,24 @@ class _HomePageState extends State<HomePage> {
             //   }
             // },
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              List<DocumentSnapshot> documents = snapshot.data.documents;
-
-
-              if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting: return new Text('Loading...');
-                default: 
-                return Weeks(
+              if(!snapshot.hasData) { 
+                return CircularProgressIndicator();
+              } else {
+                List<DocumentSnapshot> documents = snapshot.data.documents;
+                 return Weeks(
                   uid: widget.uid, 
                   weeks: documents
                 );
+              }
+
+              // if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+              // switch (snapshot.connectionState) {
+              //   case ConnectionState.waiting: return new Text('Loading...');
+              //   default: 
+              //   return Weeks(
+              //     uid: widget.uid, 
+              //     weeks: documents
+              //   );
                 // return new ListView(
                 //   children: snapshot.data.documents.map((DocumentSnapshot document) {
                 //     return new CustomCard(
@@ -143,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                 //     );
                 //   }).toList(),
                 // );
-              }
+              // }
             },
           )
         ),

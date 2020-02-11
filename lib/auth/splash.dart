@@ -22,7 +22,6 @@ class _SplashPageState extends State<SplashPage> {
             MaterialPageRoute(
               builder: (context) => HomePage(
                 title: result["email"],
-                // title: 'Hey!',
                 uid: currentUser.uid,
               )
             )

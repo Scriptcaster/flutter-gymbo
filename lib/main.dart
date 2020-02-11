@@ -19,8 +19,8 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'auth/register.dart';
-import 'auth/splash.dart';
+// import 'auth/register.dart';
+// import 'auth/splash.dart';
 import 'auth/login.dart';
 
 void main() => runApp(MyApp());
@@ -34,12 +34,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SplashPage(),
+      home: LoginPage(),
       routes: <String, WidgetBuilder>{
-        // '/task': (BuildContext context) => TaskPage(title: 'Task'),
-        // '/home': (BuildContext context) => HomePage(title: 'Home'),
+      //   // '/task': (BuildContext context) => TaskPage(title: 'Task'),
+      //   // '/home': (BuildContext context) => HomePage(title: 'Home'),
         '/login': (BuildContext context) => LoginPage(),
-        '/register': (BuildContext context) => RegisterPage(),
+      //   // '/register': (BuildContext context) => RegisterPage(),
       }
     );
   }

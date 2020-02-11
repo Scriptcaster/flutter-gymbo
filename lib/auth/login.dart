@@ -22,16 +22,32 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoginForm = true;
   bool _isLoading = false;
-  String _errorMessage = "Hey";
-
+  String _errorMessage;
 
   @override
   initState() {
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
-    // print(storage);
     super.initState();
   }
+
+  // Check if form is valid before perform login or signup
+  bool validateAndSave() {
+    final form = _loginFormKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  void toggleFormMode() {
+    // resetForm();
+    setState(() {
+      _isLoginForm = !_isLoginForm;
+    });
+  }
+
 
   // To check if any type of biometric authentication hardware is available.
   Future<bool> _isBiometricAvailable() async {
@@ -89,48 +105,98 @@ class _LoginPageState extends State<LoginPage> {
     if (value.length < 8) { return 'Password must be longer than 8 characters'; } else { return null; }
   }
 
+  Widget showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
+  }
+
   void validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
       _isLoading = true;
     });
     if (_loginFormKey.currentState.validate()) {
-      final FirebaseAuth auth = FirebaseAuth.instance;
-      AuthResult result = await auth.signInWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
-      await storage.deleteAll();
-      await storage.write(key: 'email', value:  emailInputController.text);
-      await storage.write(key: 'password', value: pwdInputController.text);
-      final FirebaseUser currentUser = result.user;
-      Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
-        Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => HomePage(
-            title: result["email"],
-            uid: currentUser.uid,
-          )
-        ))
-      ).catchError((err) => print(err));
+      try {
+        if (_isLoginForm) {
+
+          final FirebaseAuth auth = FirebaseAuth.instance;
+          AuthResult result = await auth.signInWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+          await storage.deleteAll();
+          await storage.write(key: 'email', value:  emailInputController.text);
+          await storage.write(key: 'password', value: pwdInputController.text);
+          final FirebaseUser currentUser = result.user;
+          Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
+            Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => HomePage(
+                title: result["email"],
+                uid: currentUser.uid,
+              )
+            ))
+          ).catchError((err) => print(err));
+
+        } else {
+
+          await storage.deleteAll();
+          await storage.write(key: 'email', value:  emailInputController.text);
+          await storage.write(key: 'password', value: pwdInputController.text);
+          final FirebaseAuth auth = FirebaseAuth.instance;
+          AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+          final FirebaseUser currentUser = result.user;
+          Firestore.instance.collection("users").document(currentUser.uid).setData({
+            "uid": currentUser.uid,
+            "email": emailInputController.text,
+          }).then((result) => {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                title: emailInputController.text,
+                uid: currentUser.uid,
+              )
+            ), (_) => false),
+          emailInputController.clear(),
+          pwdInputController.clear(),
+        })
+        .catchError((err) => print(err));
+
+        }
+        setState(() {
+          _isLoading = false;
+        });
+
+        // if (userId.length > 0 && userId != null && _isLoginForm) {
+        //   widget.loginCallback();
+        // }
+      } catch (e) {
+        print('Error: $e');
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.message;
+          _loginFormKey.currentState.reset();
+        });
+      }
     }
   }
 
-  void toggleFormMode() {
-    // resetForm();
-    setState(() {
-      _isLoginForm = !_isLoginForm;
-    });
-  }
-
-   Widget _showLogo() {
-    return new Hero(
-      tag: 'hero',
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-        child: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          radius: 60.0,
-          child: Image.asset('assets/google_logo.png'),
+  Widget showLogo() {
+    // if (!_isLoading) {
+      return new Hero(
+        tag: 'hero',
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+          child: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            radius: 60.0,
+            child: Image.asset('assets/google_logo.png'),
+          ),
         ),
-      ),
-    );
+      );
+    // }
   }
 
   Widget showEmailInput() {
@@ -238,11 +304,13 @@ class _LoginPageState extends State<LoginPage> {
               child: new ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  _showLogo(),
+                  showCircularProgress(),
+                  showLogo(),
                   showEmailInput(),
                   showPasswordInput(),
                   showPrimaryButton(),
                   showSecondaryButton(),
+                  // showErrorMessage(),
                 ],
               ),
             )
@@ -251,32 +319,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  //  Widget showForm() {
-  //   return new Container(
-  //     padding: const EdgeInsets.all(20.0), child: SingleChildScrollView(
-  //       child: Form(
-  //         key: _loginFormKey, child: Column(
-  //           children: <Widget>[
-  //             RaisedButton(
-  //               child: Text("Login"),
-  //               color: Theme.of(context).primaryColor,
-  //               textColor: Colors.white,
-  //               onPressed: () async {
-  //               },
-  //             ),
-  //             Text("Don't have an account yet?"),
-  //             FlatButton(
-  //               child: Text("Register here!"),
-  //               onPressed: () {
-  //                 Navigator.pushNamed(context, "/register");
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //       )
-  //     )
-  //   );
-  // }
 
 }
