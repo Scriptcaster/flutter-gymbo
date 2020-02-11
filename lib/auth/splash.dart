@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../home.dart';
-import 'package:local_auth/local_auth.dart';
 
 class SplashPage extends StatefulWidget {
   SplashPage({Key key}) : super(key: key);
@@ -15,37 +14,49 @@ class _SplashPageState extends State<SplashPage> {
   @override
   initState() {
     FirebaseAuth.instance.currentUser().then((currentUser) => {
-          if (currentUser == null) {
-            Navigator.pushReplacementNamed(context, "/login")
-          } else {
-            Firestore.instance
-              .collection("users")
-              .document(currentUser.uid)
-              .get()
-              .then((DocumentSnapshot result) =>
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              title: result["email"],
-                              // title: 'Hey!',
-                              uid: currentUser.uid,
-                            ))))
-              .catchError((err) => print(err))
-            }
-        })
-      .catchError((err) => print(err));
+      if (currentUser == null) {
+        Navigator.pushReplacementNamed(context, "/login")
+      } else {
+        Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
+          Navigator.pushReplacement(context, 
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                title: result["email"],
+                // title: 'Hey!',
+                uid: currentUser.uid,
+              )
+            )
+          )
+        ).catchError((err) => print(err))
+      }
+    }).catchError((err) => print(err));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          child: Text("Loading..."),
-        ),
+      // body: Center(
+      //   child: Container(
+      //     child: Text("Loading..."),
+      //   ),
+      // ),
+
+      body: Stack(
+        children: <Widget>[
+          _showCircularProgress(),
+        ],
       ),
+
     );
   }
+
+  Widget _showCircularProgress() {
+    return Center(child: CircularProgressIndicator());
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
+  }
+
 }

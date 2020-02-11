@@ -19,11 +19,9 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'auth/task.dart';
 import 'auth/register.dart';
 import 'auth/splash.dart';
 import 'auth/login.dart';
-import 'home.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,16 +30,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-        ),
-        home: SplashPage(),
-        routes: <String, WidgetBuilder>{
-          // '/task': (BuildContext context) => TaskPage(title: 'Task'),
-          // '/home': (BuildContext context) => HomePage(title: 'Home'),
-          '/login': (BuildContext context) => LoginPage(),
-          '/register': (BuildContext context) => RegisterPage(),
-        });
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SplashPage(),
+      routes: <String, WidgetBuilder>{
+        // '/task': (BuildContext context) => TaskPage(title: 'Task'),
+        // '/home': (BuildContext context) => HomePage(title: 'Home'),
+        '/login': (BuildContext context) => LoginPage(),
+        '/register': (BuildContext context) => RegisterPage(),
+      }
+    );
   }
 }
