@@ -323,10 +323,7 @@ DEPENDENCIES:
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
-    - AppAuth
-    - nanopb
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - abseil
     - AppAuth
     - BoringSSL-GRPC
@@ -405,4 +402,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 8dd746f5187c1799ab65cbd72e61636f7a377075
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.4

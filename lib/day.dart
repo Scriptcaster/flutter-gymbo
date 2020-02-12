@@ -97,8 +97,9 @@ class _StartDayState extends State<Day> { _StartDayState();
                     children: <Widget>[
                       Text(
                         _cardio.toString(),
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
-                      Text("minutes")
+                      Text("circules", style: TextStyle(color: Colors.white))
                     ],
                   ),
                   onPressed: () => setState(() => _cardio+=1),

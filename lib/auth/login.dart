@@ -132,9 +132,9 @@ class _LoginPageState extends State<LoginPage> {
         await storage.write(key: 'password', value: pwdInputController.text);
         final FirebaseUser currentUser = result.user;
         Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
-          Navigator.pushReplacement(context, MaterialPageRoute(
+          Navigator.push(context, MaterialPageRoute(
             builder: (context) => HomePage(
-              title: result["email"],
+              title: currentUser.email,
               uid: currentUser.uid,
             )
           ))

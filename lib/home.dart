@@ -93,12 +93,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-
-      
       appBar: AppBar(
         leading: Padding(
-          padding: EdgeInsets.only(left: 12),
+          padding: EdgeInsets.only(left: 0),
           child: IconButton(
             icon: Icon(Icons.clear),
             onPressed: () {
@@ -106,6 +103,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ),
+        title: Text(widget.title),
       ),
       body: Center(
         child: Container(
