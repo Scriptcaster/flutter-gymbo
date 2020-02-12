@@ -93,17 +93,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
+
+      
       appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Log Out"),
-            textColor: Colors.white,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 12),
+          child: IconButton(
+            icon: Icon(Icons.clear),
             onPressed: () {
               FirebaseAuth.instance.signOut().then((result) => Navigator.pushReplacementNamed(context, "/login")).catchError((err) => print(err));
             },
-          )
-        ],
+          ),
+        ),
       ),
       body: Center(
         child: Container(

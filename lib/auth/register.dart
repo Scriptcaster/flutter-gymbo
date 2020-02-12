@@ -29,8 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   String emailValidator(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value)) {
       return 'Email format is invalid';
@@ -47,119 +46,60 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Register"),
+  Widget showEmailInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+      child: new TextFormField(
+        decoration: new InputDecoration(
+        hintText: 'Email',
+        icon: new Icon(
+          Icons.mail,
+          color: Colors.grey,
+        )),
+        controller: emailInputController,
+        keyboardType: TextInputType.emailAddress,
+        validator: emailValidator,
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Form(
-          key: _registerFormKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Email*', hintText: "john.doe@gmail.com"
-                ),
-                controller: emailInputController,
-                keyboardType: TextInputType.emailAddress,
-                validator: emailValidator,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Password*', hintText: "********"
-                ),
-                controller: pwdInputController,
-                obscureText: true,
-                validator: pwdValidator,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Confirm Password*', hintText: "********"
-                ),
-                controller: confirmPwdInputController,
-                obscureText: true,
-                validator: pwdValidator,
-              ),
-              showPrimaryButton(),
-              // RaisedButton(
-              //   elevation: 2.0,
-              //   shape: new RoundedRectangleBorder(
-              //       borderRadius: new BorderRadius.circular(30.0)),
-              //   color: Colors.blue,
-              //   child: Text("Register"),
-              //   textColor: Colors.white,
-              //   onPressed: () async {
-              //     if (_registerFormKey.currentState.validate()) {
-              //       if (pwdInputController.text == confirmPwdInputController.text) {
-              //         await storage.deleteAll();
-              //         await storage.write(key: 'email', value:  emailInputController.text);
-              //         await storage.write(key: 'password', value: pwdInputController.text);
-              //         final FirebaseAuth auth = FirebaseAuth.instance;
-              //         AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
-              //         final FirebaseUser currentUser = result.user;
-              //         // FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text).then((currentUser) => 
-              //         Firestore.instance.collection("users").document(currentUser.uid).setData({
-              //           "uid": currentUser.uid,
-              //           "email": emailInputController.text,
-              //         }).then((result) => {
-              //         Navigator.pushAndRemoveUntil(
-              //           context,
-              //           MaterialPageRoute(
-              //             builder: (context) => HomePage(
-              //               title: emailInputController.text,
-              //               uid: currentUser.uid,
-              //             )
-              //           ), (_) => false),
-              //         emailInputController.clear(),
-              //         pwdInputController.clear(),
-              //         confirmPwdInputController.clear()
-              //       })
-              //       .catchError((err) => print(err));
-              //       // .catchError((err) => print(err)
-              //     } else {
-              //       showDialog(
-              //           context: context,
-              //           builder: (BuildContext context) {
-              //             return AlertDialog(
-              //               title: Text("Error"),
-              //               content: Text("The passwords do not match"),
-              //               actions: <Widget>[
-              //                 FlatButton(
-              //                   child: Text("Close"),
-              //                   onPressed: () {
-              //                     Navigator.of(context).pop();
-              //                   },
-              //                 )
-              //               ],
-              //             );
-              //           });
-              //         }
-              //       }
-              //     },
-              //   ),
-                Text("Already have an account?"),
-                FlatButton(
-                  child: Text("Login here!"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ),
-          )
-        )
-      )
     );
   }
 
+  Widget showPasswordInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+      child: new TextFormField(
+          decoration: new InputDecoration(
+          hintText: 'Password',
+          icon: new Icon(
+            Icons.lock,
+            color: Colors.grey,
+          )),
+        controller: pwdInputController,
+        obscureText: true,
+        validator: pwdValidator,
+      ),
+    );
+  }
+
+   Widget showConfirmPasswordInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+      child: new TextFormField(
+          decoration: new InputDecoration(
+          hintText: 'Confirm Password',
+          icon: new Icon(
+            Icons.lock,
+            color: Colors.grey,
+          )),
+        controller: confirmPwdInputController,
+        obscureText: true,
+        validator: pwdValidator,
+      ),
+    );
+  }
 
   Widget showPrimaryButton() {
     return new Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 15.0),
+      padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 30.0),
       child: SizedBox(
         height: 40.0,
         child: new RaisedButton(
@@ -224,5 +164,41 @@ class _RegisterPageState extends State<RegisterPage> {
       )
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Register"),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: new Form(
+              key: _registerFormKey,
+              child: new ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  showEmailInput(),
+                  showPasswordInput(),
+                  showConfirmPasswordInput(),
+                  showPrimaryButton(),
+                  Text("Already have an account?", textAlign: TextAlign.center,),
+                  FlatButton(
+                    child: Text("Login here!"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              ),
+            )
+          ),
+        ],
+      ),
+    );
+  }
+
 
 }

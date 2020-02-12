@@ -21,15 +21,20 @@ class _LoginPageState extends State<LoginPage> {
   final _localAuthentication = LocalAuthentication();
   final storage = new FlutterSecureStorage();
 
-  // bool _isLoginForm = true;
-  bool _isLoading = false;
+  bool _isLoading;
   String _errorMessage;
 
   @override
   initState() {
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
+    _isLoading = false;
     super.initState();
+  }
+
+  void resetForm() {
+    _loginFormKey.currentState.reset();
+    _errorMessage = "";
   }
 
   // Check if form is valid before perform login or signup
@@ -41,13 +46,6 @@ class _LoginPageState extends State<LoginPage> {
     }
     return false;
   }
-
-  // void toggleFormMode() {
-  //   // resetForm();
-  //   setState(() {
-  //     _isLoginForm = !_isLoginForm;
-  //   });
-  // }
 
   // To check if any type of biometric authentication hardware is available.
   Future<bool> _isBiometricAvailable() async {
@@ -92,6 +90,21 @@ class _LoginPageState extends State<LoginPage> {
           )
         ))
       ).catchError((err) => print(err));
+    } else {
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text("The passwords do not match"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      });
     }
   }
 
@@ -105,7 +118,71 @@ class _LoginPageState extends State<LoginPage> {
     if (value.length < 8) { return 'Password must be longer than 8 characters'; } else { return null; }
   }
 
-  Widget showCircularProgress() {
+  void validateAndSubmit() async {
+    setState(() {
+      _errorMessage = "";
+      _isLoading = true;
+    });
+    if (_loginFormKey.currentState.validate()) {
+      try {
+        final FirebaseAuth auth = FirebaseAuth.instance;
+        AuthResult result = await auth.signInWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
+        await storage.deleteAll();
+        await storage.write(key: 'email', value:  emailInputController.text);
+        await storage.write(key: 'password', value: pwdInputController.text);
+        final FirebaseUser currentUser = result.user;
+        Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
+          Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => HomePage(
+              title: result["email"],
+              uid: currentUser.uid,
+            )
+          ))
+        ).catchError((err) => print(err));
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (e) {
+        print('Error: $e');
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.message;
+          _loginFormKey.currentState.reset();
+        });
+        showDialog( context: context, builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error", textAlign: TextAlign.center,),
+            content: Text(_errorMessage, textAlign: TextAlign.center,),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Close", textAlign: TextAlign.center,),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Login"),
+      ),
+      body: Stack(
+        children: <Widget>[
+          _showForm(),
+          _showCircularProgress(),
+        ],
+      ),
+    );
+  }
+
+  Widget _showCircularProgress() {
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
     }
@@ -115,71 +192,24 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void validateAndSubmit() async {
-    setState(() {
-      _errorMessage = "";
-      _isLoading = true;
-    });
-    if (_loginFormKey.currentState.validate()) {
-      try {
-        // if (_isLoginForm) {
-          final FirebaseAuth auth = FirebaseAuth.instance;
-          AuthResult result = await auth.signInWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
-          await storage.deleteAll();
-          await storage.write(key: 'email', value:  emailInputController.text);
-          await storage.write(key: 'password', value: pwdInputController.text);
-          final FirebaseUser currentUser = result.user;
-          Firestore.instance.collection("users").document(currentUser.uid).get().then((DocumentSnapshot result) =>
-            Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => HomePage(
-                title: result["email"],
-                uid: currentUser.uid,
-              )
-            ))
-          ).catchError((err) => print(err));
-
-        // } else {
-
-        //   await storage.deleteAll();
-        //   await storage.write(key: 'email', value:  emailInputController.text);
-        //   await storage.write(key: 'password', value: pwdInputController.text);
-        //   final FirebaseAuth auth = FirebaseAuth.instance;
-        //   AuthResult result = await auth.createUserWithEmailAndPassword(email: emailInputController.text, password: pwdInputController.text);
-        //   final FirebaseUser currentUser = result.user;
-        //   Firestore.instance.collection("users").document(currentUser.uid).setData({
-        //     "uid": currentUser.uid,
-        //     "email": emailInputController.text,
-        //   }).then((result) => {
-        //   Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => HomePage(
-        //         title: emailInputController.text,
-        //         uid: currentUser.uid,
-        //       )
-        //     ), (_) => false),
-        //   emailInputController.clear(),
-        //   pwdInputController.clear(),
-        // })
-        // .catchError((err) => print(err));
-
-        // }
-        setState(() {
-          _isLoading = false;
-        });
-
-        // if (userId.length > 0 && userId != null && _isLoginForm) {
-        //   widget.loginCallback();
-        // }
-      } catch (e) {
-        print('Error: $e');
-        setState(() {
-          _isLoading = false;
-          _errorMessage = e.message;
-          _loginFormKey.currentState.reset();
-        });
-      }
-    }
+  Widget _showForm() {
+    return new Container(
+      padding: EdgeInsets.all(16.0),
+      child: new Form(
+        key: _loginFormKey,
+        child: new ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            showLogo(),
+            showEmailInput(),
+            showPasswordInput(),
+            showPrimaryButton(),
+            showSecondaryButton(),
+            showFingerprintButton(),
+          ],
+        ),
+      )
+    );
   }
 
   Widget showLogo() {
@@ -294,52 +324,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget showErrorMessage() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      return new Text(
-        _errorMessage,
-        style: TextStyle(
-          fontSize: 13.0,
-          color: Colors.red,
-          height: 1.0,
-          fontWeight: FontWeight.w300),
-      );
-    } else {
-      return new Container(
-        height: 0.0,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login Screen"),
-      ),
-      body: Stack(
-        children: <Widget>[
-         Container(
-            padding: EdgeInsets.all(16.0),
-            child: new Form(
-              key: _loginFormKey,
-              child: new ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  showCircularProgress(),
-                  showLogo(),
-                  showEmailInput(),
-                  showPasswordInput(),
-                  showPrimaryButton(),
-                  showSecondaryButton(),
-                  showFingerprintButton(),
-                  // showErrorMessage(),
-                ],
-              ),
-            )
-          ),
-        ],
-      ),
-    );
-  }
 }
