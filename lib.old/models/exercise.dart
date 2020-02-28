@@ -19,7 +19,7 @@ class Exercise {
   int currentVolume;
   List<Round> round;
   int dayId;
-  String weekId; 
+  int weekId; 
 
   static final columns = [
     'id', 
@@ -43,7 +43,7 @@ class Exercise {
     'weekId': weekId
   };
 
-  factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
+   factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
     id: json["id"],
     name: json["name"],
     bestVolume: json["bestVolume"],

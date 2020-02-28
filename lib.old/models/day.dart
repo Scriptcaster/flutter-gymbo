@@ -13,7 +13,7 @@ class Day {
   String dayName;
   String target;
   // List<Exercise> exercise;
-  String weekId;
+  int weekId;
 
   static final columns = ['id', 'dayName', 'target', 'exercise', 'weekId'];
 
