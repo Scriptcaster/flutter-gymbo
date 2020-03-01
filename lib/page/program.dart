@@ -207,7 +207,6 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                         },
                         child: ListTile(
                           onTap: () {
-                            print('OnTap   ' + week.id);
                             Navigator.push(context,
                               MaterialPageRoute(
                                 builder: (context) => WeekLocal(id: week.id, name: week.name, programId: _program.id ),
@@ -345,8 +344,7 @@ class SimpleAlertDialog extends StatelessWidget {
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
-                    Text(
-                      'This is a one way street! Deleting this will remove all the program assigned in this card.'),
+                    Text('This is a one way street! Deleting this will remove all the program assigned in this card.'),
                   ],
                 ),
               ),

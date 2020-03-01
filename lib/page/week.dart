@@ -66,7 +66,6 @@ class _WeekLocalState extends State<WeekLocal> {
         builder: (BuildContext context, AsyncSnapshot<List<Day>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(itemCount: snapshot.data.length, itemBuilder: (BuildContext context, int index) {
-              
               Day item = snapshot.data[index];
               return Dismissible(
                 key: UniqueKey(),

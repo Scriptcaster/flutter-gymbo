@@ -99,14 +99,18 @@ class WeekListModel extends Model {
   }
 
   void addWeek(previousWeekId, programID, Week week) {
-    print('addWeek' + week.toJson().toString());
+    print('Add Week with ID ' + week.toJson().toString());
+    print(_weeks[0].toJson());
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
     if (weeks.length > 0) {
       Week previousWeek;
       for (int i = 0; i < 1; i++) {previousWeek = weeks[i];}
       weeks.sort((a, b) => a.seq.compareTo(b.seq));
-      _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1));
+      // _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1));
+
+       _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1, id: week.id));      
+      
       _db.insertPreviousWeek(previousWeek.id, previousWeek.seq + 1, week );
     } else  {
       _weeks.add(week);

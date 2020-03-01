@@ -154,11 +154,9 @@ class DBProvider {
   Future<List<Day>> getAllDays(String weekId) async {
     final db = await database;
     var res = await db.query("Day", where: 'weekId = ?', whereArgs: [weekId]);
-    print(await db.query("Day"));
     List<Day> list = res.isNotEmpty ? res.map((c) => Day.fromMap(c)).toList() : [];
     return list;
   }
-
 
   Future<int> updateWeek(Week week) async {
     final db = await database;
@@ -218,7 +216,6 @@ class DBProvider {
   }
 
   Future<int> insertPreviousWeek(previousWeekId, previousSeq, Week week) async {
-    // print('ID PREVIOUS WEEK INSERT   ' + week.id);
     final _db = await database;
     var _newDayId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
     var _newExerciseId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
@@ -226,8 +223,6 @@ class DBProvider {
     var _oldDays = await _db.query("Day", where: "weekId = ?", whereArgs: [previousWeekId]);
     var _oldExercises = await _db.query("Exercise", where: "weekId = ?", whereArgs: [previousWeekId]);
     var _oldRounds = await _db.query("Round", where: "weekId = ?", whereArgs: [previousWeekId]);
-
-    // print('_oldDays   ' + _oldDays.asMap().toString());
 
     int incrementDay = _newDayId.first['id'];
     int incrementExercise = _newExerciseId.first['id'];
