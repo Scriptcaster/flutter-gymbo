@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../scopedmodel/todo_list_model.dart';
+import '../scopedmodel/week_list_model.dart';
 import '../models/program_model.dart';
 import '../component/iconpicker/icon_picker_builder.dart';
 import '../component/colorpicker/color_picker_builder.dart';
@@ -45,8 +45,8 @@ class _EditCardScreenState extends State<EditTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<TodoListModel>(
-      builder: (BuildContext context, Widget child, TodoListModel model) {
+    return ScopedModelDescendant<WeekListModel>(
+      builder: (BuildContext context, Widget child, WeekListModel model) {
         return Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.white,

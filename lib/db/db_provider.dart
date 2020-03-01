@@ -29,15 +29,15 @@ class DBProvider {
   ];
 
   var weeks = [
-    Week("Week 1", seq: 1, parent: '1'),
-    Week("Week 2", seq: 2, parent: '1'),
-    Week("Week 3", seq: 3, parent: '1', isCompleted: 1),
-    Week("Week 1", seq: 4, parent: '2'),
-    Week("Week 2", seq: 5, parent: '2'),
-    Week("Week 3", seq: 6, parent: '2'),
+    Week("Week 1", seq: 1, program: '1'),
+    Week("Week 2", seq: 2, program: '1'),
+    Week("Week 3", seq: 3, program: '1', isCompleted: 1),
+    Week("Week 1", seq: 4, program: '2'),
+    Week("Week 2", seq: 5, program: '2'),
+    Week("Week 3", seq: 6, program: '2'),
   ];
 
-  var tasks = [
+  var programs = [
     Program('5 Days Split', id: '1',  color: Colors.purple.value, codePoint: Icons.fitness_center.codePoint),
     Program('Pull & Push', id: '2', color: Colors.pink.value, codePoint: Icons.fitness_center.codePoint),
   ];
@@ -51,7 +51,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy2.db");
+    return p.join(documentsDirectory, "db_benchy16.db");
   }
 
   Future<bool> dbExists() async {
@@ -73,7 +73,7 @@ class DBProvider {
       await db.execute("CREATE TABLE Week ("
         "id TEXT PRIMARY KEY,"
         "name TEXT,"
-        "parent TEXT,"
+        "program TEXT,"
         "seq INTEGER,"
         "completed INTEGER NOT NULL DEFAULT 0"
         ")");
@@ -82,6 +82,7 @@ class DBProvider {
         dayName TEXT,
         target TEXT,
         weekId TEXT,
+        programId TEXT,
         FOREIGN KEY (weekId) REFERENCES Week (id) ON DELETE NO ACTION ON UPDATE NO ACTION
       )""");
       await db.execute("""CREATE TABLE Exercise (
@@ -92,6 +93,7 @@ class DBProvider {
         currentVolume INTEGER,
         dayId INTEGER,
         weekId TEXT,
+        programId TEXT,
         FOREIGN KEY (dayId) REFERENCES Day (id) ON DELETE NO ACTION ON UPDATE NO ACTION
       )""");
        await db.execute("""CREATE TABLE  Round (
@@ -102,15 +104,16 @@ class DBProvider {
         rounds TEXT,
         exerciseId INTEGER,
         weekId TEXT,
+        programId TEXT,
         FOREIGN KEY (exerciseId) REFERENCES Exercise (id) ON DELETE NO ACTION ON UPDATE NO ACTION
       )""");
 
     });
   }
 
-  insertBulkTask(List<Program> tasks) async {
+  insertBulkTask(List<Program> programs) async {
     final db = await database;
-    tasks.forEach((it) async {
+    programs.forEach((it) async {
       var res = await db.insert("Program", it.toJson());
       print("Program ${it.id} = $res");
     });
@@ -120,10 +123,9 @@ class DBProvider {
     final db = await database;
     weeks.forEach((week) async {
       var res = await db.insert("Week", week.toJson());
-      print(res);
       print("Week ${week.id} = $res");
         days.forEach((day) async {
-          await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id).toMap());
+          await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
       });
     });
   }
@@ -137,41 +139,37 @@ class DBProvider {
   //   });
   // }
 
-  Future<List<Program>> getAllTask() async {
+  Future<List<Program>> getAllPrograms() async {
     final db = await database;
     var result = await db.query('Program');
     return result.map((it) => Program.fromJson(it)).toList();
   }
 
-  Future<List<Week>> getAllTodo() async {
+  Future<List<Week>> getAllWeeks() async {
     final db = await database;
     var result = await db.query('Week ORDER BY seq DESC');
-    // var result = await db.rawQuery("SELECT * FROM Exercise WHERE id < ? AND name = ? ORDER BY id DESC LIMIT 1", [id, name]);
-
     return result.map((it) => Week.fromJson(it)).toList();
   }
 
-  Future<int> updateTodo(Week week) async {
+  Future<int> updateWeek(Week week) async {
     final db = await database;
-    return db
-        .update('Week', week.toJson(), where: 'id = ?', whereArgs: [week.id]);
+    return db.update('Week', week.toJson(), where: 'id = ?', whereArgs: [week.id]);
   }
 
-  Future<int> removeTodo(Week week) async {
+  Future<int> removeWeek(Week week) async {
     final db = await database;
     return db.delete('Week', where: 'id = ?', whereArgs: [week.id]);
   }
 
   Future<int> insertWeek(Week week) async {
     final db = await database;
-    var newSeq = await db.rawQuery("SELECT MAX(seq)+1 as seq FROM Week");
     days.forEach((day) async {
-      await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id).toMap());
+      await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
     });
-    return await db.rawInsert("INSERT Into Week (id, parent, seq, name, completed)" " VALUES (?,?,?,?,?)", [week.id, week.parent, newSeq.first['seq'], week.name, week.isCompleted ]);
+    return await db.rawInsert("INSERT Into Week (id, program, seq, name, completed)" " VALUES (?,?,?,?,?)", [week.id, week.program, week.seq, week.name, week.isCompleted ]);
   }
 
-  Future<int> insertTask(Program program) async {
+  Future<int> insertProgram(Program program) async {
     final db = await database;
     return db.insert('Program', program.toJson());
   }
@@ -179,7 +177,10 @@ class DBProvider {
   Future<void> removeProgram(Program program) async {
     final db = await database;
     return db.transaction<void>((txn) async {
-      await txn.delete('Week', where: 'parent = ?', whereArgs: [program.id]);
+      await txn.delete('Round', where: 'programId = ?', whereArgs: [program.id]);
+      await txn.delete('Exercise', where: 'programId = ?', whereArgs: [program.id]);
+      await txn.delete('Day', where: 'programId = ?', whereArgs: [program.id]);
+      await txn.delete('Week', where: 'program = ?', whereArgs: [program.id]);
       await txn.delete('Program', where: 'id = ?', whereArgs: [program.id]);
     });
   }
@@ -200,80 +201,77 @@ class DBProvider {
     }
   }
 
-
-
-
-  // newWeek(Week week) async {
-  //   final _db = await database;
-    
-  //   var _oldWeekId = await _db.rawQuery("SELECT MAX(id) as id FROM Week");
-  //   var _newWeekId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Week");
-  //   var _newDayId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
-  //   var _newExerciseId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
+  Future<int> insertPreviousWeek(previousWeekId, previousSeq, Week week) async {
+    final _db = await database;
+    var _newDayId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
+    var _newExerciseId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
   
-  //   var _oldDays = await _db.query("Day", where: "weekId = ?", whereArgs: [_oldWeekId.last['id']]);
-  //   var _oldExercises = await _db.query("Exercise", where: "weekId = ?", whereArgs: [_oldWeekId.last['id']]);
-  //   var _oldRounds = await _db.query("Round", where: "weekId = ?", whereArgs: [_oldWeekId.last['id']]);
+    var _oldDays = await _db.query("Day", where: "weekId = ?", whereArgs: [previousWeekId]);
+    var _oldExercises = await _db.query("Exercise", where: "weekId = ?", whereArgs: [previousWeekId]);
+    var _oldRounds = await _db.query("Round", where: "weekId = ?", whereArgs: [previousWeekId]);
 
-  //   int incrementDay = _newDayId.first['id'];
-  //   int incrementExercise = _newExerciseId.first['id'];
+    int incrementDay = _newDayId.first['id'];
+    int incrementExercise = _newExerciseId.first['id'];
 
-  //   _db.rawInsert("INSERT Into Week (id, name)" " VALUES (?,?)", [_newWeekId.first["id"], week.name]);
-  //   if (_oldDays.isNotEmpty) {
-  //     _oldDays.asMap().forEach((index, element) {
-  //       _db.insert("Day", Day(dayName: element['dayName'], target: element['target'], weekId: _newWeekId.last['id']).toMap());
-  //       if (_oldExercises.isNotEmpty) {
-  //         _oldExercises.asMap().forEach((index2, element2) {
-  //           if (element['id'] == element2['dayId']) {
-  //             _db.insert("Exercise", {
-  //               'name': element2['name'],
-  //               'bestVolume': element2['bestVolume'],
-  //               'previousVolume': element2['previousVolume'],
-  //               'currentVolume': element2['currentVolume'],
-  //               'dayId': incrementDay,
-  //               'weekId': _newWeekId.last['id'] 
-  //             });
-  //             if (_oldRounds.isNotEmpty) {
-  //               _oldRounds.asMap().forEach((index3, element3) {
-  //                 if (element2['id'] == element3['exerciseId']) {
-  //                   _db.insert("Round", {
-  //                     'weight': element3['weight'], 
-  //                     'round': element3['round'], 
-  //                     'rep': element3['rep'],
-  //                     'exerciseId': incrementExercise, 
-  //                     'weekId': _newWeekId.last['id']
-  //                   });
-  //                 }
-  //               });
-  //             }
-  //             incrementExercise++;
-  //           }
-  //         });
-  //       }
-  //       incrementDay++;
-  //     });
-  //   }
-  // }
+    if (_oldDays.isNotEmpty) {
+      _oldDays.asMap().forEach((index, element) {
+        _db.insert("Day", Day(dayName: element['dayName'], target: element['target'], weekId:week.id, programId: element['programId']).toMap());
+        if (_oldExercises.isNotEmpty) {
+          _oldExercises.asMap().forEach((index2, element2) {
+            if (element['id'] == element2['dayId']) {
+              _db.insert("Exercise", {
+                'name': element2['name'],
+                'bestVolume': element2['bestVolume'],
+                'previousVolume': element2['previousVolume'],
+                'currentVolume': element2['currentVolume'],
+                'dayId': incrementDay,
+                'weekId': week.id,
+                'programId': element['programId']
+              });
+              if (_oldRounds.isNotEmpty) {
+                _oldRounds.asMap().forEach((index3, element3) {
+                  if (element2['id'] == element3['exerciseId']) {     
+                    _db.insert("Round", {
+                      'weight': element3['weight'], 
+                      'round': element3['round'], 
+                      'rep': element3['rep'],
+                      'exerciseId': incrementExercise, 
+                      'weekId':  week.id,
+                      'programId': element['programId']
+                    });
+                  }
+                });
+              }
+              incrementExercise++;
+            }
+          });
+        }
+        incrementDay++;
+      });
+    }
+    return await _db.rawInsert("INSERT Into Week (id, program, seq, name, completed)" " VALUES (?,?,?,?,?)", [week.id, week.program, previousSeq, week.name, week.isCompleted ]);
+  }
+
   newDay(Day day) async {
     final _db = await database;
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
     print(day.toMap());
-    return await _db.rawInsert("INSERT Into Day (id, dayName, target, weekId)" " VALUES (?,?,?,?)", [_table.first["id"], day.dayName, day.target, day.weekId ]);
+    return await _db.rawInsert("INSERT Into Day (id, dayName, target, weekId, programId)" " VALUES (?,?,?,?,?)", [_table.first["id"], day.dayName, day.target, day.weekId, day.programId ]);
   }
   newExercise(Exercise newExercise) async {
     final _db = await database;
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
     int _id = _table.first["id"];
-    return await _db.rawInsert("INSERT Into Exercise (id, name, bestVolume, previousVolume, currentVolume, dayId, weekId)" " VALUES (?,?,?,?,?,?,?)", [_id, newExercise.name, newExercise.bestVolume, newExercise.previousVolume, newExercise.currentVolume, newExercise.dayId, newExercise.weekId]);
+    return await _db.rawInsert("INSERT Into Exercise (id, name, bestVolume, previousVolume, currentVolume, dayId, weekId, programId)" " VALUES (?,?,?,?,?,?,?,?)", [_id, newExercise.name, newExercise.bestVolume, newExercise.previousVolume, newExercise.currentVolume, newExercise.dayId, newExercise.weekId, newExercise.programId]);
   }
   newRound(Round round) async {
     final _db = await database;
     var _lastRow = await _db.query("Round", where: "exerciseId = ?", whereArgs: [round.exerciseId]);
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
     if(_lastRow.isNotEmpty) {
-      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, weekId)" " VALUES (?,?,?,?,?,?)", [_table.first["id"], _lastRow.last['weight'],  _lastRow.last['round'],  _lastRow.last['rep'], round.exerciseId, round.weekId]);
+      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, weekId, programId)" " VALUES (?,?,?,?,?,?,?)", [_table.first["id"], _lastRow.last['weight'],  _lastRow.last['round'],  _lastRow.last['rep'], round.exerciseId, round.weekId, round.programId]);
     } else {
-      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, weekId)" " VALUES (?,?,?,?,?,?)", [_table.first["id"], round.weight, round.round, round.rep, round.exerciseId, round.weekId]);
+      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, weekId, programId)" " VALUES (?,?,?,?,?,?,?)", [_table.first["id"], round.weight, round.round, round.rep, round.exerciseId, round.weekId, round.programId]);
     }
   }
 
@@ -328,6 +326,7 @@ class DBProvider {
   // }
 
   Future<List<Day>> getAllDays(String weekId) async {
+    print('getAllDays');
     final db = await database;
     var res = await db.query("Day", where: "weekId = ?", whereArgs: [weekId]);
     List<Day> list = res.isNotEmpty ? res.map((c) => Day.fromMap(c)).toList() : [];

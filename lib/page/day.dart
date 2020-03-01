@@ -5,11 +5,12 @@ import '../models/day.dart';
 import '../models/exercise.dart';
 
 class DayLocal extends StatefulWidget {
-  DayLocal({this.id, this.dayName, this.target, this.weekId});
+  DayLocal({this.id, this.dayName, this.target, this.weekId, this.programId});
   final int id;
   final String dayName;
   final String target;
   final String weekId;
+  final String programId;
   @override
   _StartDayLocalState createState() => _StartDayLocalState();
 }
@@ -36,7 +37,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () async {
-                await DBProvider.db.newExercise( Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId )); setState(() {});
+                await DBProvider.db.newExercise( Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); setState(() {});
               },   
             )
           ],
@@ -52,7 +53,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
                 onSubmitted: (value) async { await DBProvider.db.updateDayTarget(Day(id: widget.id, target: value)); }
               ),
             ),
-            RenderExercises(widget.weekId, widget.id),
+            RenderExercises(widget.programId, widget.weekId, widget.id),
           ]
         )
       )

@@ -9,7 +9,8 @@ class Exercise {
     this.currentVolume,
     this.round,
     this.dayId,
-    this.weekId
+    this.weekId,
+    this.programId
   });
 
   int id;
@@ -20,6 +21,7 @@ class Exercise {
   List<Round> round;
   int dayId;
   String weekId; 
+  String programId; 
 
   static final columns = [
     'id', 
@@ -29,7 +31,8 @@ class Exercise {
     'currentVolume', 
     'round', 
     'dayId',
-    'weekId'
+    'weekId',
+    'programId'
   ];
 
   Map<String, dynamic> toMap() => {
@@ -40,7 +43,8 @@ class Exercise {
     'currentVolume': currentVolume,
     'round': round,
     'dayId': dayId,
-    'weekId': weekId
+    'weekId': weekId,
+    'programId': programId
   };
 
   factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
@@ -51,6 +55,7 @@ class Exercise {
     currentVolume: json["currentVolume"],
     round: json["round"],
     dayId: json["dayId"],
-    weekId: json["weekId"]
+    weekId: json["weekId"],
+    programId: json["programId"]
   );
 }

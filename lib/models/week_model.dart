@@ -7,25 +7,25 @@ part 'week_model.g.dart';
 
 @JsonSerializable()
 class Week {
-  final String id, parent;
+  final String id, program;
   final String name;
   @JsonKey(name: 'completed')
   final int isCompleted, seq;
 
   Week(this.name, {
-    @required this.parent,
+    @required this.program,
     this.seq = 0,
     this.isCompleted = 0,
     String id
   }): this.id = id ?? Uuid().generateV4();
 
-  Week copy({String name, int seq, int isCompleted, int id, int parent}) {
+  Week copy({String name, int seq, int isCompleted, int id, int program}) {
     return Week(
       name ?? this.name,
       seq: seq ?? this.seq,
       isCompleted: isCompleted ?? this.isCompleted,
       id: id ?? this.id,
-      parent: parent ?? this.parent,
+      program: program ?? this.program,
     );
   }
 

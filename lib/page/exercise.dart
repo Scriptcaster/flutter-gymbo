@@ -5,9 +5,10 @@ import '../models/exercise.dart';
 import '../models/round.dart';
 
 class RenderExercises extends StatefulWidget {
+  final Object programId;
   final Object weekId;
   final Object id;
-  RenderExercises(this.weekId, this.id);
+  RenderExercises(this.programId, this.weekId, this.id);
   @override
   _RenderExercisesState createState() => _RenderExercisesState();
 }
@@ -37,7 +38,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     for (int i = 0; i < exercise.round.length - 1; i++) {   
       exercise.currentVolume += exercise.round[i].weight*exercise.round[i].round*exercise.round[i].rep;
     }
-    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId )); 
+    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
     setState(() {});                     
   }
    _updateCurrentVolumeOnAdd(exercise) async {
@@ -46,7 +47,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     for (int i = 0; i < exercise.round.length; i++) {   
       exercise.currentVolume += exercise.round[i].weight*exercise.round[i].round*exercise.round[i].rep;
     }
-    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId )); 
+    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
     setState(() {});                     
   }
   @override
@@ -167,7 +168,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               padding: new EdgeInsets.all(0.0),
                               icon: new Icon(Icons.add_circle, size: 24.0),
                               onPressed: () async {
-                                await DBProvider.db.newRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, weekId: widget.weekId )); 
+                                await DBProvider.db.newRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, weekId: widget.weekId, programId: widget.programId )); 
                                 setState(() {});
                                 _updateCurrentVolumeOnAdd(exercise);
                                 refreshVolumes(exercise.id, exercise.name);

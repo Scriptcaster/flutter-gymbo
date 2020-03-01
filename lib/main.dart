@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'scopedmodel/todo_list_model.dart';
+import 'scopedmodel/week_list_model.dart';
 import 'gradient_background.dart';
 import 'task_progress_indicator.dart';
 import 'page/program_add.dart';
@@ -11,7 +11,7 @@ import 'route/scale_route.dart';
 import 'utils/color_utils.dart';
 import 'utils/datetime_utils.dart';
 import 'page/program.dart';
-import 'component/todo_badge.dart';
+import 'component/week_badge.dart';
 import 'page/privacy_policy.dart';
 import 'models/choice_card.dart';
 
@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(title: ''),
     );
 
-    return ScopedModel<TodoListModel>(
-      model: TodoListModel(),
+    return ScopedModel<WeekListModel>(
+      model: WeekListModel(),
       child: app,
     );
   }
@@ -54,7 +54,7 @@ class MyHomePage extends StatefulWidget {
       codePointId: 'code_point_id_${program.id}',
       progressId: 'progress_id_${program.id}',
       titleId: 'title_id_${program.id}',
-      remainingTaskId: 'remaining_task_id_${program.id}',
+      remainingTaskId: 'remaining_program_id_${program.id}',
     );
   }
 
@@ -88,14 +88,14 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<TodoListModel>(
-        builder: (BuildContext context, Widget child, TodoListModel model) {
+    return ScopedModelDescendant<WeekListModel>(
+        builder: (BuildContext context, Widget child, WeekListModel model) {
       var _isLoading = model.isLoading;
-      var _tasks = model.tasks;
-      var _todos = model.todos;
-      var backgroundColor = _tasks.isEmpty || _tasks.length == _currentPageIndex
+      var _programs = model.programs;
+      var _weeks = model.weeks;
+      var backgroundColor = _programs.isEmpty || _programs.length == _currentPageIndex
           ? Colors.blueGrey
-          : ColorUtils.getColorFrom(id: _tasks[_currentPageIndex].color);
+          : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
       if (!_isLoading) {
         // move the animation value towards upperbound only when loading is complete
         _controller.forward();
@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage>
                             ),
                             Container(height: 16.0),
                             Text(
-                              'You have ${_todos.where((week) => week.isCompleted == 0).length} tasks to complete',
+                              'You have ${_weeks.where((week) => week.isCompleted == 0).length} programs to complete',
                               style: Theme.of(context).textTheme.body1.copyWith(
                                   color: Colors.white.withOpacity(0.7)),
                             ),
@@ -200,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage>
                           child: PageView.builder(
                             controller: _pageController,
                             itemBuilder: (BuildContext context, int index) {
-                              if (index == _tasks.length) {
+                              if (index == _programs.length) {
                                 return AddPageCard(
                                   color: Colors.blueGrey,
                                 );
@@ -208,16 +208,16 @@ class _MyHomePageState extends State<MyHomePage>
                                 return TaskCard(
                                   backdropKey: _backdropKey,
                                   color: ColorUtils.getColorFrom(
-                                      id: _tasks[index].color),
+                                      id: _programs[index].color),
                                   getHeroIds: widget._generateHeroIds,
                                   getTaskCompletionPercent:
                                       model.getTaskCompletionPercent,
                                   getTotalTodos: model.getTotalTodosFrom,
-                                  program: _tasks[index],
+                                  program: _programs[index],
                                 );
                               }
                             },
-                            itemCount: _tasks.length + 1,
+                            itemCount: _programs.length + 1,
                           ),
                         ),
                       ),
@@ -369,7 +369,7 @@ class TaskCard extends StatelessWidget {
                 child: Hero(
                   tag: heroIds.remainingTaskId,
                   child: Text(
-                    "${getTotalTodos(program)} Program",
+                    "${getTotalTodos(program)} Weeks",
                     style: Theme.of(context)
                         .textTheme
                         .body1

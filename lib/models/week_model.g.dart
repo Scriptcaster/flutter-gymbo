@@ -8,7 +8,7 @@ part of 'week_model.dart';
 
 Week _$TodoFromJson(Map<String, dynamic> json) {
   return Week(json['name'] as String,
-    parent: json['parent'] as String,
+    program: json['program'] as String,
     seq: json['seq'] as int,
     isCompleted: json['completed'] as int,
     id: json['id'] as String);
@@ -16,7 +16,7 @@ Week _$TodoFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$TodoToJson(Week instance) => <String, dynamic>{
   'id': instance.id,
-  'parent': instance.parent,
+  'program': instance.program,
   'seq': instance.seq,
   'name': instance.name,
   'completed': instance.isCompleted

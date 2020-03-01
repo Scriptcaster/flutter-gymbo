@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../scopedmodel/todo_list_model.dart';
+import '../scopedmodel/week_list_model.dart';
 import '../task_progress_indicator.dart';
-import '../component/todo_badge.dart';
+import '../component/week_badge.dart';
 import '../models/hero_id_model.dart';
 import '../models/program_model.dart';
 import '../utils/color_utils.dart';
@@ -32,7 +32,8 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<Offset> _animation;
-  TextEditingController _weekNameController = TextEditingController(text: 'Week');
+  TextEditingController _weekNameController = TextEditingController();
+  var previousWeekId;
   @override
   void initState() {
     super.initState();
@@ -73,21 +74,20 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     _controller.forward();
-    return ScopedModelDescendant<TodoListModel>(
-      builder: (BuildContext context, Widget child, TodoListModel model) {
-        Program _task;
+    return ScopedModelDescendant<WeekListModel>(
+      builder: (BuildContext context, Widget child, WeekListModel model) {
+        Program _program;
         try {
-         _task = model.tasks.firstWhere((it) => it.id == widget.taskId);
+         _program = model.programs.firstWhere((week) => week.id == widget.taskId);
         } catch (e) {
           return Container(
             color: Colors.white,
           );
         }
-        var _todos = model.todos.where((it) => it.parent == widget.taskId).toList();
+        var _weeks = model.weeks.where((week) => week.program == widget.taskId).toList();
         var _hero = widget.heroIds;
-        var _color = ColorUtils.getColorFrom(id: _task.color);
-        var _icon = IconData(_task.codePoint, fontFamily: 'MaterialIcons');
-
+        var _color = ColorUtils.getColorFrom(id: _program.color);
+        var _icon = IconData(_program.codePoint, fontFamily: 'MaterialIcons');
         return Theme(
           data: ThemeData(primarySwatch: _color),
           child: Scaffold(
@@ -106,8 +106,8 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditTaskScreen(
-                          taskId: _task.id,
-                          taskName: _task.name,
+                          taskId: _program.id,
+                          taskName: _program.name,
                           icon: _icon,
                           color: _color,
                         ),
@@ -117,7 +117,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                 ),
                 SimpleAlertDialog(
                   color: _color,
-                  onActionPressed: () => model.removeProgram(_task),
+                  onActionPressed: () => model.removeProgram(_program),
                 ),
               ],
             ),
@@ -133,7 +133,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                     children: [
                       TodoBadge(
                         color: _color,
-                        codePoint: _task.codePoint,
+                        codePoint: _program.codePoint,
                         id: _hero.codePointId,
                       ),
                       Spacer(
@@ -144,7 +144,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                         child: Hero(
                           tag: _hero.remainingTaskId,
                           child: Text(
-                            "${model.getTotalTodosFrom(_task)} Program",
+                            "${model.getTotalTodosFrom(_program)} Weeks",
                             style: Theme.of(context)
                               .textTheme
                               .body1
@@ -155,11 +155,11 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                       Container(
                         child: Hero(
                           tag: 'title_hero_unused',//_hero.titleId,
-                          child: Text(_task.name,
+                          child: Text(_program.name,
                               style: Theme.of(context)
-                                  .textTheme
-                                  .title
-                                  .copyWith(color: Colors.black54)),
+                                .textTheme
+                                .title
+                                .copyWith(color: Colors.black54)),
                         ),
                       ),
                       Spacer(),
@@ -167,7 +167,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                         tag: _hero.progressId,
                         child: TaskProgressIndicator(
                           color: _color,
-                          progress: model.getTaskCompletionPercent(_task),
+                          progress: model.getTaskCompletionPercent(_program),
                         ),
                       )
                     ],
@@ -178,9 +178,10 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                     padding: EdgeInsets.only(top: 16.0),
                     child: ListView.builder(
                       itemBuilder: (BuildContext context, int index) {
-                        _todos.sort((a, b) => b.seq.compareTo(a.seq));
-                        if (index == _todos.length) { return SizedBox(height: 56); }
-                        var week = _todos[index];
+                        _weeks.sort((a, b) => b.seq.compareTo(a.seq));
+                        if (index == _weeks.length) { return SizedBox(height: 56); }
+                        var week = _weeks[index];
+                        previousWeekId = week.id;
                         return Dismissible(
                           key: UniqueKey(),
                           background: Container(color: Colors.red),
@@ -195,7 +196,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                                   FlatButton(
                                     child: const Text("DELETE"),
                                     onPressed: () {
-                                      model.removeTodo(week);
+                                      model.removeWeek(week);
                                       Navigator.of(context).pop(true);
                                     }
                                   ),
@@ -212,7 +213,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                           onTap: () async {
                             Navigator.push(context,
                               MaterialPageRoute(
-                                builder: (context) => WeekLocal(id: week.id, name: week.name),
+                                builder: (context) => WeekLocal(id: week.id, name: week.name, programId: _program.id ),
                               ),
                             );
                           },
@@ -228,6 +229,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                           //   icon: Icon(Icons.delete_outline),
                           //   onPressed: () => model.removeTodo(week),
                           // ),
+                          trailing: Text(week.seq.toString()),
                             title: Text(
                               week.name,
                               style: TextStyle(
@@ -244,16 +246,17 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                           ),
                         );
                       },
-                      itemCount: _todos.length + 1,
+                      itemCount: _weeks.length + 1,
                     ),
                   ),
                 ),
               ]),
             ),
             floatingActionButton: FloatingActionButton(
-              heroTag: 'fab_new_task',
+              heroTag: 'fab_new_program',
               onPressed: () {
                  showDialog(context: context, builder: (BuildContext context) {
+                  _weekNameController.text = "Week ${model.getTotalTodosFrom(_program) + 1}";
                   return AlertDialog(
                     title: Text("New Week"),
                     content: TextField(
@@ -283,7 +286,11 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                             Scaffold.of(context).showSnackBar(snackBar);
                             // _scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
-                            model.addWeek(Week( _weekNameController.text, parent: _task.id, seq: 8));
+                              model.copyPreviousWeek(previousWeekId, _program.id,  Week(
+                                _weekNameController.text, 
+                                program: _program.id, 
+                                // seq: model.weeks.last.seq + 1,
+                              ));
                             Navigator.pop(context);
                           }
                         },
@@ -343,7 +350,7 @@ class SimpleAlertDialog extends StatelessWidget {
                 child: ListBody(
                   children: <Widget>[
                     Text(
-                        'This is a one way street! Deleting this will remove all the program assigned in this card.'),
+                      'This is a one way street! Deleting this will remove all the program assigned in this card.'),
                   ],
                 ),
               ),
@@ -351,7 +358,6 @@ class SimpleAlertDialog extends StatelessWidget {
                 FlatButton(
                   child: Text('Delete'),
                   onPressed: () {
-                    Navigator.of(context).pop();
                     Navigator.of(context).pop();
                     onActionPressed();
                   },

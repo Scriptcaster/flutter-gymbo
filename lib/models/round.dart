@@ -6,7 +6,8 @@ class Round {
     this.round,
     this.rep,
     this.exerciseId,
-    this.weekId
+    this.weekId,
+    this.programId
   });
 
   int id;
@@ -15,8 +16,9 @@ class Round {
   int rep;
   int exerciseId;
   String weekId;
+  String programId;
 
-  static final columns = ['id', 'weight', 'round', 'rep', 'exerciseId', 'weekId'];
+  static final columns = ['id', 'weight', 'round', 'rep', 'exerciseId', 'programId', 'programId'];
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -24,7 +26,8 @@ class Round {
     'round': round,
     'rep': rep,
     'exerciseId': exerciseId,
-    'weekId': weekId
+    'weekId': weekId,
+    'programId': programId
   };
 
   factory Round.fromMap(Map<String, dynamic> json) => new Round(
@@ -33,6 +36,7 @@ class Round {
     round: json['round'],
     rep: json['rep'],
     exerciseId: json['exerciseId'],
-    weekId: json['weekId']
+    weekId: json['weekId'],
+    programId: json['programId']
   );
 }

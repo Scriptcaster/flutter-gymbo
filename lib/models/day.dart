@@ -6,7 +6,8 @@ class Day {
     this.dayName, 
     this.target,
     // this.exercise,  
-    this.weekId
+    this.weekId,
+    this.programId
   });
 
   int id;
@@ -14,8 +15,9 @@ class Day {
   String target;
   // List<Exercise> exercise;
   String weekId;
+  String programId;
 
-  static final columns = ['id', 'dayName', 'target', 'exercise', 'weekId'];
+  static final columns = ['id', 'dayName', 'target', 'exercise', 'weekId', 'programId'];
 
   // Map toMap() {
   //   Map map = {
@@ -34,6 +36,7 @@ class Day {
     "target": target,
     // "exercise": exercise,
     "weekId": weekId,
+    "programId": programId,
   };
 
   // static fromMap(Map map) {
@@ -50,6 +53,7 @@ class Day {
     target: json["target"],
     // exercise: json["exercise"],
     weekId: json["weekId"],
+    programId: json["programId"],
   );
 
 }
