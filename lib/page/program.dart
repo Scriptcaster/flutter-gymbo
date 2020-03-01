@@ -207,9 +207,7 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                         },
                         child: ListTile(
                           onTap: () {
-                            print(week.id);
-                            print(week.name);
-                            print(_program.id);
+                            print('OnTap   ' + week.id);
                             Navigator.push(context,
                               MaterialPageRoute(
                                 builder: (context) => WeekLocal(id: week.id, name: week.name, programId: _program.id ),
