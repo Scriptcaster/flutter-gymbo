@@ -278,14 +278,13 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                          onPressed: () {
                           if (_weekNameController.text.isEmpty) {
                             final snackBar = SnackBar(
-                              content: Text(
-                                'Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
+                              content: Text('Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
                               backgroundColor: _color,
                             );
                             Scaffold.of(context).showSnackBar(snackBar);
                             // _scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
-                            model.copyPreviousWeek(previousWeekId, _program.id,  Week(
+                            model.addWeek(previousWeekId, _program.id,  Week(
                               _weekNameController.text, 
                               program: _program.id, 
                               // seq: model.weeks.last.seq + 1,

@@ -1,7 +1,10 @@
+import 'package:bench_more/scopedmodel/week_list_model.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/uuid.dart';
+import '../utils/seq.dart';
+
 
 part 'week_model.g.dart';
 
@@ -14,10 +17,13 @@ class Week {
 
   Week(this.name, {
     @required this.program,
-    this.seq = 0,
+    this.seq = 1,
+    // int seq,
     this.isCompleted = 0,
     String id
-  }): this.id = id ?? Uuid().generateV4();
+  }): 
+  this.id = id ?? Uuid().generateV4();
+  // this.seq = seq ?? WeekListModel().generateSeq();
 
   Week copy({String name, int seq, int isCompleted, int id, int program}) {
     return Week(

@@ -23,8 +23,7 @@ class WeekListModel extends Model {
   List<Week> _weeks = [];
   Map<String, int> _programCompletionPercentage =  Map();
 
-  static WeekListModel of(BuildContext context) =>
-      ScopedModel.of<WeekListModel>(context);
+  static WeekListModel of(BuildContext context) => ScopedModel.of<WeekListModel>(context);
 
   @override
   void addListener(listener) {
@@ -95,16 +94,19 @@ class WeekListModel extends Model {
   //   notifyListeners();
   // }
 
-  void copyPreviousWeek(previousWeekId, programID, Week week) {
+  generateSeq() async {
+    return 1;
+  }
+
+  void addWeek(previousWeekId, programID, Week week) {
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
-    if (weeks.length > 1) {
-      var previousWeekId;
-      for (int i = 0; i < 1; i++) { previousWeekId = weeks[i].id; }
-      _weeks.sort((a, b) => a.seq.compareTo(b.seq));
-      var previousSeq = _weeks.last.seq + 1;
-      _weeks.add(Week(week.name, program: week.program, seq: previousSeq));
-      _db.insertPreviousWeek(previousWeekId, previousSeq, week, );
+    if (weeks.length > 0) {
+      Week previousWeek;
+      for (int i = 0; i < 1; i++) {previousWeek = weeks[i];}
+      weeks.sort((a, b) => a.seq.compareTo(b.seq));
+      _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1));
+      _db.insertPreviousWeek(previousWeek.id, previousWeek.seq + 1, week, );
     } else  {
       _weeks.add(week);
       _db.insertWeek(week);

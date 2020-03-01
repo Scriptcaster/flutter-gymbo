@@ -29,7 +29,7 @@ class DBProvider {
   ];
 
   var weeks = [
-    Week("Week 1", seq: 1, program: '1'),
+    // Week("Week 1", seq: 1, program: '1'),
     // Week("Week 2", seq: 2, program: '1'),
     // Week("Week 3", seq: 3, program: '1', isCompleted: 1),
     // Week("Week 1", seq: 4, program: '2'),
@@ -51,7 +51,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy22.db");
+    return p.join(documentsDirectory, "db_benchy23.db");
   }
 
   Future<bool> dbExists() async {
@@ -213,7 +213,7 @@ class DBProvider {
   }
 
   Future<int> insertPreviousWeek(previousWeekId, previousSeq, Week week) async {
-    print('ID   INSERT   ' + week.id);
+    // print('ID PREVIOUS WEEK INSERT   ' + week.id);
     final _db = await database;
     var _newDayId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
     var _newExerciseId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
@@ -222,13 +222,15 @@ class DBProvider {
     var _oldExercises = await _db.query("Exercise", where: "weekId = ?", whereArgs: [previousWeekId]);
     var _oldRounds = await _db.query("Round", where: "weekId = ?", whereArgs: [previousWeekId]);
 
+    // print('_oldDays   ' + _oldDays.asMap().toString());
+
     int incrementDay = _newDayId.first['id'];
     int incrementExercise = _newExerciseId.first['id'];
 
     if (_oldDays.isNotEmpty) {
       _oldDays.asMap().forEach((index, element) async {
-        print( 'ID   INSERT   2           ' + week.id);
         await _db.insert("Day", Day(dayName: element['dayName'], target: element['target'], weekId: week.id, programId: element['programId']).toMap());
+        // print(await _db.query("Day", where: "weekId = ?", whereArgs: [week.id]));
         if (_oldExercises.isNotEmpty) {
           _oldExercises.asMap().forEach((index2, element2) {
             if (element['id'] == element2['dayId']) {
@@ -404,7 +406,4 @@ class DBProvider {
     var _table = await _db.query("Round", where: "exerciseId = ?", whereArgs: [exerciseId]);
     return _db.delete("Round", where: "id = ?", whereArgs: [_table.last["id"]]);
   }
-
-
-
 }
