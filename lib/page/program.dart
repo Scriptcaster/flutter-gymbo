@@ -37,12 +37,8 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
-    _animation = Tween<Offset>(begin: Offset(0, 1.0), end: Offset(0.0, 0.0))
-        .animate(_controller);
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animation = Tween<Offset>(begin: Offset(0, 1.0), end: Offset(0.0, 0.0)).animate(_controller);
   }
 
   // getContainer(bool isCompleted, {Widget child}) {
@@ -210,7 +206,10 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                           );
                         },
                         child: ListTile(
-                          onTap: () async {
+                          onTap: () {
+                            print(week.id);
+                            print(week.name);
+                            print(_program.id);
                             Navigator.push(context,
                               MaterialPageRoute(
                                 builder: (context) => WeekLocal(id: week.id, name: week.name, programId: _program.id ),
@@ -286,11 +285,11 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                             Scaffold.of(context).showSnackBar(snackBar);
                             // _scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
-                              model.copyPreviousWeek(previousWeekId, _program.id,  Week(
-                                _weekNameController.text, 
-                                program: _program.id, 
-                                // seq: model.weeks.last.seq + 1,
-                              ));
+                            model.copyPreviousWeek(previousWeekId, _program.id,  Week(
+                              _weekNameController.text, 
+                              program: _program.id, 
+                              // seq: model.weeks.last.seq + 1,
+                            ));
                             Navigator.pop(context);
                           }
                         },

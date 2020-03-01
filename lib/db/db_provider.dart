@@ -30,11 +30,11 @@ class DBProvider {
 
   var weeks = [
     Week("Week 1", seq: 1, program: '1'),
-    Week("Week 2", seq: 2, program: '1'),
-    Week("Week 3", seq: 3, program: '1', isCompleted: 1),
-    Week("Week 1", seq: 4, program: '2'),
-    Week("Week 2", seq: 5, program: '2'),
-    Week("Week 3", seq: 6, program: '2'),
+    // Week("Week 2", seq: 2, program: '1'),
+    // Week("Week 3", seq: 3, program: '1', isCompleted: 1),
+    // Week("Week 1", seq: 4, program: '2'),
+    // Week("Week 2", seq: 5, program: '2'),
+    // Week("Week 3", seq: 6, program: '2'),
   ];
 
   var programs = [
@@ -51,7 +51,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy16.db");
+    return p.join(documentsDirectory, "db_benchy22.db");
   }
 
   Future<bool> dbExists() async {
@@ -124,9 +124,9 @@ class DBProvider {
     weeks.forEach((week) async {
       var res = await db.insert("Week", week.toJson());
       print("Week ${week.id} = $res");
-        days.forEach((day) async {
-          await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
-      });
+      //   days.forEach((day) async {
+      //     await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
+      // });
     });
   }
 
@@ -151,6 +151,17 @@ class DBProvider {
     return result.map((it) => Week.fromJson(it)).toList();
   }
 
+  Future<List<Day>> getAllDays(String weekId) async {
+    final db = await database;
+    print('Week ID from get  ' + weekId);
+    // var res = await db.query("Day");
+    var res = await db.query("Day", where: 'weekId = ?', whereArgs: [weekId]);
+    print(res.asMap());
+    List<Day> list = res.isNotEmpty ? res.map((c) => Day.fromMap(c)).toList() : [];
+    return list;
+  }
+
+
   Future<int> updateWeek(Week week) async {
     final db = await database;
     return db.update('Week', week.toJson(), where: 'id = ?', whereArgs: [week.id]);
@@ -163,9 +174,9 @@ class DBProvider {
 
   Future<int> insertWeek(Week week) async {
     final db = await database;
-    days.forEach((day) async {
-      await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
-    });
+    // days.forEach((day) async {
+    //   await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
+    // });
     return await db.rawInsert("INSERT Into Week (id, program, seq, name, completed)" " VALUES (?,?,?,?,?)", [week.id, week.program, week.seq, week.name, week.isCompleted ]);
   }
 
@@ -202,6 +213,7 @@ class DBProvider {
   }
 
   Future<int> insertPreviousWeek(previousWeekId, previousSeq, Week week) async {
+    print('ID   INSERT   ' + week.id);
     final _db = await database;
     var _newDayId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
     var _newExerciseId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
@@ -214,8 +226,9 @@ class DBProvider {
     int incrementExercise = _newExerciseId.first['id'];
 
     if (_oldDays.isNotEmpty) {
-      _oldDays.asMap().forEach((index, element) {
-        _db.insert("Day", Day(dayName: element['dayName'], target: element['target'], weekId:week.id, programId: element['programId']).toMap());
+      _oldDays.asMap().forEach((index, element) async {
+        print( 'ID   INSERT   2           ' + week.id);
+        await _db.insert("Day", Day(dayName: element['dayName'], target: element['target'], weekId: week.id, programId: element['programId']).toMap());
         if (_oldExercises.isNotEmpty) {
           _oldExercises.asMap().forEach((index2, element2) {
             if (element['id'] == element2['dayId']) {
@@ -325,14 +338,13 @@ class DBProvider {
   //   return result.map((it) => Week.fromJson(it)).toList();
   // }
 
-  Future<List<Day>> getAllDays(String weekId) async {
-    print('getAllDays');
-    final db = await database;
-    var res = await db.query("Day", where: "weekId = ?", whereArgs: [weekId]);
-    List<Day> list = res.isNotEmpty ? res.map((c) => Day.fromMap(c)).toList() : [];
-    return list;
-  }
+  // Future<List<Week>> getAllWeeks() async {
+  //   final db = await database;
+  //   var result = await db.query('Week ORDER BY seq DESC');
+  //   return result.map((it) => Week.fromJson(it)).toList();
+  // }
 
+  
   Future<List<Exercise>> getAllExercises(int dayId) async {
     final db = await database;
     var dayExercises = await db.query("Exercise", where: "dayId = ?", whereArgs: [dayId]);
