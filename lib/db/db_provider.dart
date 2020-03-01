@@ -16,6 +16,9 @@ class DBProvider {
   DBProvider._();
   static final DBProvider db = DBProvider._();
 
+  var exercises = [
+    Exercise( name: 'Chest Press', bestVolume: 6240, previousVolume: 0, currentVolume: 0)
+  ];
 
   var days = [
     Day(dayName: 'Monday', target: 'Chest & Triceps'),
@@ -45,7 +48,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy27.db");
+    return p.join(documentsDirectory, "db_benchy31.db");
   }
 
   Future<bool> dbExists() async {
@@ -169,6 +172,17 @@ class DBProvider {
     final db = await database;
     programs.forEach((it) async {
       var res = await db.insert("Program", it.toJson());
+      print("Program ${it.id} = $res");
+    });
+  }
+
+  addExercises(List<Exercise> exercises) async {
+    final db = await database;
+    var _table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
+    int id = _table.first["id"];
+    exercises.forEach((it) async {
+      var res = await db.insert("Exercise", Exercise(name: 'Chest Press', bestVolume: 6240, previousVolume: 0, currentVolume: 0).toMap());
+      // await db.rawInsert("INSERT Into Exercise (id, name, bestVolume, previousVolume, currentVolume, dayId, weekId, programId)" " VALUES (?,?,?,?,?,?,?,?)", [_id, newExercise.name, newExercise.bestVolume, newExercise.previousVolume, newExercise.currentVolume, newExercise.dayId, newExercise.weekId, newExercise.programId]);
       print("Program ${it.id} = $res");
     });
   }
