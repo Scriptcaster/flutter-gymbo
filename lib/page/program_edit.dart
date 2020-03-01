@@ -136,7 +136,7 @@ class _EditCardScreenState extends State<EditTaskScreen> {
                     Scaffold.of(context).showSnackBar(snackBar);
                     // _scaffoldKey.currentState.showSnackBar(snackBar);
                   } else {
-                    model.updateTask(Program(
+                    model.updateProgram(Program(
                       newTask,
                       codePoint: taskIcon.codePoint,
                       color: taskColor.value,

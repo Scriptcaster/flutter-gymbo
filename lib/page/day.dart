@@ -37,7 +37,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () async {
-                await DBProvider.db.newExercise( Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); setState(() {});
+                await DBProvider.db.addExercise( Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); setState(() {});
               },   
             )
           ],

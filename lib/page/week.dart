@@ -48,7 +48,7 @@ class _WeekLocalState extends State<WeekLocal> {
                     FlatButton(
                       child: Text("Save"),
                       onPressed: () async {
-                        await DBProvider.db.newDay( Day( dayName: _newNameController.text, target: 'Target', weekId: widget.id, programId: widget.programId ));
+                        await DBProvider.db.addDay( Day( dayName: _newNameController.text, target: 'Target', weekId: widget.id, programId: widget.programId ));
                         setState(() {});
                         Navigator.of(context).pop();
                         _newNameController.clear();
@@ -71,7 +71,7 @@ class _WeekLocalState extends State<WeekLocal> {
                 key: UniqueKey(),
                 background: Container(color: Colors.red),
                 onDismissed: (direction) {
-                  DBProvider.db.deleteDay(item.id);
+                  DBProvider.db.removeDay(item.id);
                 },
                 child: ListTile(
                   leading: Text(item.id.toString()),

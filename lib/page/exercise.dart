@@ -146,7 +146,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               padding: new EdgeInsets.all(0.0),
                               icon: new Icon(Icons.delete, size: 24.0),
                               onPressed: () async { 
-                                DBProvider.db.deleteExercise(exercise.id); setState(() {});
+                                DBProvider.db.removeExercise(exercise.id); setState(() {});
                                 refreshVolumes(exercise.id, exercise.name);
                               }
                             )
@@ -156,7 +156,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               padding: new EdgeInsets.all(0.0),
                               icon: new Icon(Icons.remove_circle, size: 24.0),
                               onPressed: () async { 
-                                await DBProvider.db.deleteRound(exercise.id);
+                                await DBProvider.db.removeRound(exercise.id);
                                 setState(() {});
                                 _updateCurrentVolumeOnRemove(exercise);
                                 refreshVolumes(exercise.id, exercise.name);
@@ -168,7 +168,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               padding: new EdgeInsets.all(0.0),
                               icon: new Icon(Icons.add_circle, size: 24.0),
                               onPressed: () async {
-                                await DBProvider.db.newRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, weekId: widget.weekId, programId: widget.programId )); 
+                                await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, weekId: widget.weekId, programId: widget.programId )); 
                                 setState(() {});
                                 _updateCurrentVolumeOnAdd(exercise);
                                 refreshVolumes(exercise.id, exercise.name);

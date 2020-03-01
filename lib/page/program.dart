@@ -4,15 +4,12 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scopedmodel/week_list_model.dart';
 import '../task_progress_indicator.dart';
 import '../component/week_badge.dart';
+import '../utils/color_utils.dart';
+import '../page/program_edit.dart';
 import '../models/hero_id_model.dart';
 import '../models/program_model.dart';
-import '../utils/color_utils.dart';
-import '../page/program_add.dart';
-import '../page/program_edit.dart';
-
-import 'week.dart';
-import '../db/db_provider.dart';
 import '../models/week_model.dart';
+import 'week.dart';
 
 class DetailScreen extends StatefulWidget {
   final String taskId;
@@ -25,15 +22,14 @@ class DetailScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _DetailScreenState();
+    return _ProgramScreenState();
   }
 }
 
-class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderStateMixin {
+class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<Offset> _animation;
   TextEditingController _weekNameController = TextEditingController();
-  var previousWeekId;
   @override
   void initState() {
     super.initState();
@@ -41,31 +37,27 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
     _animation = Tween<Offset>(begin: Offset(0, 1.0), end: Offset(0.0, 0.0)).animate(_controller);
   }
 
-  // getContainer(bool isCompleted, {Widget child}) {
-  //   if (isCompleted) {
-  //     return Container(
-  //       padding: EdgeInsets.only(left: 22.0, right: 22.0),
-  //       decoration: BoxDecoration(
-  //         gradient: LinearGradient(
-  //           begin: Alignment.centerLeft,
-  //           end: Alignment.centerRight,
-  //           stops: [0.4, 0.6, 1],
-  //           colors: <Color>[
-  //             Colors.grey.shade100,
-  //             Colors.grey.shade50,
-  //             Colors.white,
-  //           ],
-  //         ),
-  //       ),
-  //       child: child,
-  //     );
-  //   } else {
-  //     return Container(
-  //       padding: EdgeInsets.only(left: 22.0, right: 22.0),
-  //       child: child,
-  //     );
-  //   }
-  // }
+  getContainer(bool isCompleted, {Widget child}) {
+    if (isCompleted) {
+      return Container(
+        padding: EdgeInsets.only(left: 22.0, right: 22.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            stops: [0.4, 0.6, 1],
+            colors: <Color>[Colors.grey.shade100, Colors.grey.shade50, Colors.white]
+          ),
+        ),
+        child: child,
+      );
+    } else {
+      return Container(
+        padding: EdgeInsets.only(left: 22.0, right: 22.0),
+        child: child
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,12 +86,9 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
               brightness: Brightness.light,
               backgroundColor: Colors.white,
               actions: [
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  color: _color,
+                IconButton(icon: Icon(Icons.edit), color: _color,
                   onPressed: () {
-                    Navigator.push(
-                      context,
+                    Navigator.push(context,
                       MaterialPageRoute(
                         builder: (context) => EditTaskScreen(
                           taskId: _program.id,
@@ -111,58 +100,40 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                     );
                   },
                 ),
-                SimpleAlertDialog(
-                  color: _color,
-                  onActionPressed: () => model.removeProgram(_program),
+                SimpleAlertDialog( color: _color,
+                  onActionPressed: () { 
+                    model.removeProgram(_program);
+                    Navigator.of(context).pop(true);
+                  },
                 ),
               ],
             ),
             body: Padding(
               padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
               child: Column(children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 0.0),
-                  height: 160,
+                Container(margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 0.0), height: 160,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      TodoBadge(
-                        color: _color,
-                        codePoint: _program.codePoint,
-                        id: _hero.codePointId,
-                      ),
-                      Spacer(
-                        flex: 1,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 4.0),
-                        child: Hero(
-                          tag: _hero.remainingTaskId,
-                          child: Text(
-                            "${model.getTotalTodosFrom(_program)} Weeks",
-                            style: Theme.of(context)
-                              .textTheme
-                              .body1
-                              .copyWith(color: Colors.grey[500]),
+                      TodoBadge(color: _color, codePoint: _program.codePoint, id: _hero.codePointId),
+                      Spacer(flex: 1),
+                      Container(margin: EdgeInsets.only(bottom: 4.0),
+                        child: Hero(tag: _hero.remainingTaskId,
+                          child: Text("${model.getTotalTodosFrom(_program)} Weeks",
+                            style: Theme.of(context).textTheme.body1.copyWith(color: Colors.grey[500]),
                           ),
                         ),
                       ),
                       Container(
                         child: Hero(
                           tag: 'title_hero_unused',//_hero.titleId,
-                          child: Text(_program.name,
-                              style: Theme.of(context)
-                                .textTheme
-                                .title
-                                .copyWith(color: Colors.black54)),
+                          child: Text(_program.name, style: Theme.of(context).textTheme.title.copyWith(color: Colors.black54)),
                         ),
                       ),
                       Spacer(),
-                      Hero(
-                        tag: _hero.progressId,
-                        child: TaskProgressIndicator(
-                          color: _color,
+                      Hero(tag: _hero.progressId,
+                        child: TaskProgressIndicator(color: _color,
                           progress: model.getTaskCompletionPercent(_program),
                         ),
                       )
@@ -172,21 +143,15 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(top: 16.0),
-                    child: ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        _weeks.sort((a, b) => b.seq.compareTo(a.seq));
+                    child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+                      _weeks.sort((a, b) => b.seq.compareTo(a.seq));
                         if (index == _weeks.length) { return SizedBox(height: 56); }
                         var week = _weeks[index];
-                        previousWeekId = week.id;
-                        return Dismissible(
-                          key: UniqueKey(),
-                          background: Container(color: Colors.red),
+                        return Dismissible(key: UniqueKey(), background: Container(color: Colors.red),
                           confirmDismiss: (DismissDirection direction) async {
-                          final bool res = await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
+                            await showDialog(context: context, builder: (BuildContext context) {
                               return AlertDialog(
-                                title: const Text("Confirm"),
+                                title: const Text("Confirm Removal"),
                                 content: const Text("Are you sure you wish to delete this item?"),
                                 actions: <Widget>[
                                   FlatButton(
@@ -217,10 +182,10 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                           //     isCompleted: week.isCompleted == 1 ? 0 : 1)),
                           // contentPadding: EdgeInsets.symmetric(
                           //     horizontal: 0, vertical: 8.0),
-                          // leading: Checkbox(
-                          //     onChanged: (value) => model.updateTodo(
-                          //         week.copy(isCompleted: value ? 1 : 0)),
-                          //     value: week.isCompleted == 1 ? true : false),
+                          leading: Checkbox(
+                              onChanged: (value) => model.updateWeek(
+                                  week.copy(isCompleted: value ? 1 : 0)),
+                              value: week.isCompleted == 1 ? true : false),
                           // trailing: IconButton(
                           //   icon: Icon(Icons.delete_outline),
                           //   onPressed: () => model.removeTodo(week),
@@ -231,12 +196,12 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                               style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w600,
-                                // color: week.isCompleted == 1
-                                //     ? _color
-                                //     : Colors.black54,
-                                // decoration: week.isCompleted == 1
-                                //     ? TextDecoration.lineThrough
-                                //     : TextDecoration.none,
+                                color: week.isCompleted == 1
+                                    ? _color
+                                    : Colors.black54,
+                                decoration: week.isCompleted == 1
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
                               ),
                             ),
                           ),
@@ -279,12 +244,10 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                               backgroundColor: _color,
                             );
                             Scaffold.of(context).showSnackBar(snackBar);
-                            // _scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
-                            model.addWeek(previousWeekId, _program.id,  Week(
+                            model.addWeek(Week(
                               _weekNameController.text, 
                               program: _program.id, 
-                              // seq: model.weeks.last.seq + 1,
                             ));
                             Navigator.pop(context);
                           }
@@ -293,12 +256,6 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                     ],
                   );
                 });
-                // Navigator.push(context,
-                //   MaterialPageRoute(
-                //     builder: (context) =>
-                //       AddTodoScreen(taskId: widget.taskId, heroIds: _hero),
-                //   ),
-                // );
               },
               tooltip: 'New Week',
               backgroundColor: _color,

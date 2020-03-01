@@ -10,7 +10,6 @@ import '../models/program_model.dart';
 import '../db/db_provider.dart';
 
 class WeekListModel extends Model {
-  // ObjectDB db;
   var _db = DBProvider.db;
   List<Week> get weeks => _weeks.toList();
   List<Program> get programs => _programs.toList();
@@ -37,11 +36,10 @@ class WeekListModel extends Model {
   void loadTodos() async {
     var isNew = !await DBProvider.db.dbExists();
     if (isNew) {
-      await _db.insertBulkTask(_db.programs);
-      await _db.insertBulkWeek(_db.weeks);
-      // await _db.insertBulkDay(_db.days);
+      await _db.addPrograms(_db.programs);
+      // await _db.addWeeks(_db.weeks);
     }
-
+    
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
@@ -60,7 +58,7 @@ class WeekListModel extends Model {
   void addProgram(Program program) {
     _programs.add(program);
     _calcTaskCompletionPercent(program.id);
-    _db.insertProgram(program);
+    _db.addProgram(program);
     notifyListeners();
   }
 
@@ -72,49 +70,26 @@ class WeekListModel extends Model {
     });
   }
 
-  void updateTask(Program program) {
+  void updateProgram(Program program) {
     var oldTask = _programs.firstWhere((it) => it.id == program.id);
     var replaceIndex = _programs.indexOf(oldTask);
     _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
-    _db.updateTask(program);
+    _db.updateProgram(program);
     notifyListeners();
   }
 
-  void removeWeek(Week week) {
-    _weeks.removeWhere((it) => it.id == week.id);
-    _syncJob(week);
-    _db.removeWeek(week);
-    notifyListeners();
-  }
-
-  // void addWeek(Week week) {
-  //   _weeks.add(week);
-  //   _syncJob(week);
-  //   _db.insertWeek(week);
-  //   notifyListeners();
-  // }
-
-  generateSeq() async {
-    return 1;
-  }
-
-  void addWeek(previousWeekId, programID, Week week) {
-    print('Add Week with ID ' + week.toJson().toString());
-    print(_weeks[0].toJson());
+  void addWeek(Week week) {
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
     if (weeks.length > 0) {
       Week previousWeek;
       for (int i = 0; i < 1; i++) {previousWeek = weeks[i];}
       weeks.sort((a, b) => a.seq.compareTo(b.seq));
-      // _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1));
-
-       _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1, id: week.id));      
-      
-      _db.insertPreviousWeek(previousWeek.id, previousWeek.seq + 1, week );
+      _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1, id: week.id));      
+      _db.addPreviousWeek(previousWeek.id, previousWeek.seq + 1, week );
     } else  {
       _weeks.add(week);
-      _db.insertWeek(week);
+      _db.addWeek(week);
     }
     _syncJob(week);
     notifyListeners();
@@ -126,6 +101,13 @@ class WeekListModel extends Model {
     _weeks.replaceRange(replaceIndex, replaceIndex + 1, [week]);
     _syncJob(week);
     _db.updateWeek(week);
+    notifyListeners();
+  }
+
+  void removeWeek(Week week) {
+    _weeks.removeWhere((it) => it.id == week.id);
+    _syncJob(week);
+    _db.removeWeek(week);
     notifyListeners();
   }
 
@@ -144,10 +126,5 @@ class WeekListModel extends Model {
       var totalCompletedTodos = weeks.where((it) => it.isCompleted == 1).length;
      _programCompletionPercentage[taskId] = (totalCompletedTodos / totalTodos * 100).toInt();
     }
-    // return weeks.fold(0, (total, week) => week.isCompleted ? total + scoreOfTask : total);
   }
-
-  // Future<int> _syncTodoToDB() async {
-  //   return await db.update({'user': 'guest'}, {'weeks': _weeks});
-  // }
 }
