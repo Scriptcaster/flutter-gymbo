@@ -63,6 +63,9 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
               _exerciseController.text = exercise.name;
               previousExerciseVolume = exercise.previousVolume;
               bestExerciseVolume = exercise.bestVolume;
+
+              refreshVolumes(exercise.id, exercise.name);
+
               return Container(
                 padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
                 child: Column(
@@ -136,7 +139,9 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                         ],
                       ),
                     ),
-                    RenderRounds(widget.id, exercise, parentUpdater: () => refreshVolumes(exercise.id, exercise.name) ),
+                    RenderRounds(widget.id, exercise, 
+                    // parentUpdater: () => refreshVolumes(exercise.id, exercise.name) 
+                    ),
                     Container(
                       padding: EdgeInsets.only(top: 0.0, bottom: 5.0),
                       child: Row(
@@ -147,7 +152,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               icon: new Icon(Icons.delete, size: 24.0),
                               onPressed: () async { 
                                 DBProvider.db.removeExercise(exercise.id); setState(() {});
-                                refreshVolumes(exercise.id, exercise.name);
+                                // refreshVolumes(exercise.id, exercise.name);
                               }
                             )
                           ),
@@ -159,7 +164,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                                 await DBProvider.db.removeRound(exercise.id);
                                 setState(() {});
                                 _updateCurrentVolumeOnRemove(exercise);
-                                refreshVolumes(exercise.id, exercise.name);
+                                // refreshVolumes(exercise.id, exercise.name);
                               }
                             )
                           ),
@@ -171,7 +176,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                                 await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, weekId: widget.weekId, programId: widget.programId )); 
                                 setState(() {});
                                 _updateCurrentVolumeOnAdd(exercise);
-                                refreshVolumes(exercise.id, exercise.name);
+                                // refreshVolumes(exercise.id, exercise.name);
                               },      
 
                             )

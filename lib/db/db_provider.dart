@@ -17,26 +17,41 @@ class DBProvider {
   static final DBProvider db = DBProvider._();
 
   var rounds = [
-    Round( id: 1, weight: 120, round: 4, rep: 16, exerciseId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1')
+    Round( id: 1, weight: 120, round: 4, rep: 16, exerciseId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 2, weight: 120, round: 4, rep: 16, exerciseId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 3, weight: 100, round: 4, rep: 16, exerciseId: 3, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Round( id: 4, weight: 50, round: 4, rep: 16, exerciseId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 5, weight: 60, round: 4, rep: 16, exerciseId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 6, weight: 120, round: 4, rep: 16, exerciseId: 6, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Round( id: 7, weight: 100, round: 4, rep: 12, exerciseId: 7, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Round( id: 8, weight: 100, round: 4, rep: 8, exerciseId: 8, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 9, weight: 100, round: 4, rep: 8, exerciseId: 9, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 10, weight: 60, round: 4, rep: 14, exerciseId: 10, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Round( id: 11, weight: 120, round: 4, rep: 14, exerciseId: 11, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 12, weight: 50, round: 4, rep: 12, exerciseId: 12, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
   var exercises = [
-    Exercise( id: 1, name: 'Chest Press', bestVolume: 7200, previousVolume: 0, currentVolume: 0, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 2, name: 'Incline Press', bestVolume: 6720, previousVolume: 0, currentVolume: 0, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 3, name: 'Dips', bestVolume: 6400, previousVolume: 0, currentVolume: 0, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 1, name: 'Chest Press', bestVolume: 7200, previousVolume: 0, currentVolume: 7200, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 2, name: 'Incline Press', bestVolume: 6720, previousVolume: 0, currentVolume: 6720, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 3, name: 'Dips', bestVolume: 6400, previousVolume: 0, currentVolume: 6400, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
 
-    Exercise( id: 4, name: 'Lunges', bestVolume: 3200, previousVolume: 0, currentVolume: 0, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 5, name: 'Squat', bestVolume: 3600, previousVolume: 0, currentVolume: 0, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 6, name: 'Deadlift', bestVolume: 7200, previousVolume: 0, currentVolume: 0, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 4, name: 'Lunges', bestVolume: 3200, previousVolume: 0, currentVolume: 3200, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 5, name: 'Squat', bestVolume: 3600, previousVolume: 0, currentVolume: 3600, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 6, name: 'Deadlift', bestVolume: 7200, previousVolume: 0, currentVolume: 7200, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
 
-    Exercise( id: 7, name: 'Abs', bestVolume: 4800, previousVolume: 0, currentVolume: 0, round: [], dayId: 3, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 7, name: 'Abs', bestVolume: 4800, previousVolume: 0, currentVolume: 4800, round: [], dayId: 3, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
 
-    Exercise( id: 8, name: 'Pull-ups', bestVolume: 4800, previousVolume: 0, currentVolume: 0, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 9, name: 'Reverse Pull-ups', bestVolume: 2400, previousVolume: 0, currentVolume: 0, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 10, name: 'Rows', bestVolume: 3120, previousVolume: 0, currentVolume: 0, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 8, name: 'Pull-ups', bestVolume: 4800, previousVolume: 0, currentVolume: 4800, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 9, name: 'Reverse Pull-ups', bestVolume: 2400, previousVolume: 0, currentVolume: 2400, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 10, name: 'Rows', bestVolume: 3120, previousVolume: 0, currentVolume: 3120, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
 
-    Exercise( id: 11, name: 'Sitting Press', bestVolume: 4800, previousVolume: 0, currentVolume: 0, round: [], dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Exercise( id: 12, name: ' Standing Press 1.5', bestVolume: 2400, previousVolume: 0, currentVolume: 0, round: [], dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 11, name: 'Sitting Press', bestVolume: 4800, previousVolume: 0, currentVolume: 4800, round: [], dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 12, name: ' Standing Press 1.5', bestVolume: 2400, previousVolume: 0, currentVolume: 2400, round: [], dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
   var days = [
@@ -66,7 +81,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy48.db");
+    return p.join(documentsDirectory, "db_benchy50.db");
   }
 
   Future<bool> dbExists() async {
@@ -135,19 +150,19 @@ class DBProvider {
     });
   }
 
-  addDays(List<Day> days) async {
-    final db = await database;
-    days.forEach((day) async {
-      var res = await db.insert("Day", day.toMap());
-      print("Program ${day.id} = $res");
-    });
-  }
-
   addWeeks(List<Week> weeks) async {
     final db = await database;
     weeks.forEach((week) async {
       var res = await db.insert("Week", week.toJson());
       print("Program ${week.id} = $res");
+    });
+  }
+
+  addDays(List<Day> days) async {
+    final db = await database;
+    days.forEach((day) async {
+      var res = await db.insert("Day", day.toMap());
+      print("Program ${day.id} = $res");
     });
   }
 
@@ -226,14 +241,6 @@ class DBProvider {
     final db = await database;
     return db.insert('Program', program.toJson());
   }
-
-  // addDays(List<Day> days) async {
-  //   final db = await database;
-  //   days.forEach((day) async {
-  //     var res = await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
-  //     print("Week ${day.id} = $res");
-  //   });
-  // }
 
   addWeek(Week week) async {
     final db = await database;
