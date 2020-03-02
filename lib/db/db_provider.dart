@@ -24,22 +24,14 @@ class DBProvider {
     Round( id: 4, weight: 50, round: 4, rep: 16, exerciseId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
     Round( id: 5, weight: 60, round: 4, rep: 16, exerciseId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
     Round( id: 6, weight: 120, round: 4, rep: 16, exerciseId: 6, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-
-<<<<<<< HEAD
-    Round( id: 7, weight: 100, round: 4, rep: 12, exerciseId: 7, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-=======
+    
     Round( id: 7, weight: 100, round: 4, rep: 8, exerciseId: 7, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
->>>>>>> be5ad8261426ff7412638bd508fb935e5b66dd9a
 
     Round( id: 8, weight: 100, round: 4, rep: 8, exerciseId: 8, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
     Round( id: 9, weight: 100, round: 4, rep: 8, exerciseId: 9, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
     Round( id: 10, weight: 60, round: 4, rep: 14, exerciseId: 10, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-
-<<<<<<< HEAD
-    Round( id: 11, weight: 120, round: 4, rep: 14, exerciseId: 11, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-=======
+    
     Round( id: 11, weight: 120, round: 4, rep: 11, exerciseId: 11, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
->>>>>>> be5ad8261426ff7412638bd508fb935e5b66dd9a
     Round( id: 12, weight: 50, round: 4, rep: 12, exerciseId: 12, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
