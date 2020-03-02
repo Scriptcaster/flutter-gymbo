@@ -37,7 +37,10 @@ class WeekListModel extends Model {
     var isNew = !await DBProvider.db.dbExists();
     if (isNew) {
       await _db.addPrograms(_db.programs);
+      await _db.addWeeks(_db.weeks);
+      await _db.addDays(_db.days);
       await _db.addExercises(_db.exercises);
+      await _db.addRounds(_db.rounds);
     }
     
     _programs = await _db.getAllPrograms();

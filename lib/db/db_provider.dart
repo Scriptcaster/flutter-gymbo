@@ -16,23 +16,41 @@ class DBProvider {
   DBProvider._();
   static final DBProvider db = DBProvider._();
 
+  var rounds = [
+    Round( id: 1, weight: 120, round: 4, rep: 16, exerciseId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1')
+  ];
+
   var exercises = [
-    Exercise( name: 'Chest Press', bestVolume: 6240, previousVolume: 0, currentVolume: 0)
+    Exercise( id: 1, name: 'Chest Press', bestVolume: 7200, previousVolume: 0, currentVolume: 0, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 2, name: 'Incline Press', bestVolume: 6720, previousVolume: 0, currentVolume: 0, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 3, name: 'Dips', bestVolume: 6400, previousVolume: 0, currentVolume: 0, round: [], dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Exercise( id: 4, name: 'Lunges', bestVolume: 3200, previousVolume: 0, currentVolume: 0, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 5, name: 'Squat', bestVolume: 3600, previousVolume: 0, currentVolume: 0, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 6, name: 'Deadlift', bestVolume: 7200, previousVolume: 0, currentVolume: 0, round: [], dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Exercise( id: 7, name: 'Abs', bestVolume: 4800, previousVolume: 0, currentVolume: 0, round: [], dayId: 3, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Exercise( id: 8, name: 'Pull-ups', bestVolume: 4800, previousVolume: 0, currentVolume: 0, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 9, name: 'Reverse Pull-ups', bestVolume: 2400, previousVolume: 0, currentVolume: 0, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 10, name: 'Rows', bestVolume: 3120, previousVolume: 0, currentVolume: 0, round: [], dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+
+    Exercise( id: 11, name: 'Sitting Press', bestVolume: 4800, previousVolume: 0, currentVolume: 0, round: [], dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Exercise( id: 12, name: ' Standing Press 1.5', bestVolume: 2400, previousVolume: 0, currentVolume: 0, round: [], dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
   var days = [
-    Day(dayName: 'Monday', target: 'Chest & Triceps'),
-    Day(dayName: 'Tuesday', target: 'Legs'),
-    Day(dayName: 'Wednesday', target: 'Abs'),
-    Day(dayName: 'Thursday', target: 'Back & Biceps'),
-    Day(dayName: 'Friday', target: 'Shoulder'),
-    Day(dayName: 'Saturday', target: 'Day Off'),
-    Day(dayName: 'Sunday', target: 'Day Off'),
+    Day(id: 1, dayName: 'Monday', target: 'Chest & Triceps', weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 2, dayName: 'Tuesday', target: 'Legs',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 3, dayName: 'Wednesday', target: 'Abs',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 4, dayName: 'Thursday', target: 'Back & Biceps',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 5, dayName: 'Friday', target: 'Shoulder',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 6, dayName: 'Saturday', target: 'Day Off',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 7, dayName: 'Sunday', target: 'Day Off',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
   var weeks = [
-    Week("Week 1", seq: 1, program: '1', isCompleted: 0),
-    Week("Week 1", seq: 1, program: '2', isCompleted: 0),
+    Week('Week 1', seq: 1, program: '1', isCompleted: 0, id: '39811115-7350-47a3-8f89-015e4daf64b8'),
   ];
 
   var programs = [
@@ -48,7 +66,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy31.db");
+    return p.join(documentsDirectory, "db_benchy48.db");
   }
 
   Future<bool> dbExists() async {
@@ -88,6 +106,7 @@ class DBProvider {
         bestVolume INTEGER,
         previousVolume INTEGER,
         currentVolume INTEGER,
+        round TEXT,
         dayId INTEGER,
         weekId TEXT,
         programId TEXT,
@@ -105,6 +124,46 @@ class DBProvider {
         FOREIGN KEY (exerciseId) REFERENCES Exercise (id) ON DELETE NO ACTION ON UPDATE NO ACTION
       )""");
 
+    });
+  }
+
+  addPrograms(List<Program> programs) async {
+    final db = await database;
+    programs.forEach((it) async {
+      var res = await db.insert("Program", it.toJson());
+      print("Program ${it.id} = $res");
+    });
+  }
+
+  addDays(List<Day> days) async {
+    final db = await database;
+    days.forEach((day) async {
+      var res = await db.insert("Day", day.toMap());
+      print("Program ${day.id} = $res");
+    });
+  }
+
+  addWeeks(List<Week> weeks) async {
+    final db = await database;
+    weeks.forEach((week) async {
+      var res = await db.insert("Week", week.toJson());
+      print("Program ${week.id} = $res");
+    });
+  }
+
+  addExercises(List<Exercise> exercises) async {
+    final db = await database;
+    exercises.forEach((exercise) async {
+      var res = await db.insert("Exercise", exercise.toMap());
+      print("Exercise ${exercise.id} = $res");
+    });
+  }
+
+  addRounds(List<Round> rounds) async {
+    final db = await database;
+    rounds.forEach((round) async {
+      var res = await db.insert("Round", round.toMap());
+      print("Exercise ${round.id} = $res");
     });
   }
 
@@ -168,32 +227,13 @@ class DBProvider {
     return db.insert('Program', program.toJson());
   }
 
-  addPrograms(List<Program> programs) async {
-    final db = await database;
-    programs.forEach((it) async {
-      var res = await db.insert("Program", it.toJson());
-      print("Program ${it.id} = $res");
-    });
-  }
-
-  addExercises(List<Exercise> exercises) async {
-    final db = await database;
-    var _table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
-    int id = _table.first["id"];
-    exercises.forEach((it) async {
-      var res = await db.insert("Exercise", Exercise(name: 'Chest Press', bestVolume: 6240, previousVolume: 0, currentVolume: 0).toMap());
-      // await db.rawInsert("INSERT Into Exercise (id, name, bestVolume, previousVolume, currentVolume, dayId, weekId, programId)" " VALUES (?,?,?,?,?,?,?,?)", [_id, newExercise.name, newExercise.bestVolume, newExercise.previousVolume, newExercise.currentVolume, newExercise.dayId, newExercise.weekId, newExercise.programId]);
-      print("Program ${it.id} = $res");
-    });
-  }
-
-  addWeeks(List<Week> weeks) async {
-    final db = await database;
-    weeks.forEach((week) async {
-      var res = await db.insert("Week", week.toJson());
-      print("Week ${week.id} = $res");
-    });
-  }
+  // addDays(List<Day> days) async {
+  //   final db = await database;
+  //   days.forEach((day) async {
+  //     var res = await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
+  //     print("Week ${day.id} = $res");
+  //   });
+  // }
 
   addWeek(Week week) async {
     final db = await database;
