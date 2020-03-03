@@ -24,11 +24,11 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
   }
 
   afterLayoutWidgetBuild() {
-    print('asd');
+    // print('asd');
   }
 
   refreshVolumes(id, value) async {
-  var getPreviousExerciseVolume = await DBProvider.db.getPreviousVolume(id, value);
+    var getPreviousExerciseVolume = await DBProvider.db.getPreviousVolume(id, value);
     if (getPreviousExerciseVolume != null) {
       previousExerciseVolume = getPreviousExerciseVolume;
       await DBProvider.db.updateExercisePreviousVolume(previousExerciseVolume, id);
@@ -37,7 +37,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     if (getBestExerciseVolume != null) {
       bestExerciseVolume = getBestExerciseVolume;
       await DBProvider.db.updateExerciseBestVolume(bestExerciseVolume, id);
-    }  
+    }    
   }
   
   _updateCurrentVolumeOnRemove(exercise) async {
@@ -48,6 +48,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
     setState(() {});                     
   }
+
    _updateCurrentVolumeOnAdd(exercise) async {
     exercise.round.add(exercise.round.last);
     exercise.currentVolume = 0;
@@ -70,12 +71,6 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
               _exerciseController.text = exercise.name;
               previousExerciseVolume = exercise.previousVolume;
               bestExerciseVolume = exercise.bestVolume;
-              
-              // refreshVolumes(exercise.id, exercise.name);
-
-              print('rebuild');
-              
-
               return new Container(
                 padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
                 child: Column(
@@ -91,6 +86,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                                 await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value));
                               }
                               refreshVolumes(exercise.id, value);
+                              setState(() {});
                             }
                           )
                         ]

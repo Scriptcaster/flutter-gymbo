@@ -81,7 +81,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy53.db");
+    return p.join(documentsDirectory, "db_benchy54.db");
   }
 
   Future<bool> dbExists() async {
@@ -206,26 +206,37 @@ class DBProvider {
     final db = await database;
     var dayExercises = await db.query("Exercise", where: "dayId = ?", whereArgs: [dayId]);
 
-    var previousExerciseVolume = await db.rawQuery("SELECT * FROM Exercise WHERE dayId != ? ORDER BY id DESC", [dayId]);
+    var previousDays = await db.rawQuery("SELECT * FROM Exercise WHERE dayId != ? ORDER BY id DESC", [dayId]);
 
-    print(previousExerciseVolume);
+    // previousDays.toList().forEach((element) {
+      dayExercises.toList().forEach((element2) {
+        previousDays.toList().forEach((element) {
+        if (element['name'] == element2['name']) {
+          // print(element['currentVolume']);
+        }
+        });
+      });
+    // });
 
     List<Exercise> fullList = List<Exercise>();
+
     for (int i = 0; i < dayExercises.length; i++) {
 
-      // print(dayExercises[i]['name']);
-
-      // previousExerciseVolume.toList().forEach((element) {
-      //   if (dayExercises[i]['name'] == element['name']) {
-      //     print(element['dayId']);
-      //   }
-      // });
-
-
       fullList.add(Exercise.fromMap(dayExercises[i]));
+
       var _rounds = await db.query("Round", where: "exerciseId = ?", whereArgs: [dayExercises[i]['id']]);
       List<Round> _finalRounds = _rounds.isNotEmpty ? _rounds.map((c) => Round.fromMap(c)).toList() : [];
-        fullList[i].round = _finalRounds;
+
+      var previousExerciseVolume = await db.rawQuery("SELECT * FROM Exercise WHERE id < ? AND name = ? ORDER BY id DESC", [dayExercises[i]['id'], dayExercises[i]['name']]);
+
+    if(previousExerciseVolume.length > 0) {
+      for (int e = 0; e < 1; e++) {
+        // print(fullList[i].previousVolume);
+        // print(previousExerciseVolume[e]['currentVolume']);
+        fullList[i].previousVolume = previousExerciseVolume[e]['currentVolume'];
+      }
+    }
+    fullList[i].round = _finalRounds;
     }
     return fullList;
   }
