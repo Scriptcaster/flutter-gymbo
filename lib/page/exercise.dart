@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../db/db_provider.dart';
-import 'round.dart';
 import '../models/exercise.dart';
 import '../models/round.dart';
+import 'round.dart';
 
 class RenderExercises extends StatefulWidget {
   final Object id;
@@ -18,9 +18,17 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterLayoutWidgetBuild());
+
   }
+
+  afterLayoutWidgetBuild() {
+    print('asd');
+  }
+
   refreshVolumes(id, value) async {
-    var getPreviousExerciseVolume = await DBProvider.db.getPreviousVolume(id, value);
+  var getPreviousExerciseVolume = await DBProvider.db.getPreviousVolume(id, value);
     if (getPreviousExerciseVolume != null) {
       previousExerciseVolume = getPreviousExerciseVolume;
       await DBProvider.db.updateExercisePreviousVolume(previousExerciseVolume, id);
@@ -29,8 +37,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     if (getBestExerciseVolume != null) {
       bestExerciseVolume = getBestExerciseVolume;
       await DBProvider.db.updateExerciseBestVolume(bestExerciseVolume, id);
-    }
-    setState(() {});
+    }  
   }
   
   _updateCurrentVolumeOnRemove(exercise) async {
@@ -63,10 +70,13 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
               _exerciseController.text = exercise.name;
               previousExerciseVolume = exercise.previousVolume;
               bestExerciseVolume = exercise.bestVolume;
-
+              
               // refreshVolumes(exercise.id, exercise.name);
 
-              return Container(
+              print('rebuild');
+              
+
+              return new Container(
                 padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
                 child: Column(
                   children: <Widget>[
@@ -139,9 +149,8 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                         ],
                       ),
                     ),
-                    RenderRounds(widget.id, exercise, 
-                    // parentUpdater: () => refreshVolumes(exercise.id, exercise.name) 
-                    ),
+                    RenderRounds(widget.id, exercise, parentUpdater: () => setState(() {})),
+                    // RenderRounds(widget.id, exercise, parentUpdater: () => refreshVolumes(exercise.id, exercise.name) ),
                     Container(
                       padding: EdgeInsets.only(top: 0.0, bottom: 5.0),
                       child: Row(
@@ -194,5 +203,10 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
         }
       )
     );
-  }  
+  }
+
+
+  // void afterBuild() {
+  //   print('build');
+  // }  
 }

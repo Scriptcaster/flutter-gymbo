@@ -10,15 +10,15 @@ class RenderRounds extends StatefulWidget {
   RenderRounds(this.id, this.exercise, {this.parentUpdater});
   @override
   _RenderRoundsState createState() => _RenderRoundsState(
-    // this.parentUpdater
+    this.parentUpdater
   );
 }
 class _RenderRoundsState extends State<RenderRounds> { _RenderRoundsState(
-  // this.parentUpdater
+  this.parentUpdater
   );
   List<Color> colors = [Colors.blue, Colors.white, Colors.white];
   List<bool> _selected = [true, false, false];
-  // final VoidCallback parentUpdater;
+  final VoidCallback parentUpdater;
   _updateCurrentVolume(_round, subtract) async {
      setState(() {
       if (subtract) {
@@ -45,7 +45,7 @@ class _RenderRoundsState extends State<RenderRounds> { _RenderRoundsState(
     });
     await DBProvider.db.updateRound(Round(id: _round.id, weight: _round.weight, round: _round.round, rep: _round.rep, exerciseId: widget.exercise.dayId ));
     await DBProvider.db.updateExercise(Exercise( id: widget.exercise.id, name: widget.exercise.name, bestVolume: widget.exercise.bestVolume, previousVolume: widget.exercise.previousVolume, currentVolume: widget.exercise.currentVolume, dayId: widget.id ));
-    // parentUpdater();
+    widget.parentUpdater();
   }
   @override
   Widget build(BuildContext context) {

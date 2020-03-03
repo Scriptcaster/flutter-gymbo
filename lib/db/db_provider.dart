@@ -205,8 +205,23 @@ class DBProvider {
   Future<List<Exercise>> getAllExercises(int dayId) async {
     final db = await database;
     var dayExercises = await db.query("Exercise", where: "dayId = ?", whereArgs: [dayId]);
+
+    var previousExerciseVolume = await db.rawQuery("SELECT * FROM Exercise WHERE dayId != ? ORDER BY id DESC", [dayId]);
+
+    print(previousExerciseVolume);
+
     List<Exercise> fullList = List<Exercise>();
     for (int i = 0; i < dayExercises.length; i++) {
+
+      // print(dayExercises[i]['name']);
+
+      // previousExerciseVolume.toList().forEach((element) {
+      //   if (dayExercises[i]['name'] == element['name']) {
+      //     print(element['dayId']);
+      //   }
+      // });
+
+
       fullList.add(Exercise.fromMap(dayExercises[i]));
       var _rounds = await db.query("Round", where: "exerciseId = ?", whereArgs: [dayExercises[i]['id']]);
       List<Round> _finalRounds = _rounds.isNotEmpty ? _rounds.map((c) => Round.fromMap(c)).toList() : [];
