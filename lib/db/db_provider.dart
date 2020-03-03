@@ -17,22 +17,22 @@ class DBProvider {
   static final DBProvider db = DBProvider._();
 
   var rounds = [
-    Round( id: 1, weight: 120, round: 4, rep: 16, exerciseId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 2, weight: 120, round: 4, rep: 16, exerciseId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 3, weight: 100, round: 4, rep: 16, exerciseId: 3, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 1, weight: 120, round: 4, rep: 16, exerciseId: 1, dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 2, weight: 120, round: 4, rep: 16, exerciseId: 2, dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 3, weight: 100, round: 4, rep: 16, exerciseId: 3, dayId: 1, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
 
-    Round( id: 4, weight: 50, round: 4, rep: 16, exerciseId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 5, weight: 60, round: 4, rep: 16, exerciseId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 6, weight: 120, round: 4, rep: 16, exerciseId: 6, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 4, weight: 50, round: 4, rep: 16, exerciseId: 4, dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 5, weight: 60, round: 4, rep: 16, exerciseId: 5, dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 6, weight: 120, round: 4, rep: 16, exerciseId: 6, dayId: 2, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
     
-    Round( id: 7, weight: 100, round: 4, rep: 8, exerciseId: 7, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 7, weight: 100, round: 4, rep: 8, exerciseId: 7, dayId: 3, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
 
-    Round( id: 8, weight: 100, round: 4, rep: 8, exerciseId: 8, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 9, weight: 100, round: 4, rep: 8, exerciseId: 9, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 10, weight: 60, round: 4, rep: 14, exerciseId: 10, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 8, weight: 100, round: 4, rep: 8, exerciseId: 8, dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 9, weight: 100, round: 4, rep: 8, exerciseId: 9, dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 10, weight: 60, round: 4, rep: 14, exerciseId: 10, dayId: 4, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
     
-    Round( id: 11, weight: 120, round: 4, rep: 11, exerciseId: 11, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Round( id: 12, weight: 50, round: 4, rep: 12, exerciseId: 12, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 11, weight: 120, round: 4, rep: 11, exerciseId: 11, dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Round( id: 12, weight: 50, round: 4, rep: 12, exerciseId: 12, dayId: 5, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
   var exercises = [
@@ -81,7 +81,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy50.db");
+    return p.join(documentsDirectory, "db_benchy53.db");
   }
 
   Future<bool> dbExists() async {
@@ -133,6 +133,7 @@ class DBProvider {
         round INTEGER,
         rep INTEGER,
         rounds TEXT,
+        dayId INTEGER,
         exerciseId INTEGER,
         weekId TEXT,
         programId TEXT,
@@ -284,6 +285,7 @@ class DBProvider {
                       'weight': element3['weight'], 
                       'round': element3['round'], 
                       'rep': element3['rep'],
+                      'dayId': incrementDay, 
                       'exerciseId': incrementExercise, 
                       'weekId':  week.id,
                       'programId': element['programId']
@@ -319,9 +321,9 @@ class DBProvider {
     var _lastRow = await _db.query("Round", where: "exerciseId = ?", whereArgs: [round.exerciseId]);
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
     if(_lastRow.isNotEmpty) {
-      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, weekId, programId)" " VALUES (?,?,?,?,?,?,?)", [_table.first["id"], _lastRow.last['weight'],  _lastRow.last['round'],  _lastRow.last['rep'], round.exerciseId, round.weekId, round.programId]);
+      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId,  dayId, weekId, programId)" " VALUES (?,?,?,?,?,?,?,?)", [_table.first["id"], _lastRow.last['weight'],  _lastRow.last['round'],  _lastRow.last['rep'], round.exerciseId, round.dayId, round.weekId, round.programId]);
     } else {
-      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, weekId, programId)" " VALUES (?,?,?,?,?,?,?)", [_table.first["id"], round.weight, round.round, round.rep, round.exerciseId, round.weekId, round.programId]);
+      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)" " VALUES (?,?,?,?,?,?,?,?)", [_table.first["id"], round.weight, round.round, round.rep, round.exerciseId, round.dayId, round.weekId, round.programId]);
     }
   }
 
@@ -386,14 +388,21 @@ class DBProvider {
     });
   }
 
-  Future<void> removeDay(int id) async {
+  Future<void> removeDay(Day day) async {
     final db = await database;
-    return db.delete("Day", where: "id = ?", whereArgs: [id]);
+    return db.transaction<void>((txn) async {
+      await txn.delete('Round', where: 'dayId = ?', whereArgs: [day.id]);
+      await txn.delete('Exercise', where: 'dayId = ?', whereArgs: [day.id]);
+      await txn.delete('Day', where: 'id = ?', whereArgs: [day.id]);
+    });
   }
 
-  Future<void> removeExercise(int id) async {
-    final db = await database;
-    return db.delete("Exercise", where: "id = ?", whereArgs: [id]);
+  Future<void> removeExercise(Exercise exercise) async {
+     final db = await database;
+    return db.transaction<void>((txn) async {
+      await txn.delete('Round', where: 'exerciseId = ?', whereArgs: [exercise.id]);
+      await txn.delete('Exercise', where: 'id = ?', whereArgs: [exercise.id]);
+    });
   }
 
   Future<void> removeRound(int exerciseId) async {

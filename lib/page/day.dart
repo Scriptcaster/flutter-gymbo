@@ -53,7 +53,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
                 onSubmitted: (value) async { await DBProvider.db.updateDayTarget(Day(id: widget.id, target: value)); }
               ),
             ),
-            RenderExercises(widget.programId, widget.weekId, widget.id),
+            RenderExercises(widget.id, widget.weekId, widget.programId),
           ]
         )
       )

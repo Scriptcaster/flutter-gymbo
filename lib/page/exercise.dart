@@ -5,10 +5,10 @@ import '../models/exercise.dart';
 import '../models/round.dart';
 
 class RenderExercises extends StatefulWidget {
-  final Object programId;
-  final Object weekId;
   final Object id;
-  RenderExercises(this.programId, this.weekId, this.id);
+  final Object weekId;
+  final Object programId;
+  RenderExercises(this.id, this.weekId, this.programId);
   @override
   _RenderExercisesState createState() => _RenderExercisesState();
 }
@@ -64,7 +64,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
               previousExerciseVolume = exercise.previousVolume;
               bestExerciseVolume = exercise.bestVolume;
 
-              refreshVolumes(exercise.id, exercise.name);
+              // refreshVolumes(exercise.id, exercise.name);
 
               return Container(
                 padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
@@ -151,7 +151,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               padding: new EdgeInsets.all(0.0),
                               icon: new Icon(Icons.delete, size: 24.0),
                               onPressed: () async { 
-                                DBProvider.db.removeExercise(exercise.id); setState(() {});
+                                DBProvider.db.removeExercise(exercise); setState(() {});
                                 // refreshVolumes(exercise.id, exercise.name);
                               }
                             )
@@ -173,7 +173,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               padding: new EdgeInsets.all(0.0),
                               icon: new Icon(Icons.add_circle, size: 24.0),
                               onPressed: () async {
-                                await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, weekId: widget.weekId, programId: widget.programId )); 
+                                await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
                                 setState(() {});
                                 _updateCurrentVolumeOnAdd(exercise);
                                 // refreshVolumes(exercise.id, exercise.name);

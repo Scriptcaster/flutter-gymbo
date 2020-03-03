@@ -6,6 +6,7 @@ class Round {
     this.round,
     this.rep,
     this.exerciseId,
+    this.dayId,
     this.weekId,
     this.programId
   });
@@ -15,10 +16,11 @@ class Round {
   int round;
   int rep;
   int exerciseId;
+  int dayId;
   String weekId;
   String programId;
 
-  static final columns = ['id', 'weight', 'round', 'rep', 'exerciseId', 'programId', 'programId'];
+  static final columns = ['id', 'weight', 'round', 'rep', 'exerciseId', 'dayId', 'weekId', 'programId'];
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -26,6 +28,7 @@ class Round {
     'round': round,
     'rep': rep,
     'exerciseId': exerciseId,
+    'dayId': dayId,
     'weekId': weekId,
     'programId': programId
   };
@@ -36,6 +39,7 @@ class Round {
     round: json['round'],
     rep: json['rep'],
     exerciseId: json['exerciseId'],
+    dayId: json['dayId'],
     weekId: json['weekId'],
     programId: json['programId']
   );

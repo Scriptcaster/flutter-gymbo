@@ -71,7 +71,7 @@ class _WeekLocalState extends State<WeekLocal> {
                 key: UniqueKey(),
                 background: Container(color: Colors.red),
                 onDismissed: (direction) {
-                  DBProvider.db.removeDay(item.id);
+                  DBProvider.db.removeDay(item);
                 },
                 child: ListTile(
                   leading: Text(item.id.toString()),
