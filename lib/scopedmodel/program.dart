@@ -1,13 +1,10 @@
-// import 'dart:convert';
-// import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-// import 'package:objectdb/objectdb.dart';
-
-import '../models/week_model.dart';
-import '../models/program_model.dart';
+import '../models/week.dart';
+import '../models/program.dart';
 import '../db/db_provider.dart';
+import '../db/default_data.dart';
 
 class WeekListModel extends Model {
   var _db = DBProvider.db;
@@ -27,7 +24,6 @@ class WeekListModel extends Model {
   @override
   void addListener(listener) {
     super.addListener(listener);
-    // update data for every subscriber, especially for the first one
     _isLoading = true;
     loadTodos();
     notifyListeners();
@@ -36,15 +32,15 @@ class WeekListModel extends Model {
   void loadTodos() async {
     var isNew = !await DBProvider.db.dbExists();
     if (isNew) {
-      await _db.addPrograms(_db.programs);
-      await _db.addWeeks(_db.weeks);
-      await _db.addDays(_db.days);
-      await _db.addExercises(_db.exercises);
-      await _db.addRounds(_db.rounds);
+      await _db.addPrograms(DefaultData.defaultData.programs);
+      await _db.addWeeks(DefaultData.defaultData.weeks);
+      await _db.addDays(DefaultData.defaultData.days);
+      await _db.addExercises(DefaultData.defaultData.exercises);
+      await _db.addRounds(DefaultData.defaultData.rounds);
     }
-    
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
+    print(_weeks[0].toJson());
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
     _isLoading = false;
     await Future.delayed(Duration(milliseconds: 300));
@@ -82,6 +78,7 @@ class WeekListModel extends Model {
   }
 
   void addWeek(Week week) {
+    print(week.toJson());
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
     if (weeks.length > 0) {

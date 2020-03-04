@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'week_model.dart';
+part of 'week.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -11,6 +11,7 @@ Week _$TodoFromJson(Map<String, dynamic> json) {
     program: json['program'] as String,
     seq: json['seq'] as int,
     isCompleted: json['completed'] as int,
+    date: json['date'] as int,
     id: json['id'] as String);
 }
 
@@ -19,5 +20,6 @@ Map<String, dynamic> _$TodoToJson(Week instance) => <String, dynamic>{
   'program': instance.program,
   'seq': instance.seq,
   'name': instance.name,
-  'completed': instance.isCompleted
+  'completed': instance.isCompleted,
+  'date': instance.date
 };

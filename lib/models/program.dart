@@ -3,7 +3,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/uuid.dart';
 
-part 'program_model.g.dart';
+// import '../db/db_provider.dart';
+// import 'package:sqflite/sqflite.dart';
+
+part 'program.g.dart';
+
 
 @JsonSerializable()
 class Program {
@@ -29,4 +33,19 @@ class Program {
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$TaskFromJson`.
   Map<String, dynamic> toJson() => _$TaskToJson(this);
+
+  // static Database _database;
+  // Future<Database> get database async {
+  //   if (_database != null) return _database;
+  //   _database = await DBProvider.db.initDB();
+  //   return _database;
+  // }
+  // addPrograms(List<Program> programs) async {
+  //   print('addPrograms');
+  //   final _db = await database;
+  //   programs.forEach((it) async {
+  //     var res = await _db.insert("Program", it.toJson());
+  //     print("Program ${it.id} = $res");
+  //   });
+  // }
 }

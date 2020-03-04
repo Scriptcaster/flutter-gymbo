@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'scopedmodel/week_list_model.dart';
+import 'scopedmodel/program.dart';
 import 'gradient_background.dart';
 import 'task_progress_indicator.dart';
 import 'page/program_add.dart';
-import 'models/hero_id_model.dart';
-import 'models/program_model.dart';
+import 'models/hero_id.dart';
+import 'models/program.dart';
 import 'route/scale_route.dart';
 import 'utils/color_utils.dart';
 import 'utils/datetime_utils.dart';

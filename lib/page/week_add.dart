@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../scopedmodel/week_list_model.dart';
-import '../models/week_model.dart';
+import '../scopedmodel/program.dart';
 import '../utils/color_utils.dart';
 import '../component/week_badge.dart';
-import '../models/hero_id_model.dart';
+import '../models/hero_id.dart';
 
 class AddTodoScreen extends StatefulWidget {
   final String taskId;

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../scopedmodel/week_list_model.dart';
+import '../scopedmodel/program.dart';
 import '../task_progress_indicator.dart';
 import '../component/week_badge.dart';
 import '../utils/color_utils.dart';
 import '../page/program_edit.dart';
-import '../models/hero_id_model.dart';
-import '../models/program_model.dart';
-import '../models/week_model.dart';
+import '../models/hero_id.dart';
+import '../models/program.dart';
+import '../models/week.dart';
 import 'week.dart';
+// import 'week_new.dart';
 
 class DetailScreen extends StatefulWidget {
   final String taskId;
@@ -149,7 +151,7 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                         var week = _weeks[index];
                         return Dismissible(key: UniqueKey(), background: Container(color: Colors.red),
                           confirmDismiss: (DismissDirection direction) async {
-                            await showDialog(context: context, builder: (BuildContext context) {
+                            return await showDialog(context: context, builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text("Confirm Removal"),
                                 content: const Text("Are you sure you wish to delete this item?"),
@@ -190,7 +192,7 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                           //   icon: Icon(Icons.delete_outline),
                           //   onPressed: () => model.removeTodo(week),
                           // ),
-                          trailing: Text(week.seq.toString()),
+                         
                             title: Text(
                               week.name,
                               style: TextStyle(
@@ -204,6 +206,10 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                                     : TextDecoration.none,
                               ),
                             ),
+                            subtitle: Text(
+                              DateFormat('MMM d').format(DateTime.fromMillisecondsSinceEpoch(week.date)).toString()
+                            ),
+                            trailing: Icon(Icons.chevron_right),
                           ),
                         );
                       },
@@ -224,16 +230,12 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                       style: new TextStyle(fontSize: 20.0, color: Colors.blue),
                       keyboardType: TextInputType.text,
                       controller: _weekNameController,
-                      onSubmitted: (value) {
-                        _weekNameController.text = value;
-                      }
+                      onSubmitted: (value) => _weekNameController.text = value, 
                     ),
                     actions: <Widget>[
                       FlatButton(
                         child: Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
                       FlatButton(
                         child: Text("Save"),

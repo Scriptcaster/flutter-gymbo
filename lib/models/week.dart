@@ -1,4 +1,4 @@
-import 'package:bench_more/scopedmodel/week_list_model.dart';
+import 'package:bench_more/scopedmodel/program.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -6,24 +6,25 @@ import '../utils/uuid.dart';
 import '../utils/seq.dart';
 
 
-part 'week_model.g.dart';
+part 'week.g.dart';
 
 @JsonSerializable()
 class Week {
   final String id, program;
   final String name;
   @JsonKey(name: 'completed')
-  final int isCompleted, seq;
+  final int isCompleted, seq, date;
 
   Week(this.name, {
+    int date,
     @required this.program,
     this.seq = 1,
     // int seq,
     this.isCompleted = 0,
-    String id
+    String id,
   }): 
-  this.id = id ?? Uuid().generateV4();
-  // this.seq = seq ?? WeekListModel().generateSeq();
+  this.id = id ?? Uuid().generateV4(),
+  this.date = date ?? Seq().generateDate();
 
   Week copy({String name, int seq, int isCompleted, int id, int program}) {
     return Week(

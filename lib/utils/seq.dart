@@ -1,7 +1,7 @@
 class Seq {
 
-  int generateSeq() {
-    return 9;
+  int generateDate() {
+    return new DateTime.now().millisecondsSinceEpoch;
   }
 
 }
