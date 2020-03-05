@@ -25,7 +25,7 @@ class DBProvider {
 
   get _dbPath async {
     String documentsDirectory = await _localPath;
-    return p.join(documentsDirectory, "db_benchy68.db");
+    return p.join(documentsDirectory, "db_benchy80.db");
   }
 
   Future<bool> dbExists() async {
@@ -53,6 +53,7 @@ class DBProvider {
         id INTEGER PRIMARY KEY,
         dayName TEXT,
         target TEXT,
+        isCompleted INTEGER NOT NULL DEFAULT 0,
         weekId TEXT,
         programId TEXT,
         FOREIGN KEY (weekId) REFERENCES Week (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -85,15 +86,14 @@ class DBProvider {
   }
 
   addPrograms(List<Program> programs) async {
-    print('addPrograms');
     final db = await database;
     programs.forEach((it) async {
       var res = await db.insert("Program", it.toJson());
-      print("Program ${it.id} = $res");
     });
   }
 
   addWeeks(List<Week> weeks) async {
+    // print(weeks.asMap());
     final db = await database;
     weeks.forEach((week) async {
       var res = await db.insert("Week", week.toJson());
@@ -103,6 +103,7 @@ class DBProvider {
   addDays(List<Day> days) async {
     final db = await database;
     days.forEach((day) async {
+      // print(day.toMap());
       var res = await db.insert("Day", day.toMap());
     });
   }
@@ -127,7 +128,6 @@ class DBProvider {
   }
 
   Future<int> addWeek(Week week) async {
-    print(week);
     final db = await database;
     DefaultData.defaultData.days.forEach((day) async { 
       await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
@@ -138,7 +138,7 @@ class DBProvider {
   Future<int> addDay(Day day) async {
     final _db = await database;
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
-    return await _db.rawInsert("INSERT Into Day (id, dayName, target, weekId, programId)" " VALUES (?,?,?,?,?)", [_table.first["id"], day.dayName, day.target, day.weekId, day.programId ]);
+    return await _db.rawInsert("INSERT Into Day (id, dayName, target, completed, weekId, programId)" " VALUES (?,?,?,?,?,?)", [_table.first["id"], day.dayName, day.target, day.isCompleted, day.weekId, day.programId ]);
   }
 
   Future<int> addExercise(Exercise newExercise) async {
@@ -168,13 +168,13 @@ class DBProvider {
   Future<List<Week>> getAllWeeks() async {
     final db = await database;
     var result = await db.query('Week ORDER BY seq DESC');
-    print(result.asMap());
     return result.map((it) => Week.fromJson(it)).toList();
   }
 
   Future<List<Day>> getAllDays(String weekId) async {
     final db = await database;
     var res = await db.query("Day", where: 'weekId = ?', whereArgs: [weekId]);
+    // print(res.asMap());
     List<Day> list = res.isNotEmpty ? res.map((c) => Day.fromMap(c)).toList() : [];
     return list;
   }
@@ -242,7 +242,6 @@ class DBProvider {
   }
 
   Future<int> addPreviousWeek(previousWeekId, previousSeq, Week week) async {
-    print(week.toJson());
     final _db = await database;
     var _newDayId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Day");
     var _newExerciseId = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
@@ -302,6 +301,12 @@ class DBProvider {
   Future<int> updateWeek(Week week) async {
     final db = await database;
     return db.update('Week', week.toJson(), where: 'id = ?', whereArgs: [week.id]);
+  }
+
+  Future<int> updateDay(Day day) async {
+    final db = await database;
+    print(day.toMap());
+    return db.update('Day', day.toMap(), where: 'id = ?', whereArgs: [day.id]);
   }
 
   Future<int> updateExercise(Exercise newExercise) async {

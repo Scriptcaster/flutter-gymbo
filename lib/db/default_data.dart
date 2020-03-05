@@ -50,13 +50,13 @@ class DefaultData {
   ];
 
   var days = [
-    Day(id: 1, dayName: 'Monday', target: 'Chest & Triceps', weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Day(id: 2, dayName: 'Tuesday', target: 'Legs',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Day(id: 3, dayName: 'Wednesday', target: 'Abs',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Day(id: 4, dayName: 'Thursday', target: 'Back & Biceps',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Day(id: 5, dayName: 'Friday', target: 'Shoulder',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Day(id: 6, dayName: 'Saturday', target: 'Day Off',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
-    Day(id: 7, dayName: 'Sunday', target: 'Day Off',  weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 1, dayName: 'Monday', target: 'Chest & Triceps', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 2, dayName: 'Tuesday', target: 'Legs', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 3, dayName: 'Wednesday', target: 'Abs', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 4, dayName: 'Thursday', target: 'Back & Biceps', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 5, dayName: 'Friday', target: 'Shoulder', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 6, dayName: 'Saturday', target: 'Day Off', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
+    Day(id: 7, dayName: 'Sunday', target: 'Day Off', isCompleted: 0, weekId: '39811115-7350-47a3-8f89-015e4daf64b8', programId: '1'),
   ];
 
   var weeks = [

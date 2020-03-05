@@ -34,13 +34,15 @@ class WeekListModel extends Model {
     if (isNew) {
       await _db.addPrograms(DefaultData.defaultData.programs);
       await _db.addWeeks(DefaultData.defaultData.weeks);
-      await _db.addDays(DefaultData.defaultData.days);
+       await _db.addDays(DefaultData.defaultData.days);
       await _db.addExercises(DefaultData.defaultData.exercises);
       await _db.addRounds(DefaultData.defaultData.rounds);
     }
+
+   
+
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
-    print(_weeks[0].toJson());
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
     _isLoading = false;
     await Future.delayed(Duration(milliseconds: 300));
@@ -78,7 +80,6 @@ class WeekListModel extends Model {
   }
 
   void addWeek(Week week) {
-    print(week.toJson());
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
     if (weeks.length > 0) {

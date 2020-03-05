@@ -1,3 +1,4 @@
+import 'package:bench_more/models/week.dart';
 import 'package:flutter/material.dart';
 import '../models/day.dart';
 import '../db/db_provider.dart';
@@ -56,21 +57,32 @@ class _WeekLocalState extends State<WeekLocal> {
         builder: (BuildContext context, AsyncSnapshot<List<Day>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(itemCount: snapshot.data.length, itemBuilder: (BuildContext context, int index) {
-              Day item = snapshot.data[index];
+              Day day = snapshot.data[index];
+              print('FutureBuilder');
               return Dismissible(
                 key: UniqueKey(),
                 background: Container(color: Colors.red),
-                onDismissed: (direction) => DBProvider.db.removeDay(item), 
+                onDismissed: (direction) => DBProvider.db.removeDay(day), 
                 child: ListTile(
-                  leading: Text(item.id.toString()),
-                  title: Text(item.dayName.toString()),
-                  subtitle: Text(item.target.toString()),
+                  // leading: Text(day.id.toString()),
+                  leading: Checkbox(
+                    onChanged: (value) {
+                      setState(() {
+                        DBProvider.db.updateDay( day.copy(isCompleted: value ? 1 : 0) );
+                      });
+                    },
+                    value: day.isCompleted == 1 ? true : false
+                  ),
+                  title: Text(day.dayName.toString()),
+                  subtitle: Text(day.target.toString()),
                   // trailing: Text(item.weekId.toString()),
+                  trailing: Icon(Icons.chevron_right),
                   onTap: () async {
-                    await Navigator.push( context, MaterialPageRoute(
-                      builder: (context) => DayLocal(id: item.id, dayName: item.dayName, target: item.target, weekId: item.weekId, programId: item.programId),
-                    ));
                     setState(() {});
+                    await Navigator.push( context, MaterialPageRoute(
+                      builder: (context) => DayLocal(id: day.id, dayName: day.dayName, target: day.target, weekId: day.weekId, programId: day.programId),
+                    ));
+                   
                   },
                 ),
               );
