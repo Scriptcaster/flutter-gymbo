@@ -92,7 +92,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                         ]
                       )
                     ),
-                    Container(padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                    Container(padding: EdgeInsets.only(top: 30.0, bottom: 0.0),
                       child: Row(
                         children: <Widget>[
                           Expanded(flex: 1, child: Container(height: 5)),
@@ -120,7 +120,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                             child: Text(previousExerciseVolume.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 16))
 
                           ),
-                          Container(width: 100, padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                          Container(width: 100, padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                             child: Text(exercise.currentVolume.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 16))
                           ),
                           Expanded(flex: 1, child: Container(height: 10)),
@@ -128,20 +128,20 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                      padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
                       child: Row(
                         children: <Widget>[
-                          Expanded(flex: 1, child: Container(height: 50)),
-                          Container(width: 90, padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                          Expanded(flex: 1, child: Container(height: 0)),
+                          Container(width: 90, padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                             child: Text('Weight', textAlign: TextAlign.center, style: TextStyle(fontSize: 16))
                           ),
-                          Container(width: 90, padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                          Container(width: 90, padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                             child: Text('Sets', textAlign: TextAlign.center, style: TextStyle(fontSize: 16))
                           ),
-                          Container(width: 90, padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                          Container(width: 90, padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                             child: Text('Reps', textAlign: TextAlign.center, style: TextStyle(fontSize: 16))
                           ),
-                          Expanded(flex: 1, child: Container(height: 50)),
+                          Expanded(flex: 1, child: Container(height: 0)),
                         ],
                       ),
                     ),

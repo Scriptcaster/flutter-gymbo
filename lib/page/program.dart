@@ -176,7 +176,7 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                           onTap: () {
                             Navigator.push(context,
                               MaterialPageRoute(
-                                builder: (context) => WeekLocal(id: week.id, name: week.name, programId: _program.id ),
+                                builder: (context) => WeekLocal(id: week.id, name: week.name, date: week.date, programId: _program.id, taskId: widget.taskId, heroIds:widget.heroIds, color: _color ),
                               ),
                             );
                           },
