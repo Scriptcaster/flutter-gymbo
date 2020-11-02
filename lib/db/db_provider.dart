@@ -290,7 +290,7 @@ class DBProvider {
         incrementDay++;
       });
     }
-    return await _db.rawInsert("INSERT Into Week (id, program, seq, name, completed, date)" " VALUES (?,?,?,?,?)", [week.id, week.program, previousSeq, week.name, week.isCompleted, week.date]);
+    return await _db.rawInsert("INSERT Into Week (id, program, seq, name, completed, date)" " VALUES (?,?,?,?,?,?)", [week.id, week.program, previousSeq, week.name, week.isCompleted, week.date]);
   }
 
   Future<int> updateProgram(Program program) async {
