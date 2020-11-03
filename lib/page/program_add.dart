@@ -78,6 +78,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     hintStyle: TextStyle(
                       color: Colors.black26,
                     )),
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(
                     color: Colors.black54,
                     fontWeight: FontWeight.w500,

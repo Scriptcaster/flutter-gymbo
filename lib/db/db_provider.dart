@@ -132,7 +132,7 @@ class DBProvider {
     DefaultData.defaultData.days.forEach((day) async { 
       await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
     });
-    return await db.rawInsert("INSERT Into Week (id, program, seq, name, completed, date)" " VALUES (?,?,?,?,?)", [week.id, week.program, week.seq, week.name, week.isCompleted, week.date]);
+    return await db.rawInsert("INSERT Into Week (id, program, seq, name, completed, date)" " VALUES (?,?,?,?,?,?)", [week.id, week.program, week.seq, week.name, week.isCompleted, week.date]);
   }
 
   Future<int> addDay(Day day) async {
