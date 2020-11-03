@@ -167,7 +167,24 @@ class _MyHomePageState extends State<MyHomePage>
                                   color: Colors.white.withOpacity(0.7)),
                             ),
                             Container(
-                              height: 16.0,
+                              // height: 16.0,
+
+                              child: new Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    'You have pushed the button this many times:',
+                                  ),
+                                  new Text(
+                                    'Text',
+                                    // '$_counter',
+                                    // style: Theme.of(context).textTheme.display1,
+                                  ),
+                                  // chartWidget,
+                                ],
+                              ),
+
+
                             )
                             // Container(
                             //   margin: EdgeInsets.only(top: 42.0),
