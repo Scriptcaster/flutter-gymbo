@@ -14,6 +14,9 @@ import 'page/program.dart';
 import 'component/week_badge.dart';
 import 'page/privacy_policy.dart';
 import 'models/choice_card.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'utils/subscriber_series.dart';
+import 'utils/subscriber_chart.dart';
 
 void main() => runApp(MyApp());
 
@@ -74,6 +77,51 @@ class _MyHomePageState extends State<MyHomePage>
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   PageController _pageController;
   int _currentPageIndex = 0;
+
+
+  final List<SubscriberSeries> data = [
+    SubscriberSeries(
+      year: "2008",
+      subscribers: 10000000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2009",
+      subscribers: 11000000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2010",
+      subscribers: 12000000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2011",
+      subscribers: 10000000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2012",
+      subscribers: 8500000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2013",
+      subscribers: 7700000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2014",
+      subscribers: 7600000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+    ),
+    SubscriberSeries(
+      year: "2015",
+      subscribers: 5500000,
+      barColor: charts.ColorUtil.fromDartColor(Colors.red),
+    ),
+  ];
+
 
   @override
   void initState() {
@@ -169,23 +217,14 @@ class _MyHomePageState extends State<MyHomePage>
                             Container(
                               // height: 16.0,
 
-                              child: new Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  new Text(
-                                    'You have pushed the button this many times:',
-                                  ),
-                                  new Text(
-                                    'Text',
-                                    // '$_counter',
-                                    // style: Theme.of(context).textTheme.display1,
-                                  ),
-                                  // chartWidget,
-                                ],
-                              ),
+                            // child: Text("Hello, Charts!"),
 
+                            child: Center(
+                                child: SubscriberChart(
+                              data: data,
+                            )),
 
-                            )
+                            ),
                             // Container(
                             //   margin: EdgeInsets.only(top: 42.0),
                             //   child: Text(
