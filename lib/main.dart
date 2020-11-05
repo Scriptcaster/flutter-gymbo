@@ -81,44 +81,24 @@ class _MyHomePageState extends State<MyHomePage>
 
   final List<SubscriberSeries> data = [
     SubscriberSeries(
-      year: "2008",
-      subscribers: 10000000,
+      year: "MAR",
+      subscribers: 10,
       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
     ),
     SubscriberSeries(
-      year: "2009",
-      subscribers: 11000000,
+      year: "APR",
+      subscribers: 15,
       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
     ),
     SubscriberSeries(
-      year: "2010",
-      subscribers: 12000000,
+      year: "MAY",
+      subscribers: 20,
       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
     ),
     SubscriberSeries(
-      year: "2011",
-      subscribers: 10000000,
+      year: "JUN",
+      subscribers: 25,
       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "2012",
-      subscribers: 8500000,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "2013",
-      subscribers: 7700000,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "2014",
-      subscribers: 7600000,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "2015",
-      subscribers: 5500000,
-      barColor: charts.ColorUtil.fromDartColor(Colors.red),
     ),
   ];
 
@@ -188,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(top: 0.0, left: 56.0),
+                        margin: EdgeInsets.only(top: 0.0, left: 40.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -216,25 +196,10 @@ class _MyHomePageState extends State<MyHomePage>
                             ),
                             Container(
                               // height: 16.0,
-
-                            // child: Text("Hello, Charts!"),
-
-                            child: Center(
-                                child: SubscriberChart(
-                              data: data,
-                            )),
-
+                              child: SubscriberChart(
+                                data: data,
+                              )
                             ),
-                            // Container(
-                            //   margin: EdgeInsets.only(top: 42.0),
-                            //   child: Text(
-                            //     'TODAY : FEBURARY 13, 2019',
-                            //     style: Theme.of(context)
-                            //         .textTheme
-                            //         .subtitle
-                            //         .copyWith(color: Colors.white.withOpacity(0.8)),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -304,7 +269,7 @@ class AddPageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(4.0),
       ),
       elevation: 4.0,
       margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
@@ -399,7 +364,7 @@ class TaskCard extends StatelessWidget {
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(4.0),
         ),
         elevation: 4.0,
         margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),

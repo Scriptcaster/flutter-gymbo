@@ -19,15 +19,20 @@ class SubscriberChart extends StatelessWidget {
     ];
 
     return Container(
-      height: 400,
-      padding: EdgeInsets.all(20),
+      height: 260,
+      padding: EdgeInsets.only(
+        left: 0,
+        top: 20,
+        right: 20,
+        bottom: 20,
+      ),
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
               Text(
-                "World of Warcraft Subscribers by Year",
+                "Weight Lifted",
                 style: Theme.of(context).textTheme.body2,
               ),
               Expanded(
