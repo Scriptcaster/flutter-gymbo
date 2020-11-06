@@ -136,6 +136,11 @@ class _MyHomePageState extends State<MyHomePage>
       var backgroundColor = _programs.isEmpty || _programs.length == _currentPageIndex
           ? Colors.blueGrey
           : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
+      
+      _programs.forEach((element) {
+        print(element.toJson());
+      });
+
       if (!_isLoading) {
         // move the animation value towards upperbound only when loading is complete
         _controller.forward();
@@ -208,8 +213,20 @@ class _MyHomePageState extends State<MyHomePage>
                             ),
                             Container(
                               // height: 16.0,
+                               
                               child: SubscriberChart(
-                                data: data,
+                                // data: data,
+                               
+                                data: 
+                                [
+                                  SubscriberSeries(
+                                    year: 'NOV',
+                                    subscribers: _weeks.length,
+                                    barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+                                  ),
+                                ]
+                                
+  ,
                               )
                             ),
                           ],
