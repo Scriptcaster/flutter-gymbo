@@ -225,6 +225,13 @@ class DBProvider {
     return _list;
   }
 
+  Future<List<Round>> getAllRoundsAll() async {
+    final _db = await database;
+    var _res = await _db.query("Round");
+    List<Round> _list = _res.isNotEmpty ? _res.map((c) => Round.fromMap(c)).toList() : [];
+    return _list;
+  }
+
   getPreviousVolume(int id, String name) async {
     final db = await database;
     var previousExerciseVolume = await db.rawQuery("SELECT * FROM Exercise WHERE id < ? AND name = ? ORDER BY id DESC LIMIT 1", [id, name]);

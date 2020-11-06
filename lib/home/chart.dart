@@ -1,3 +1,7 @@
+import 'package:bench_more/models/day.dart';
+import 'package:bench_more/models/exercise.dart';
+import 'package:bench_more/models/round.dart';
+import 'package:bench_more/models/week.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -65,6 +69,26 @@ class _MyHomePageState extends State<MyHomePage>
     print('hey!');
   }
 
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Expanded(
+  //     child: FutureBuilder<List<Week>>(
+  //       future: DBProvider.db.getAllWeeks(),
+  //       builder: (BuildContext context, AsyncSnapshot<List<Week>> snapshot) {
+  //         if (snapshot.hasData) {
+  //           return ListView.builder(itemCount: snapshot.data.length, itemBuilder: (BuildContext context, int index) {
+  //             print(snapshot.data);
+              
+  //           });
+  //         } else {
+  //           return Center(child: CircularProgressIndicator());
+  //         }
+  //       }
+  //     )
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<WeekListModel>(
@@ -78,8 +102,21 @@ class _MyHomePageState extends State<MyHomePage>
               : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
 
       _programs.forEach((element) {
-        print(element.toJson());
+        // print(element.toJson());
       });
+      var _db = DBProvider.db;
+      List<Round> _myweeks = [];
+      // List<Day> get days => _days.toList();
+
+      void loadTodos() async {
+        _myweeks = await _db.getAllRoundsAll();
+        // print(_myweeks.length);
+        _myweeks.forEach((element) {
+          print(element.weight);
+        });
+      }
+
+      loadTodos();
 
       if (!_isLoading) {
         // move the animation value towards upperbound only when loading is complete
@@ -146,6 +183,7 @@ class _MyHomePageState extends State<MyHomePage>
       );
     });
   }
+
 
   @override
   void dispose() {
