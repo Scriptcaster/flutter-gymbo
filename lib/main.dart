@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'db/db_provider.dart';
 
 import 'scopedmodel/program.dart';
 import 'gradient_background.dart';
@@ -79,29 +80,38 @@ class _MyHomePageState extends State<MyHomePage>
   int _currentPageIndex = 0;
 
 
+  // final List<SubscriberSeries> data = [
+  //   SubscriberSeries(
+  //     year: "MAR",
+  //     subscribers: 10,
+  //     barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //   ),
+  //   SubscriberSeries(
+  //     year: "APR",
+  //     subscribers: 15,
+  //     barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //   ),
+  //   SubscriberSeries(
+  //     year: "MAY",
+  //     subscribers: 20,
+  //     barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //   ),
+  //   SubscriberSeries(
+  //     year: "JUN",
+  //     subscribers: 25,
+  //     barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //   ),
+  // ];
+
+
   final List<SubscriberSeries> data = [
-    SubscriberSeries(
-      year: "MAR",
-      subscribers: 10,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "APR",
-      subscribers: 15,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "MAY",
-      subscribers: 20,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
-    SubscriberSeries(
-      year: "JUN",
-      subscribers: 25,
-      barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-    ),
+
   ];
 
+  refreshVolumes() async {
+    var getPreviousExerciseVolume = await DBProvider.db.getAllWeeks();
+    print(getPreviousExerciseVolume);
+  }
 
   @override
   void initState() {
@@ -112,6 +122,8 @@ class _MyHomePageState extends State<MyHomePage>
     );
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _pageController = PageController(initialPage: 0, viewportFraction: 0.8);
+    refreshVolumes();
+    print('hey!');
   }
 
   @override
