@@ -13,10 +13,10 @@ import '../models/program.dart';
 import '../models/choice_card.dart';
 import '../utils/color_utils.dart';
 import '../utils/datetime_utils.dart';
-import '../utils/subscriber_series.dart';
-import '../utils/subscriber_chart.dart';
-import '../utils/task_card.dart';
-import '../utils/add_category.dart';
+import 'subscriber_series.dart';
+import 'subscriber_chart.dart';
+import 'task_card.dart';
+import 'add_category.dart';
 import '../page/privacy_policy.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -69,7 +69,6 @@ class _MyHomePageState extends State<MyHomePage>
     print('hey!');
   }
 
-
   // @override
   // Widget build(BuildContext context) {
   //   return Expanded(
@@ -79,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage>
   //         if (snapshot.hasData) {
   //           return ListView.builder(itemCount: snapshot.data.length, itemBuilder: (BuildContext context, int index) {
   //             print(snapshot.data);
-              
+
   //           });
   //         } else {
   //           return Center(child: CircularProgressIndicator());
@@ -101,19 +100,20 @@ class _MyHomePageState extends State<MyHomePage>
               ? Colors.blueGrey
               : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
 
-      _programs.forEach((element) {
-        // print(element.toJson());
-      });
+      // _programs.forEach((element) {
+      //   // print(element.toJson());
+      // });
       var _db = DBProvider.db;
-      List<Round> _myweeks = [];
+      List<Week> _allRounds = [];
       // List<Day> get days => _days.toList();
-
       void loadTodos() async {
-        _myweeks = await _db.getAllRoundsAll();
+        print('hey');
+        // _allRounds = await _db.getAllWeeksAll();
         // print(_myweeks.length);
-        _myweeks.forEach((element) {
-          print(element.weight);
-        });
+        // _allRounds.forEach((element) {
+        //   // print(element.weight);
+        //   // print(element.toString());
+        // });
       }
 
       loadTodos();
@@ -183,7 +183,6 @@ class _MyHomePageState extends State<MyHomePage>
       );
     });
   }
-
 
   @override
   void dispose() {

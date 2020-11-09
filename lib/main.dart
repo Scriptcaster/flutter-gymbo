@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'scopedmodel/program.dart';
-// import 'utils/my_home_page.dart';
+// import 'home/my_home_page.dart';
 import 'home/chart.dart';
 
 void main() => runApp(MyApp());

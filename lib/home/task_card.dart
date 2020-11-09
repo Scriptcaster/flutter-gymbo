@@ -4,7 +4,7 @@ import '../task_progress_indicator.dart';
 import '../models/hero_id.dart';
 import '../models/program.dart';
 import '../route/scale_route.dart';
-import 'color_utils.dart';
+import '../utils/color_utils.dart';
 
 import '../page/program.dart';
 import '../component/week_badge.dart';
