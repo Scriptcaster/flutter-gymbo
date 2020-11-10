@@ -41,32 +41,24 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> _animation;
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   PageController _pageController;
   int _currentPageIndex = 0;
-
   final List<SubscriberSeries> data = [];
-
   refreshVolumes() async {
     var getPreviousExerciseVolume = await DBProvider.db.getAllWeeks();
-    print(getPreviousExerciseVolume);
   }
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _pageController = PageController(initialPage: 0, viewportFraction: 0.8);
     refreshVolumes();
-    print('hey!');
   }
 
   // @override
@@ -95,11 +87,7 @@ class _MyHomePageState extends State<MyHomePage>
       var _isLoading = model.isLoading;
       var _programs = model.programs;
       var _weeks = model.weeks;
-      var backgroundColor =
-          _programs.isEmpty || _programs.length == _currentPageIndex
-              ? Colors.blueGrey
-              : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
-
+      var backgroundColor = _programs.isEmpty || _programs.length == _currentPageIndex ? Colors.blueGrey : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
       // _programs.forEach((element) {
       //   // print(element.toJson());
       // });
@@ -107,8 +95,8 @@ class _MyHomePageState extends State<MyHomePage>
       List<Week> _allRounds = [];
       // List<Day> get days => _days.toList();
       void loadTodos() async {
-        print('hey');
-        // _allRounds = await _db.getAllWeeksAll();
+        // print('hey');
+        _allRounds = await _db.getAllWeeksAll();
         // print(_myweeks.length);
         // _allRounds.forEach((element) {
         //   // print(element.weight);
@@ -134,9 +122,7 @@ class _MyHomePageState extends State<MyHomePage>
             actions: [
               PopupMenuButton<Choice>(
                 onSelected: (choice) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          PrivacyPolicyScreen()));
+                  Navigator.of(context).push(MaterialPageRoute( builder: (BuildContext context) => PrivacyPolicyScreen()));
                 },
                 itemBuilder: (BuildContext context) {
                   return choices.map((Choice choice) {
@@ -162,11 +148,9 @@ class _MyHomePageState extends State<MyHomePage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                          // height: 16.0,
-
-                          child: SubscriberChart(
+                        // height: 16.0,
+                        child: SubscriberChart(
                         // data: data,
-
                         data: [
                           SubscriberSeries(
                             year: 'NOV',
