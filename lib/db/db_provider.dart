@@ -211,6 +211,12 @@ class DBProvider {
     return result.map((it) => Week.fromJson(it)).toList();
   }
 
+  Future<List<Day>> getAllDaysAll() async {
+    final db = await database;
+    var result = await db.query('Day');
+    return result.map((it) => Day.fromJson(it)).toList();
+  }
+
 
 
 

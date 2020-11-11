@@ -36,7 +36,7 @@ class Week {
     );
   }
 
-    /// A necessary factory constructor for creating a new User instance
+  /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$TodoFromJson()` constructor.
   /// The constructor is named after the source class, in this case User.
   factory Week.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);

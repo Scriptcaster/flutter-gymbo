@@ -1,3 +1,4 @@
+import 'package:bench_more/models/day.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -10,6 +11,7 @@ class WeekListModel extends Model {
   var _db = DBProvider.db;
   List<Week> get weeks => _weeks.toList();
   List<Program> get programs => _programs.toList();
+  List<Day> get days => _days.toList();
   int getTaskCompletionPercent(Program program) => _programCompletionPercentage[program.id];
   int getTotalTodosFrom(Program program) => weeks.where((it) => it.program == program.id).length;  
   bool get isLoading => _isLoading;
@@ -17,6 +19,7 @@ class WeekListModel extends Model {
   bool _isLoading = false;
   List<Program> _programs = [];
   List<Week> _weeks = [];
+  List<Day> _days = [];
   Map<String, int> _programCompletionPercentage =  Map();
 
   static WeekListModel of(BuildContext context) => ScopedModel.of<WeekListModel>(context);
@@ -41,6 +44,7 @@ class WeekListModel extends Model {
     
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
+    _days = await _db.getAllDaysAll();
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
     _isLoading = false;
     await Future.delayed(Duration(milliseconds: 300));
@@ -77,11 +81,11 @@ class WeekListModel extends Model {
     notifyListeners();
   }
 
-  void updateChart(target) {
-    print(target);
-    // var oldTask = _programs.firstWhere((it) => it.id == program.id);
-    // var replaceIndex = _programs.indexOf(oldTask);
-    // _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
+  void updateChart(Day day) {
+    var oldDay = _days.firstWhere((it) => it.id == day.id);
+    var replaceIndex = _days.indexOf(oldDay);
+    _days.replaceRange(replaceIndex, replaceIndex + 1, [day]);
+    print(_days[14].toJson());
     // _db.updateProgram(program);
     // notifyListeners();
   }

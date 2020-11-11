@@ -45,11 +45,14 @@ class _WeekLocalState extends State<WeekLocal> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<WeekListModel>(
       builder: (BuildContext context, Widget child, WeekListModel model) {
-          Program _program;
-          Week _week;
-         _program = model.programs.firstWhere((week) => week.id == widget.taskId);
-         _week = model.weeks.firstWhere((day) => day.id == widget.id);
-         print(_week.toJson());
+        Program _program;
+        Week _week;
+        Day _day;
+        _program = model.programs.firstWhere((week) => week.id == widget.taskId);
+        // _week = model.weeks.firstWhere((day) => day.id == widget.id);
+        // print(model.weeks);
+        // _day = model.days.firstWhere((day) => day.probramId == widget.id);
+        // print(model.days);
         return Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.white,

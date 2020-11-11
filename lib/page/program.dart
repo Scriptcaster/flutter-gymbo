@@ -69,6 +69,7 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
         Program _program;
         try {
          _program = model.programs.firstWhere((week) => week.id == widget.taskId);
+        //  print(_program.toJson());
         } catch (e) {
           return Container(
             color: Colors.white,
