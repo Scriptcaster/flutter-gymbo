@@ -18,9 +18,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) => afterLayoutWidgetBuild());
-
   }
 
   afterLayoutWidgetBuild() {
@@ -49,7 +47,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     setState(() {});                     
   }
 
-   _updateCurrentVolumeOnAdd(exercise) async {
+  _updateCurrentVolumeOnAdd(exercise) async {
     exercise.round.add(exercise.round.last);
     exercise.currentVolume = 0;
     for (int i = 0; i < exercise.round.length; i++) {   
@@ -82,9 +80,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                             keyboardType: TextInputType.text,
                             controller: _exerciseController,
                             onSubmitted: (value) async {
-                              if (value.isNotEmpty) {
-                                await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value));
-                              }
+                              if (value.isNotEmpty) { await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value)); }
                               refreshVolumes(exercise.id, value);
                               setState(() {});
                             }

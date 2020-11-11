@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../models/week.dart';
+import '../models/program.dart';
 import '../db/db_provider.dart';
 import '../db/default_data.dart';
 
-import '../models/week.dart';
-import '../models/day.dart';
-
-class WeekListModel extends Model {
+class WeekModel extends Model {
   var _db = DBProvider.db;
-
-  bool _isLoading = false;
-  List<Day> _days = [];
-  Map<String, int> _programCompletionPercentage =  Map();
-
-  List<Day> get days => _days.toList();
+  List<Week> get weeks => _weeks.toList();
+  List<Program> get programs => _programs.toList();
+  int getTaskCompletionPercent(Program program) => _programCompletionPercentage[program.id];
+  int getTotalTodosFrom(Program program) => weeks.where((it) => it.program == program.id).length;  
   bool get isLoading => _isLoading;
 
-  static WeekListModel of(BuildContext context) => ScopedModel.of<WeekListModel>(context);
+  bool _isLoading = false;
+  List<Program> _programs = [];
+  List<Week> _weeks = [];
+  Map<String, int> _programCompletionPercentage =  Map();
+
+  static WeekModel of(BuildContext context) => ScopedModel.of<WeekModel>(context);
 
   @override
   void addListener(listener) {
@@ -36,7 +38,10 @@ class WeekListModel extends Model {
       await _db.addExercises(DefaultData.defaultData.exercises);
       await _db.addRounds(DefaultData.defaultData.rounds);
     }
-    _days = await _db.getAllDays();
+    
+    _programs = await _db.getAllPrograms();
+    _weeks = await _db.getAllWeeks();
+    _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
     _isLoading = false;
     await Future.delayed(Duration(milliseconds: 300));
     notifyListeners();
@@ -47,6 +52,38 @@ class WeekListModel extends Model {
     super.removeListener(listener);
     print("remove listner called");
     // DBProvider.db.closeDB();
+  }
+
+  void addProgram(Program program) {
+    _programs.add(program);
+    _calcTaskCompletionPercent(program.id);
+    _db.addProgram(program);
+    notifyListeners();
+  }
+
+  void removeProgram(Program program) {
+    _db.removeProgram(program).then((_) {
+      _programs.removeWhere((it) => it.id == program.id);
+      _weeks.removeWhere((it) => it.program == program.id);
+      notifyListeners();
+    });
+  }
+
+  void updateProgram(Program program) {
+    var oldTask = _programs.firstWhere((it) => it.id == program.id);
+    var replaceIndex = _programs.indexOf(oldTask);
+    _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
+    _db.updateProgram(program);
+    notifyListeners();
+  }
+
+  void updateChart(target) {
+    print(target);
+    // var oldTask = _programs.firstWhere((it) => it.id == program.id);
+    // var replaceIndex = _programs.indexOf(oldTask);
+    // _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
+    // _db.updateProgram(program);
+    // notifyListeners();
   }
 
   void addWeek(Week week) {
@@ -61,6 +98,7 @@ class WeekListModel extends Model {
     } else  {
       _weeks.add(week);
       _db.addWeek(week);
+       notifyListeners();
     }
     _syncJob(week);
     notifyListeners();

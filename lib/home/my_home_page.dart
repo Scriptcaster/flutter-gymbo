@@ -44,17 +44,22 @@ class _MyHomePageState extends State<MyHomePage>
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   PageController _pageController;
   int _currentPageIndex = 0;
-
-  final List<SubscriberSeries> data = [];
+  var _db = DBProvider.db;
+  List<SubscriberSeries> data = [];
 
   refreshVolumes() async {
     var getPreviousExerciseVolume = await DBProvider.db.getAllWeeks();
     print(getPreviousExerciseVolume);
   }
 
+  void loadChart() async {
+    data = await _db.getChartData();
+  }
+
   @override
   void initState() {
     super.initState();
+    loadChart();
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -62,25 +67,15 @@ class _MyHomePageState extends State<MyHomePage>
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _pageController = PageController(initialPage: 0, viewportFraction: 0.8);
     refreshVolumes();
-    print('hey!');
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<WeekListModel>(
-        builder: (BuildContext context, Widget child, WeekListModel model) {
+    return ScopedModelDescendant<WeekListModel>(builder: (BuildContext context, Widget child, WeekListModel model) {
       var _isLoading = model.isLoading;
       var _programs = model.programs;
       var _weeks = model.weeks;
-      var backgroundColor =
-          _programs.isEmpty || _programs.length == _currentPageIndex
-              ? Colors.blueGrey
-              : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
-
-      _programs.forEach((element) {
-        print(element.toJson());
-      });
-
+      var backgroundColor = _programs.isEmpty || _programs.length == _currentPageIndex? Colors.blueGrey : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
       if (!_isLoading) {
         // move the animation value towards upperbound only when loading is complete
         _controller.forward();
@@ -125,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(top: 0.0, left: 40.0),
+                        margin: EdgeInsets.only(top: 0.0, left: 30.0, right: 10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -140,32 +135,12 @@ class _MyHomePageState extends State<MyHomePage>
                                     .copyWith(color: Colors.white),
                               ),
                             ),
-                            Text(
-                              '${DateTimeUtils.currentDate} ${DateTimeUtils.currentMonth}',
-                              style: Theme.of(context).textTheme.title.copyWith(
-                                  color: Colors.white.withOpacity(0.7)),
-                            ),
+                            Text('${DateTimeUtils.currentDate} ${DateTimeUtils.currentMonth}', style: Theme.of(context).textTheme.title.copyWith(color: Colors.white.withOpacity(0.7))),
                             Container(height: 16.0),
-                            Text(
-                              'You have ${_weeks.where((week) => week.isCompleted == 0).length} programs to complete',
-                              style: Theme.of(context).textTheme.body1.copyWith(
-                                  color: Colors.white.withOpacity(0.7)),
-                            ),
+                            Text('You have ${_weeks.where((week) => week.isCompleted == 0).length} programs to complete', style: Theme.of(context).textTheme.body1.copyWith(color: Colors.white.withOpacity(0.7))),
                             Container(
-                                // height: 16.0,
-
-                                child: SubscriberChart(
-                              // data: data,
-
-                              data: [
-                                SubscriberSeries(
-                                  year: 'NOV',
-                                  subscribers: _weeks.length,
-                                  barColor: charts.ColorUtil.fromDartColor(
-                                      Colors.blue),
-                                ),
-                              ],
-                            )),
+                              child: SubscriberChart(data: data)
+                            ),
                           ],
                         ),
                       ),
@@ -175,10 +150,8 @@ class _MyHomePageState extends State<MyHomePage>
                         child: NotificationListener<ScrollNotification>(
                           onNotification: (notification) {
                             if (notification is ScrollEndNotification) {
-                              print(
-                                  "ScrollNotification = ${_pageController.page}");
-                              var currentPage =
-                                  _pageController.page.round().toInt();
+                              print("ScrollNotification = ${_pageController.page}");
+                              var currentPage = _pageController.page.round().toInt();
                               if (_currentPageIndex != currentPage) {
                                 setState(() => _currentPageIndex = currentPage);
                               }
@@ -195,10 +168,9 @@ class _MyHomePageState extends State<MyHomePage>
                                 return TaskCard(
                                   backdropKey: _backdropKey,
                                   color: ColorUtils.getColorFrom(
-                                      id: _programs[index].color),
+                                  id: _programs[index].color),
                                   getHeroIds: widget._generateHeroIds,
-                                  getTaskCompletionPercent:
-                                      model.getTaskCompletionPercent,
+                                  getTaskCompletionPercent: model.getTaskCompletionPercent,
                                   getTotalTodos: model.getTotalTodosFrom,
                                   program: _programs[index],
                                 );

@@ -6,8 +6,7 @@ class SubscriberSeries {
   final int subscribers;
   final charts.Color barColor;
 
-  SubscriberSeries(
-    {
+  SubscriberSeries({
       @required this.year,
       @required this.subscribers,
       @required this.barColor

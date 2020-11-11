@@ -38,11 +38,10 @@ class TaskCard extends StatelessWidget {
             backdropKey.currentContext.findRenderObject();
         var backDropHeight = renderBox.size.height;
         var bottomOffset = 60.0;
-        var horizontalOffset = 52.0;
+        var horizontalOffset = 40.0;
         var topOffset = MediaQuery.of(context).size.height - backDropHeight;
 
-        var rect = RelativeRect.fromLTRB(
-            horizontalOffset, topOffset, horizontalOffset, bottomOffset);
+        var rect = RelativeRect.fromLTRB(horizontalOffset, topOffset, horizontalOffset, bottomOffset);
         Navigator.push(
           context,
           ScaleRoute(
@@ -65,7 +64,7 @@ class TaskCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(4.0),
         ),
         elevation: 4.0,
-        margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+        margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0),
         color: Colors.white,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),

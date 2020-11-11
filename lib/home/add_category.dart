@@ -14,7 +14,7 @@ class AddPageCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(4.0),
       ),
       elevation: 4.0,
-      margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+      margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       child: Material(
         borderRadius: BorderRadius.circular(16.0),
         color: Colors.white,

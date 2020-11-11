@@ -185,9 +185,9 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                           // contentPadding: EdgeInsets.symmetric(
                           //     horizontal: 0, vertical: 8.0),
                           leading: Checkbox(
-                              onChanged: (value) => model.updateWeek(
-                                  week.copy(isCompleted: value ? 1 : 0)),
-                              value: week.isCompleted == 1 ? true : false),
+                              onChanged: (value) => model.updateWeek(week.copy(isCompleted: value ? 1 : 0)),
+                              value: week.isCompleted == 1 ? true : false
+                          ),
                           // trailing: IconButton(
                           //   icon: Icon(Icons.delete_outline),
                           //   onPressed: () => model.removeTodo(week),
@@ -198,12 +198,8 @@ class _ProgramScreenState extends State<DetailScreen> with SingleTickerProviderS
                               style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w600,
-                                color: week.isCompleted == 1
-                                    ? _color
-                                    : Colors.black54,
-                                decoration: week.isCompleted == 1
-                                    ? TextDecoration.lineThrough
-                                    : TextDecoration.none,
+                                color: week.isCompleted == 1 ? _color : Colors.black54,
+                                decoration: week.isCompleted == 1 ? TextDecoration.lineThrough : TextDecoration.none,
                               ),
                             ),
                             subtitle: Text(

@@ -34,13 +34,11 @@ class WeekListModel extends Model {
     if (isNew) {
       await _db.addPrograms(DefaultData.defaultData.programs);
       await _db.addWeeks(DefaultData.defaultData.weeks);
-       await _db.addDays(DefaultData.defaultData.days);
+      await _db.addDays(DefaultData.defaultData.days);
       await _db.addExercises(DefaultData.defaultData.exercises);
       await _db.addRounds(DefaultData.defaultData.rounds);
     }
-
-   
-
+    
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
@@ -79,19 +77,25 @@ class WeekListModel extends Model {
     notifyListeners();
   }
 
+  void updateChart(target) {
+    print(target);
+    // var oldTask = _programs.firstWhere((it) => it.id == program.id);
+    // var replaceIndex = _programs.indexOf(oldTask);
+    // _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
+    // _db.updateProgram(program);
+    // notifyListeners();
+  }
+
   void addWeek(Week week) {
-    
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
     if (weeks.length > 0) {
-      print('Add Second Week');
       Week previousWeek;
       for (int i = 0; i < 1; i++) {previousWeek = weeks[i];}
       weeks.sort((a, b) => a.seq.compareTo(b.seq));
       _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1, id: week.id));      
       _db.addPreviousWeek(previousWeek.id, previousWeek.seq + 1, week );
     } else  {
-      print('Add First Week');
       _weeks.add(week);
       _db.addWeek(week);
        notifyListeners();

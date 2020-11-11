@@ -117,8 +117,7 @@ class _EditCardScreenState extends State<EditTaskScreen> {
               ],
             ),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Builder(
             builder: (BuildContext context) {
               return FloatingActionButton.extended(
@@ -129,8 +128,7 @@ class _EditCardScreenState extends State<EditTaskScreen> {
                 onPressed: () {
                   if (newTask.isEmpty) {
                     final snackBar = SnackBar(
-                      content: Text(
-                          'Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
+                      content: Text('Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
                       backgroundColor: taskColor,
                     );
                     Scaffold.of(context).showSnackBar(snackBar);
