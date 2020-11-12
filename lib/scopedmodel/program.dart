@@ -79,41 +79,30 @@ class WeekListModel extends Model {
       notifyListeners();
     });
   }
-
-
-
-
-
-
-
-
-
-
-
+  
   void updateChart(Exercise exercise) {
-    // print(exercise.toJson());
-    // _exercises.forEach((element) {
-    //   print(element.toJson());
-    // });
     var oldExercise = _exercises.firstWhere((it) => it.id == exercise.id);
     var replaceIndex = _exercises.indexOf(oldExercise);
     _exercises.replaceRange(replaceIndex, replaceIndex + 1, [exercise]);
-    // _db.updateProgram(program);
     notifyListeners();
   }
 
-
-
   getChart() {
-    // notifyListeners();
-    var allDays = _days.where((i) => i.weekId == _exercises[0].weekId).toList();
+    _weeks.sort((a, b) => a.date.compareTo(b.date));
+    _weeks.forEach((element) {
+      print(element.toJson());
+    });
+    var allDays = _days.where((i) => i.weekId == _weeks.last.toJson()['id']).toList();
     List<SubscriberSeries> data = [];
-    List fullListDaysIds = [];
     for (int i = 0; i < allDays.length; i++) {
       var dayExercises = _exercises.where((it) => it.dayId == allDays[i].id).toList();
       List volumes = [];
       dayExercises.forEach((day) {
-        volumes.add(day.currentVolume);
+        if(day.currentVolume != 0) {
+          volumes.add(day.currentVolume);
+        } else {
+          volumes.add(0);
+        }
       });
       var sum;
       if(volumes.length > 1) {
@@ -131,20 +120,8 @@ class WeekListModel extends Model {
         ),
       );
     }
-    
     return data;
   }
-
-
-
-
-
-
-
-
-
-
-
 
   void updateProgram(Program program) {
     var oldTask = _programs.firstWhere((it) => it.id == program.id);

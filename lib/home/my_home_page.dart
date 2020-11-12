@@ -80,8 +80,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       var _programs = model.programs;
       var _weeks = model.weeks;
       // var _exercises = model.exercises;
+
       var newData = model.getChart();
-      // print(newData);
+      
       var backgroundColor = _programs.isEmpty || _programs.length == _currentPageIndex? Colors.blueGrey : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
       if (!_isLoading) {
         // move the animation value towards upperbound only when loading is complete
@@ -143,15 +144,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                             Text('You have ${_weeks.where((week) => week.isCompleted == 0).length} programs to complete', style: Theme.of(context).textTheme.body1.copyWith(color: Colors.white.withOpacity(0.7))),
                             Container(
 
-                      
-
-
+                    
                               child: SubscriberChart(data: newData)
-
-
-
-
-
 
 
                             ),

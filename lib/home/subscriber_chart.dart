@@ -31,10 +31,7 @@ class SubscriberChart extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              Text(
-                "Weight Lifted",
-                style: Theme.of(context).textTheme.body2,
-              ),
+              Text("Weight Lifted", style: Theme.of(context).textTheme.body2),
               Expanded(
                 child: charts.BarChart(series, animate: true),
               )

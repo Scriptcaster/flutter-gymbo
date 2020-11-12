@@ -91,7 +91,6 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                               if (value.isNotEmpty) { 
                                 await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value));
                                 model.updateChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
-                                // model.updateChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId)); 
                               }
                               refreshVolumes(exercise.id, value);
                               setState(() {});

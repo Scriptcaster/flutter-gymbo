@@ -77,14 +77,14 @@ class WeekModel extends Model {
     notifyListeners();
   }
 
-  void updateChart(target) {
-    print(target);
-    // var oldTask = _programs.firstWhere((it) => it.id == program.id);
-    // var replaceIndex = _programs.indexOf(oldTask);
-    // _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
-    // _db.updateProgram(program);
-    // notifyListeners();
-  }
+  // void updateChart(target) {
+  //   print(target);
+  //   // var oldTask = _programs.firstWhere((it) => it.id == program.id);
+  //   // var replaceIndex = _programs.indexOf(oldTask);
+  //   // _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
+  //   // _db.updateProgram(program);
+  //   // notifyListeners();
+  // }
 
   void addWeek(Week week) {
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));

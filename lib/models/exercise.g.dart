@@ -13,7 +13,6 @@ Exercise _$TodoFromJson(Map<String, dynamic> json) {
     bestVolume: json['bestVolume'] as int,
     previousVolume: json['previousVolume'] as int,
     currentVolume: json['currentVolume'] as int,
-    round: json['round'] as List<Round>,
     dayId: json['dayId'] as int,
     weekId: json['weekId'] as String,
     programId: json['programId'] as String
@@ -26,7 +25,6 @@ Map<String, dynamic> _$TodoToJson(Exercise instance) => <String, dynamic>{
   'bestVolume': instance.bestVolume,
   'previousVolume': instance.previousVolume,
   'currentVolume': instance.currentVolume,
-  'round': instance.round,
   'dayId': instance.dayId,
   'weekId': instance.weekId,
   'programId': instance.programId
