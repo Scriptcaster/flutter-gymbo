@@ -1,5 +1,3 @@
-import 'package:bench_more/scopedmodel/program.dart';
-import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'day.g.dart';

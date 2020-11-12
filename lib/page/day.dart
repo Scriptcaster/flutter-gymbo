@@ -31,20 +31,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
     return ScopedModelDescendant<WeekListModel>(builder: (BuildContext context, Widget child, WeekListModel model) {
       return WillPopScope(
         onWillPop: () async {
-          model.updateChart(
-            
-            Day(id: widget.id, target: _targetController.text)
-            // Day(
-            //   id: json["id"],
-            //   dayName: json["dayName"],
-            //   target: json["target"],
-            //   isCompleted: json['isCompleted'],
-            //   // exercise: json["exercise"],
-            //   weekId: json["weekId"],
-            //   programId: json["programId"],
-            // )
-
-          );
+          // model.updateChart(Day(id: widget.id, target: _targetController.text));
           Navigator.pop(context, _targetController.text);
           return Future.value(false);
         },
@@ -68,7 +55,8 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
                   style: new TextStyle(fontSize: 20.0, color: Colors.blue),
                   keyboardType: TextInputType.text,
                   controller: _targetController,
-                  onSubmitted: (value) async { await DBProvider.db.updateDayTarget(Day(id: widget.id, target: value)); }
+                  // onSubmitted: (value) async { await DBProvider.db.updateDayTarget(Day(id: widget.id, target: value)); }
+                  onSubmitted: (value) { model.updateDayTarget(Day(id: widget.id, target: value)); }
                 ),
               ),
               RenderExercises(widget.id, widget.weekId, widget.programId),

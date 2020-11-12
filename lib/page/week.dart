@@ -65,12 +65,12 @@ class _WeekLocalState extends State<WeekLocal> {
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
             child: Column(children: [
-              Container(
-                child: Hero(
-                  tag: 'title_hero_unused',//_hero.titleId,
-                  child: Text(_program.name, style: Theme.of(context).textTheme.title.copyWith(color: Colors.black54)),
-                ),
-              ),
+              // Container(
+              //   child: Hero(
+              //     tag: 'title_hero_unused',//_hero.titleId,
+              //     child: Text(_program.name, style: Theme.of(context).textTheme.title.copyWith(color: Colors.black54)),
+              //   ),
+              // ),
               Container(margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 0.0), height: 160,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

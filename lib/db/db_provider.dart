@@ -217,6 +217,12 @@ class DBProvider {
     return result.map((it) => Day.fromJson(it)).toList();
   }
 
+   Future<List<Exercise>> getAllExercisesAll() async {
+    final db = await database;
+    var result = await db.query('Exercise');
+    return result.map((it) => Exercise.fromJson(it)).toList();
+  }
+
 
 
 
@@ -232,65 +238,22 @@ class DBProvider {
 
   Future<List<SubscriberSeries>> getChartData() async {
     final db = await database;
-
-    // var result = await db.query('Week ORDER BY seq DESC', where: 'seq = 1');
-    // var currentWeek = await db.rawQuery("SELECT * FROM Week WHERE date BETWEEN '1604354623406' AND '1604354631713'");
-    // var currentWeek = await db.rawQuery("SELECT * FROM Week");
     var currentWeek = await db.query('Week ORDER BY date DESC LIMIT 1');
-    // print(currentWeek);
-
-    // resultWeeks.toList().forEach((element) {
-    //   // previousDays.toList().forEach((element) {
-    //   //   if (element['name'] == element2['name']) {
-    //   //     // print(element['currentVolume']);
-    //   //   }
-    //   // });
-    // });
     List fullListDaysIds = [];
     for (int i = 0; i < currentWeek.length; i++) {
       var _allDays = await db.query("Day", where: "weekId = ?", whereArgs: [currentWeek[i]['id']]);
       for (int k = 0; k < _allDays.length; k++) {
         fullListDaysIds.add(_allDays[k]);
-        // print(_allDays[k]);
       }
     }
-    // print(fullListDaysIds);
-
     List<SubscriberSeries> data = [];
-    // List weekDays = ['Monday', 'Tuesday', 'Wednesday'];
     List dayExercises = [];
-    
     for (int i = 0; i < 7; i++) {
-      
-    // fullListDaysIds.toList().forEach((element) async {
       var dayExercises = await db.query("Exercise", where: "dayId = ?", whereArgs: [fullListDaysIds[i]['id']]);
-      // print(dayExercises);
-      // if(dayExercises.length != 0) {
-        
-      // } else {
-        
-      // }
       List volumes = [];
       dayExercises.toList().forEach((day) {
-        // print(day);
         volumes.add(day['currentVolume']);
-        // if(fullListDaysIds[i]['id'] == day['dayId']) {
-        //   volumes.add(day['currentVolume']);
-        // } else {
-        //   volumes.add(0);
-        // }
-        // print(day['currentVolume']);
-        // volumes.add(day['currentVolume']); 
-        // print(day);
-        // if(day.length == 0) {
-        //   // print(day['currentVolume']);
-        //   // volumes.add(day['currentVolume']);
-        // } else {
-        //   // print(day['currentVolume']);
-        //   // volumes.add(0);
-        // }
       });
-      // print(volumes);
       var sum;
       if(volumes.length > 1) {
         sum = volumes.reduce((a, b) => a + b);
@@ -299,12 +262,6 @@ class DBProvider {
       } else if (volumes.length == 0) {
         sum = 0;
       }
-      // print(sum);
-    // volumes.add(dayExercises[i]['id']); 
-      // if() {
-      // }
-      // for (int k = 0; k < dayExercises.length; k++) {
-        // print(fullListDaysIds[i]['id']);
         data.add(
           SubscriberSeries(
             year: fullListDaysIds[i]['dayName'].substring(0, 3),
@@ -312,37 +269,7 @@ class DBProvider {
             barColor:charts.ColorUtil.fromDartColor(Colors.blue),
           ),
         );
-      // }
-
-      // dayExercises.toList().forEach((element2) {
-        
-      //   data.add(
-      //     SubscriberSeries(
-      //       year: element2['dayId'].toString(),
-      //       subscribers: element2['currentVolume'],
-      //       barColor:charts.ColorUtil.fromDartColor(Colors.blue),
-      //     ),
-      //   );
-
-      // });
     }
-    // });
-     
-
-    // List DayVolume = [];
-    // for (int i = 0; i < fullListDaysIds.length; i++) {
-    //   var dayExercises = await db.query("Exercise", where: "dayId = ?", whereArgs: [fullListDaysIds[i]]);
-    //   for (int k = 0; k < dayExercises.length; k++) {
-    //     // print(dayExercises[k]['currentVolume']);
-    //     DayVolume.add(dayExercises[k]['currentVolume']);
-    //   }
-    // }
-    // print(DayVolume);
-
-    // var sum = DayVolume.reduce((a, b) => a + b);
-    // print(sum);
-
-
     // return resultWeeks.map((it) => Week.fromJson(it)).toList();
     return data;
   }
@@ -503,9 +430,13 @@ class DBProvider {
     return db.update('Week', week.toJson(), where: 'id = ?', whereArgs: [week.id]);
   }
 
+  Future<int> updateDayTarget(Day day) async {
+    final _db = await database;
+    return await _db.rawUpdate('''UPDATE Day SET target = ? WHERE id = ?''', [day.target, day.id]);
+  }
+
   Future<int> updateDay(Day day) async {
     final db = await database;
-    // print(day.toMap());
     return db.update('Day', day.toMap(), where: 'id = ?', whereArgs: [day.id]);
   }
 
@@ -527,12 +458,6 @@ class DBProvider {
     return await _db.rawUpdate(
         '''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''',
         [newRound.weight, newRound.round, newRound.rep, newRound.id]);
-  }
-
-  Future<int> updateDayTarget(Day day) async {
-    final _db = await database;
-    return await _db.rawUpdate(
-        '''UPDATE Day SET target = ? WHERE id = ?''', [day.target, day.id]);
   }
 
   updateExerciseName(Exercise exerercise) async {

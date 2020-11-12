@@ -1,4 +1,6 @@
+import 'package:bench_more/home/subscriber_series.dart';
 import 'package:bench_more/models/day.dart';
+import 'package:bench_more/models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -7,11 +9,14 @@ import '../models/program.dart';
 import '../db/db_provider.dart';
 import '../db/default_data.dart';
 
+import 'package:charts_flutter/flutter.dart' as charts;
+
 class WeekListModel extends Model {
   var _db = DBProvider.db;
   List<Week> get weeks => _weeks.toList();
   List<Program> get programs => _programs.toList();
   List<Day> get days => _days.toList();
+  List<Exercise> get exercises => _exercises.toList();
   int getTaskCompletionPercent(Program program) => _programCompletionPercentage[program.id];
   int getTotalTodosFrom(Program program) => weeks.where((it) => it.program == program.id).length;  
   bool get isLoading => _isLoading;
@@ -20,6 +25,7 @@ class WeekListModel extends Model {
   List<Program> _programs = [];
   List<Week> _weeks = [];
   List<Day> _days = [];
+  List<Exercise> _exercises = [];
   Map<String, int> _programCompletionPercentage =  Map();
 
   static WeekListModel of(BuildContext context) => ScopedModel.of<WeekListModel>(context);
@@ -45,6 +51,7 @@ class WeekListModel extends Model {
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
     _days = await _db.getAllDaysAll();
+    _exercises = await _db.getAllExercisesAll();
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
     _isLoading = false;
     await Future.delayed(Duration(milliseconds: 300));
@@ -73,6 +80,72 @@ class WeekListModel extends Model {
     });
   }
 
+
+
+
+
+
+
+
+
+
+
+  void updateChart(Exercise exercise) {
+    // print(exercise.toJson());
+    // _exercises.forEach((element) {
+    //   print(element.toJson());
+    // });
+    var oldExercise = _exercises.firstWhere((it) => it.id == exercise.id);
+    var replaceIndex = _exercises.indexOf(oldExercise);
+    _exercises.replaceRange(replaceIndex, replaceIndex + 1, [exercise]);
+    // _db.updateProgram(program);
+    notifyListeners();
+  }
+
+
+
+  getChart() {
+    // notifyListeners();
+    var allDays = _days.where((i) => i.weekId == _exercises[0].weekId).toList();
+    List<SubscriberSeries> data = [];
+    List fullListDaysIds = [];
+    for (int i = 0; i < allDays.length; i++) {
+      var dayExercises = _exercises.where((it) => it.dayId == allDays[i].id).toList();
+      List volumes = [];
+      dayExercises.forEach((day) {
+        volumes.add(day.currentVolume);
+      });
+      var sum;
+      if(volumes.length > 1) {
+        sum = volumes.reduce((a, b) => a + b);
+      } else if (volumes.length > 0) {
+        sum = volumes[0];
+      } else if (volumes.length == 0) {
+        sum = 0;
+      }
+      data.add(
+        SubscriberSeries(
+          year: allDays[i].dayName.substring(0, 3),
+          subscribers: sum,
+          barColor:charts.ColorUtil.fromDartColor(Colors.blue),
+        ),
+      );
+    }
+    
+    return data;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   void updateProgram(Program program) {
     var oldTask = _programs.firstWhere((it) => it.id == program.id);
     var replaceIndex = _programs.indexOf(oldTask);
@@ -81,13 +154,12 @@ class WeekListModel extends Model {
     notifyListeners();
   }
 
-  void updateChart(Day day) {
+  void updateDayTarget(Day day) {
     var oldDay = _days.firstWhere((it) => it.id == day.id);
     var replaceIndex = _days.indexOf(oldDay);
     _days.replaceRange(replaceIndex, replaceIndex + 1, [day]);
-    print(_days[14].toJson());
-    // _db.updateProgram(program);
-    // notifyListeners();
+    _db.updateDayTarget(day);
+    notifyListeners();
   }
 
   void addWeek(Week week) {
@@ -140,4 +212,5 @@ class WeekListModel extends Model {
      _programCompletionPercentage[taskId] = (totalCompletedTodos / totalTodos * 100).toInt();
     }
   }
+
 }

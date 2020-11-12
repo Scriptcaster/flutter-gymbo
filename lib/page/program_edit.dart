@@ -13,10 +13,10 @@ class EditTaskScreen extends StatefulWidget {
   final IconData icon;
 
   EditTaskScreen({
-    @required this.taskId
-  , @required this.taskName
-  , @required this.color
-  , @required this.icon
+    @required this.taskId, 
+    @required this.taskName, 
+    @required this.color, 
+    @required this.icon
   });
 
   @override
@@ -95,23 +95,19 @@ class _EditCardScreenState extends State<EditTaskScreen> {
                       fontWeight: FontWeight.w500,
                       fontSize: 36.0),
                 ),
-                Container(
-                  height: 26.0,
-                ),
+                Container(height: 26.0),
                 Row(
                   children: [
                     ColorPickerBuilder(
                         color: taskColor,
-                        onColorChanged: (newColor) =>
-                            setState(() => taskColor = newColor)),
+                        onColorChanged: (newColor) => setState(() => taskColor = newColor)),
                     Container(
                       width: 22.0,
                     ),
                     IconPickerBuilder(
                         iconData: taskIcon,
                         highlightColor: taskColor,
-                        action: (newIcon) =>
-                            setState(() => taskIcon = newIcon)),
+                        action: (newIcon) => setState(() => taskIcon = newIcon)),
                   ],
                 ),
               ],

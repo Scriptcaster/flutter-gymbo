@@ -6,6 +6,7 @@ import '../scopedmodel/program.dart';
 import '../gradient_background.dart';
 import '../models/hero_id.dart';
 import '../models/program.dart';
+import '../models/exercise.dart';
 import '../models/choice_card.dart';
 import '../utils/color_utils.dart';
 import '../utils/datetime_utils.dart';
@@ -37,8 +38,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> _animation;
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
@@ -55,6 +55,10 @@ class _MyHomePageState extends State<MyHomePage>
   void loadChart() async {
     data = await _db.getChartData();
   }
+
+  // void uodateChart() {
+  //   data = model.exercises();
+  // }
 
   @override
   void initState() {
@@ -75,6 +79,9 @@ class _MyHomePageState extends State<MyHomePage>
       var _isLoading = model.isLoading;
       var _programs = model.programs;
       var _weeks = model.weeks;
+      // var _exercises = model.exercises;
+      var newData = model.getChart();
+      // print(newData);
       var backgroundColor = _programs.isEmpty || _programs.length == _currentPageIndex? Colors.blueGrey : ColorUtils.getColorFrom(id: _programs[_currentPageIndex].color);
       if (!_isLoading) {
         // move the animation value towards upperbound only when loading is complete
@@ -92,9 +99,8 @@ class _MyHomePageState extends State<MyHomePage>
             actions: [
               PopupMenuButton<Choice>(
                 onSelected: (choice) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          PrivacyPolicyScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => PrivacyPolicyScreen()));
                 },
                 itemBuilder: (BuildContext context) {
                   return choices.map((Choice choice) {
@@ -129,17 +135,25 @@ class _MyHomePageState extends State<MyHomePage>
                               // margin: EdgeInsets.only(top: 22.0),
                               child: Text(
                                 '${widget.currentDay(context)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline
-                                    .copyWith(color: Colors.white),
+                                style: Theme.of(context).textTheme.headline.copyWith(color: Colors.white),
                               ),
                             ),
                             Text('${DateTimeUtils.currentDate} ${DateTimeUtils.currentMonth}', style: Theme.of(context).textTheme.title.copyWith(color: Colors.white.withOpacity(0.7))),
                             Container(height: 16.0),
                             Text('You have ${_weeks.where((week) => week.isCompleted == 0).length} programs to complete', style: Theme.of(context).textTheme.body1.copyWith(color: Colors.white.withOpacity(0.7))),
                             Container(
-                              child: SubscriberChart(data: data)
+
+                      
+
+
+                              child: SubscriberChart(data: newData)
+
+
+
+
+
+
+
                             ),
                           ],
                         ),

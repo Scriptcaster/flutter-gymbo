@@ -1,10 +1,8 @@
-import 'package:bench_more/scopedmodel/program.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/uuid.dart';
 import '../utils/seq.dart';
-
 
 part 'week.g.dart';
 
