@@ -20,7 +20,7 @@ class _RenderRoundsState extends State<RenderRounds> { _RenderRoundsState(
   List<bool> _selected = [true, false, false];
   final VoidCallback parentUpdater;
   _updateCurrentVolume(_round, subtract) async {
-     setState(() {
+    setState(() {
       if (subtract) {
         if (_selected[0]) {
         _round.weight -= 5;

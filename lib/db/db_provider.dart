@@ -442,15 +442,7 @@ class DBProvider {
 
   Future<int> updateExercise(Exercise newExercise) async {
     final _db = await database;
-    return await _db.rawUpdate(
-        '''UPDATE Exercise SET name = ?, bestVolume = ?, previousVolume = ?, currentVolume = ? WHERE id = ?''',
-        [
-          newExercise.name,
-          newExercise.bestVolume,
-          newExercise.previousVolume,
-          newExercise.currentVolume,
-          newExercise.id
-        ]);
+    return await _db.rawUpdate('''UPDATE Exercise SET name = ?, bestVolume = ?, previousVolume = ?, currentVolume = ? WHERE id = ?''', [newExercise.name, newExercise.bestVolume, newExercise.previousVolume, newExercise.currentVolume, newExercise.id]);
   }
 
   Future<int> updateRound(Round newRound) async {
@@ -460,11 +452,11 @@ class DBProvider {
         [newRound.weight, newRound.round, newRound.rep, newRound.id]);
   }
 
-  updateExerciseName(Exercise exerercise) async {
-    final db = await database;
-    return await db.rawUpdate('''UPDATE Exercise SET name = ? WHERE id = ?''',
-        [exerercise.name, exerercise.id]);
-  }
+  // updateExerciseName(Exercise exerercise) async {
+  //   final db = await database;
+  //   return await db.rawUpdate('''UPDATE Exercise SET name = ? WHERE id = ?''',
+  //       [exerercise.name, exerercise.id]);
+  // }
 
   updateExerciseBestVolume(bestVolume, id) async {
     final db = await database;
