@@ -58,15 +58,21 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     setState(() {});                     
   }
 
-  
+
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<WeekListModel>(builder: (BuildContext context, Widget child, WeekListModel model) {
-      
+      return WillPopScope(
+        onWillPop: () {
+          print('print');
+          // model.updateChart(Day(id: widget.id, target: _targetController.text));
+          Navigator.pop(context, 'pop');
+          return Future.value(false);
+        },
 
 
-   
-    return Expanded(
+      child: Expanded(
       child: FutureBuilder<List<Exercise>>(
         future: DBProvider.db.getAllExercises(widget.id),
         builder: (BuildContext context, AsyncSnapshot<List<Exercise>> snapshot) {
@@ -90,7 +96,7 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                             onSubmitted: (value) async {
                               if (value.isNotEmpty) { 
                                 await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value));
-                                model.updateChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
+                                model.addToChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
                               }
                               refreshVolumes(exercise.id, value);
                               setState(() {});
@@ -203,14 +209,44 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
           }
         }
       )
-    );
+    ),
   
 
+       
 
 
 
+      );
     });
   }
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

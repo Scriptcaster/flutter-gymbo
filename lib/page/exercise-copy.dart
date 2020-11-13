@@ -1,4 +1,6 @@
+import 'package:bench_more/scopedmodel/program.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import '../db/db_provider.dart';
 import '../models/exercise.dart';
 import '../models/round.dart';
@@ -56,8 +58,11 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     setState(() {});                     
   }
 
+  
   @override
   Widget build(BuildContext context) {
+    return ScopedModelDescendant<WeekListModel>(builder: (BuildContext context, Widget child, WeekListModel model) {
+
     return Expanded(
       child: FutureBuilder<List<Exercise>>(
         future: DBProvider.db.getAllExercises(widget.id),
@@ -80,7 +85,10 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
                             keyboardType: TextInputType.text,
                             controller: _exerciseController,
                             onSubmitted: (value) async {
-                              if (value.isNotEmpty) { await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value)); }
+                              if (value.isNotEmpty) { 
+                                await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value));
+                                model.addToChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
+                              }
                               refreshVolumes(exercise.id, value);
                               setState(() {});
                             }
@@ -193,10 +201,17 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
         }
       )
     );
+  
+
+
+
+
+    });
   }
+}
 
 
   // void afterBuild() {
   //   print('build');
   // }  
-}
+// }

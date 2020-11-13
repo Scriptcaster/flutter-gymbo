@@ -32,6 +32,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
       return WillPopScope(
         onWillPop: () async {
           // model.updateChart(Day(id: widget.id, target: _targetController.text));
+          print('POP');
           Navigator.pop(context, _targetController.text);
           return Future.value(false);
         },

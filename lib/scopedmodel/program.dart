@@ -80,7 +80,13 @@ class WeekListModel extends Model {
     });
   }
   
+  void addToChart(Exercise exercise) {
+    _exercises.add(exercise);
+    notifyListeners();
+  }
+
   void updateChart(Exercise exercise) {
+    print(exercise);
     var oldExercise = _exercises.firstWhere((it) => it.id == exercise.id);
     var replaceIndex = _exercises.indexOf(oldExercise);
     _exercises.replaceRange(replaceIndex, replaceIndex + 1, [exercise]);
@@ -89,15 +95,19 @@ class WeekListModel extends Model {
 
   getChart() {
     _weeks.sort((a, b) => a.date.compareTo(b.date));
-    _weeks.forEach((element) {
-      print(element.toJson());
-    });
+    // _weeks.forEach((element) {
+    //   print(element.toJson());
+    // });
     var allDays = _days.where((i) => i.weekId == _weeks.last.toJson()['id']).toList();
+    // allDays.forEach((element) {
+    //   print(element.toJson());
+    // });
     List<SubscriberSeries> data = [];
     for (int i = 0; i < allDays.length; i++) {
       var dayExercises = _exercises.where((it) => it.dayId == allDays[i].id).toList();
       List volumes = [];
       dayExercises.forEach((day) {
+        // print(day.currentVolume);
         if(day.currentVolume != 0) {
           volumes.add(day.currentVolume);
         } else {
