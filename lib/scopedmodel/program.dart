@@ -1,11 +1,13 @@
 import 'package:bench_more/home/subscriber_series.dart';
-import 'package:bench_more/models/day.dart';
-import 'package:bench_more/models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../models/week.dart';
 import '../models/program.dart';
+import '../models/week.dart';
+import '../models/day.dart';
+import '../models/exercise.dart';
+import '../models/round.dart';
+
 import '../db/db_provider.dart';
 import '../db/default_data.dart';
 
@@ -17,6 +19,7 @@ class WeekListModel extends Model {
   List<Program> get programs => _programs.toList();
   List<Day> get days => _days.toList();
   List<Exercise> get exercises => _exercises.toList();
+  List<Round> get rounds => _rounds.toList();
   int getTaskCompletionPercent(Program program) => _programCompletionPercentage[program.id];
   int getTotalTodosFrom(Program program) => weeks.where((it) => it.program == program.id).length;  
   bool get isLoading => _isLoading;
@@ -26,6 +29,7 @@ class WeekListModel extends Model {
   List<Week> _weeks = [];
   List<Day> _days = [];
   List<Exercise> _exercises = [];
+  List<Round> _rounds = [];
   Map<String, int> _programCompletionPercentage =  Map();
 
   static WeekListModel of(BuildContext context) => ScopedModel.of<WeekListModel>(context);
@@ -52,6 +56,7 @@ class WeekListModel extends Model {
     _weeks = await _db.getAllWeeks();
     _days = await _db.getAllDaysAll();
     _exercises = await _db.getAllExercisesAll();
+    _rounds = await _db.getAllRoundsAll();
     _programs.forEach((it) => _calcTaskCompletionPercent(it.id));
     _isLoading = false;
     await Future.delayed(Duration(milliseconds: 300));
