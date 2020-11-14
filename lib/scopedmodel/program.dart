@@ -162,6 +162,14 @@ class WeekListModel extends Model {
     notifyListeners();
   }
 
+  void updateRound(Round round) {
+    var oldRound = _rounds.firstWhere((it) => it.id == round.id);
+    var replaceIndex = _rounds.indexOf(oldRound);
+    _rounds.replaceRange(replaceIndex, replaceIndex + 1, [round]);
+    _db.updateRound(round);
+    notifyListeners();
+  }
+
   void addWeek(Week week) {
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();

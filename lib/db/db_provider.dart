@@ -469,9 +469,7 @@ class DBProvider {
 
   Future<int> updateRound(Round newRound) async {
     final _db = await database;
-    return await _db.rawUpdate(
-        '''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''',
-        [newRound.weight, newRound.round, newRound.rep, newRound.id]);
+    return await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [newRound.weight, newRound.round, newRound.rep, newRound.id]);
   }
 
   // updateExerciseName(Exercise exerercise) async {

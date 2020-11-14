@@ -1,4 +1,5 @@
 
+import 'package:bench_more/models/round.dart';
 import 'package:flutter/material.dart';
 import '../db/db_provider.dart';
 import 'round.dart';
@@ -90,7 +91,7 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
     for (int i = 0; i < exercise.round.length - 1; i++) {   
       exercise.currentVolume += exercise.round[i].weight*exercise.round[i].round*exercise.round[i].rep;
     }
-    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+    // await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
     // model.updateChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
     setState(() {});                     
   }
@@ -101,7 +102,9 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
     for (int i = 0; i < exercise.round.length; i++) {   
       exercise.currentVolume += exercise.round[i].weight*exercise.round[i].round*exercise.round[i].rep;
     }
-    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+    // await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+    // await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+
     setState(() {});                     
   }
 
@@ -182,11 +185,10 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                             ],
                           ),
                         ),
-                        // RenderRounds(widget.id, widget.name, widget.bestVolume, widget.previousVolume, widget.currentVolume, widget.dayId, widget.weekId, widget.programId, parentUpdater: () => setState(() {})),
-                        // RenderRounds(widget.id),
-                        // launchWebView(),
+
+
+                        
                         RenderRounds(widget.id, _exercise.single, parentUpdater: () => setState(() {})),
-                        // RenderRounds(widget.id, exercise, parentUpdater: () => refreshVolumes(exercise.id, exercise.name) ),
 
 
 
@@ -343,17 +345,18 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                     Scaffold.of(context).showSnackBar(snackBar);
                     // _scaffoldKey.currentState.showSnackBar(snackBar);
                   } else {
-                    print(_exerciseController.text);
-                    model.updateExercise(Exercise(
-                      id: widget.id,
-                      name: _exerciseController.text,
-                      bestVolume: widget.bestVolume,
-                      previousVolume: widget.previousVolume,
-                      currentVolume: widget.currentVolume,
-                      dayId: widget.dayId,
-                      weekId: widget.weekId,
-                      programId: widget.programId
-                    ));
+                    print(_exercise.single.round);
+                    // model.updateExercise(Exercise(
+                    //   id: widget.id,
+                    //   name: _exerciseController.text,
+                    //   bestVolume: widget.bestVolume,
+                    //   previousVolume: widget.previousVolume,
+                    //   currentVolume: widget.currentVolume,
+                    //   round: _exercise.single.round,
+                    //   dayId: widget.dayId,
+                    //   weekId: widget.weekId,
+                    //   programId: widget.programId
+                    // ));
                     Navigator.pop(context);
                   }
                 },
