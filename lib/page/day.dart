@@ -70,6 +70,16 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
             child: Column(children: [
+              Container(
+                padding: EdgeInsets.only(top: 5.0, bottom: 0.0, left: 40.0, right: 40.0),
+                child: TextField(
+                  style: new TextStyle(fontSize: 20.0, color: Colors.blue),
+                  keyboardType: TextInputType.text,
+                  controller: _targetController,
+                  // onSubmitted: (value) async { await DBProvider.db.updateDayTarget(Day(id: widget.id, target: value)); }
+                  onSubmitted: (value) { model.updateDayTarget(Day(id: widget.id, target: value)); }
+                ),
+              ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(top: 16.0),

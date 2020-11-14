@@ -217,11 +217,6 @@ class DBProvider {
     return result.map((it) => Day.fromJson(it)).toList();
   }
 
-   Future<List<Exercise>> getAllExercisesAll() async {
-    final db = await database;
-    var result = await db.query('Exercise');
-    return result.map((it) => Exercise.fromJson(it)).toList();
-  }
 
 
 
@@ -322,6 +317,33 @@ class DBProvider {
       fullList[i].round = _finalRounds;
     }
     return fullList;
+  }
+
+
+
+  Future<List<Exercise>> getAllExercisesAll() async {
+    // final db = await database;
+    // var result = await db.query('Exercise');
+    // return result.map((it) => Exercise.fromJson(it)).toList();
+
+    final db = await database;
+    var dayExercises = await db.query('Exercise');
+    
+    List<Exercise> fullList = List<Exercise>();
+    for (int i = 0; i < dayExercises.length; i++) {
+      fullList.add(Exercise.fromMap(dayExercises[i]));
+      var _rounds = await db.query("Round", where: "exerciseId = ?", whereArgs: [dayExercises[i]['id']]);
+      List<Round> _finalRounds = _rounds.isNotEmpty ? _rounds.map((c) => Round.fromMap(c)).toList() : [];
+      var previousExerciseVolume = await db.rawQuery( "SELECT * FROM Exercise WHERE id < ? AND name = ? ORDER BY id DESC", [dayExercises[i]['id'], dayExercises[i]['name']]);
+      if (previousExerciseVolume.length > 0) {
+        for (int e = 0; e < 1; e++) {
+          fullList[i].previousVolume = previousExerciseVolume[e]['currentVolume'];
+        }
+      }
+      fullList[i].round = _finalRounds;
+    }
+    return fullList;
+
   }
 
   Future<List<Round>> getAllRounds(int exerciseId) async {

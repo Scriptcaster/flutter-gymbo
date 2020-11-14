@@ -1,9 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../db/db_provider.dart';
-import 'exercise.dart';
 import 'round.dart';
-import '../models/day.dart';
 import '../models/exercise.dart';
 
 import 'package:scoped_model/scoped_model.dart';
@@ -19,6 +17,7 @@ class ExerciseLocal extends StatefulWidget {
   final int dayId;
   final String weekId; 
   final String programId; 
+  
   @override
   _StartExerciseLocalState createState() => _StartExerciseLocalState();
 }
@@ -27,6 +26,8 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
   int previousExerciseVolume  = 0;
   int bestExerciseVolume = 0;
   String exerciseName;
+
+  
 
   @override
   void initState() {
@@ -37,19 +38,83 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
     });
   }
 
+  List<Color> colors = [Colors.blue, Colors.white, Colors.white];
+  List<bool> _selected = [true, false, false];
+
+  _updateCurrentVolume(_round, subtract) async {
+    setState(() {
+      if (subtract) {
+        if (_selected[0]) {
+        _round.weight -= 5;
+        } else if (_selected[1]) {
+          _round.round -= 1;
+        } else if(_selected[2]) {
+          _round.rep -= 1;
+        }
+      } else {
+         if (_selected[0]) {
+        _round.weight += 5;
+        } else if (_selected[1]) {
+          _round.round += 1;
+        } else if(_selected[2]) {
+          _round.rep += 1;
+        }
+      }
+      // widget.exercise.currentVolume = 0;
+      // widget.exercise.round.forEach((i) {
+      // widget.exercise.currentVolume += i.weight*i.round*i.rep;
+      // });
+    });
+    // await DBProvider.db.updateRound(Round(id: _round.id, weight: _round.weight, round: _round.round, rep: _round.rep, exerciseId: widget.exercise.dayId ));
+    // await DBProvider.db.updateExercise(Exercise( id: widget.exercise.id, name: widget.exercise.name, bestVolume: widget.exercise.bestVolume, previousVolume: widget.exercise.previousVolume, currentVolume: widget.exercise.currentVolume, dayId: widget.id ));
+    // widget.parentUpdater();
+  }
+
+
+
+  refreshVolumes(id, value) async {
+    var getPreviousExerciseVolume = await DBProvider.db.getPreviousVolume(id, value);
+    if (getPreviousExerciseVolume != null) {
+      previousExerciseVolume = getPreviousExerciseVolume;
+      await DBProvider.db.updateExercisePreviousVolume(previousExerciseVolume, id);
+    }
+    var getBestExerciseVolume = await DBProvider.db.getBestVolume(id, value);
+    if (getBestExerciseVolume != null) {
+      bestExerciseVolume = getBestExerciseVolume;
+      await DBProvider.db.updateExerciseBestVolume(bestExerciseVolume, id);
+    }    
+  }
+  
+  _updateCurrentVolumeOnRemove(exercise) async {
+    exercise.currentVolume = 0;
+    for (int i = 0; i < exercise.round.length - 1; i++) {   
+      exercise.currentVolume += exercise.round[i].weight*exercise.round[i].round*exercise.round[i].rep;
+    }
+    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+    // model.updateChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
+    setState(() {});                     
+  }
+
+  _updateCurrentVolumeOnAdd(exercise) async {
+    exercise.round.add(exercise.round.last);
+    exercise.currentVolume = 0;
+    for (int i = 0; i < exercise.round.length; i++) {   
+      exercise.currentVolume += exercise.round[i].weight*exercise.round[i].round*exercise.round[i].rep;
+    }
+    await DBProvider.db.updateExercise(Exercise( id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+    setState(() {});                     
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<WeekListModel>(
       builder: (BuildContext context, Widget child, WeekListModel model) {
-      var _round = model.rounds.where((round) => round.exerciseId == widget.id).toList();
-      var exercises = model.exercises.where((exercise) => exercise.id == widget.id);
-      // print(exercise.first);
-      Exercise exercise = exercises.first;
+      var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
+      var _exercise = model.exercises.where((exercise) => exercise.id == widget.id).toList();
+      print(_exercise.map((e) => e.round));
       TextEditingController _exerciseController = TextEditingController();
         return Scaffold(
-          appBar: AppBar(
-            title: Text(exerciseName),
-          ),
+          appBar: AppBar(title: Text(exerciseName)),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
             child: Column(children: [
@@ -57,9 +122,7 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                 child: Padding(
                   padding: EdgeInsets.only(top: 16.0),
                   child: ListView.builder(itemBuilder: (BuildContext context, int index) {
-                    // _days.sort((a, b) => b.seq.compareTo(a.seq));
-                    if (index == _round.length) { return SizedBox(height: 56); }
-                    // var exercise = _round[index];
+                    if (index == _rounds.length) { return SizedBox(height: 56); }
                     _exerciseController.text = widget.name;
                     previousExerciseVolume = widget.previousVolume;
                     bestExerciseVolume = widget.bestVolume;
@@ -67,43 +130,7 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                       padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
                       child: Column(
                         children: <Widget>[
-                          // Container(padding: EdgeInsets.only(top: 0.0, bottom: 0.0, left: 40.0, right: 40.0),
-                          //   child: Column(
-                          //     children: <Widget>[
-                          //       // TextFormField(
-                          //       //   initialValue: _exerciseController.text,
-                          //       //   onChanged: (text) {
-                          //       //     setState(() => _exerciseController.text = text);
-                          //       //   },
-                          //       //   cursorColor: Colors.black54,
-                          //       //   autofocus: true,
-                          //       //   decoration: InputDecoration(
-                          //       //       border: InputBorder.none,
-                          //       //       hintText: 'Category Name...',
-                          //       //       hintStyle: TextStyle(
-                          //       //         color: Colors.black26,
-                          //       //       )),
-                          //       //   style: TextStyle(
-                          //       //       color: Colors.black54,
-                          //       //       fontWeight: FontWeight.w500,
-                          //       //       fontSize: 36.0),
-                          //       // ),
-                          //       TextField(style: new TextStyle(fontSize: 20.0, color: Colors.blue),
-                          //         keyboardType: TextInputType.text,
-                          //         controller: _exerciseController,
-                          //         // onSubmitted: (value) async {
-                          //         //   if (value.isNotEmpty) {
-                          //         //     // await DBProvider.db.updateExerciseName(Exercise(id: exercise.id, name: value));
-                          //         //     // model.addToChart(Exercise(id: exercise.id, name: exercise.name, bestVolume: exercise.bestVolume, previousVolume: exercise.previousVolume, currentVolume: exercise.currentVolume, dayId: widget.id, weekId: widget.weekId, programId: widget.programId));
-                          //         //   }
-                          //         //   // refreshVolumes(exercise.id, value);
-                          //         //   setState(() {});
-                          //         // }
-                          //       )
-                          //     ]
-                          //   )
-                          // ),
-                        Container(padding: EdgeInsets.only(top: 30.0, bottom: 0.0),
+                          Container(padding: EdgeInsets.only(top: 30.0, bottom: 0.0),
                           child: Row(
                             children: <Widget>[
                               Expanded(flex: 1, child: Container(height: 5)),
@@ -155,8 +182,99 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                             ],
                           ),
                         ),
-                              RenderRounds(widget.id, exercise.first, parentUpdater: () => setState(() {})),
-                              // RenderRounds(widget.id, exercise, parentUpdater: () => refreshVolumes(exercise.id, exercise.name) ),
+                        // RenderRounds(widget.id, widget.name, widget.bestVolume, widget.previousVolume, widget.currentVolume, widget.dayId, widget.weekId, widget.programId, parentUpdater: () => setState(() {})),
+                        // RenderRounds(widget.id),
+                        // launchWebView(),
+                        RenderRounds(widget.id, _exercise.single, parentUpdater: () => setState(() {})),
+                        // RenderRounds(widget.id, exercise, parentUpdater: () => refreshVolumes(exercise.id, exercise.name) ),
+
+
+
+
+
+
+
+
+
+                        // Column(
+                        //   children: _rounds.map((_round) => 
+                        //     Container(padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                        //       child: Row(
+                        //         children: <Widget>[
+                        //             Expanded(
+                        //               child: new SizedBox(height: 18.0, width: 24.0,
+                        //                 child: new IconButton(
+                        //                   padding: new EdgeInsets.all(0.0),
+                        //                   icon: new Icon(Icons.remove, size: 18.0),
+                        //                   onPressed: () {
+                        //                     _updateCurrentVolume(_round, true);
+                        //                   }
+                        //                 )
+                        //               ),
+                        //             ),
+                        //             FlatButton(color: colors[0],
+                        //               onPressed: () async {
+                        //                 _selected = [false, false, false];
+                        //                 setState(() {
+                        //                   colors = [Colors.white, Colors.white, Colors.white];
+                        //                   colors[0] = Colors.blue;
+                        //                   _selected[0] = true;
+                        //                 });
+                        //               },
+                        //               child: Text(_round.weight.toString())
+                        //             ),
+                        //             FlatButton(color: colors[1],
+                        //             onPressed: () {
+                        //               _selected = [false, false, false];
+                        //               setState(() {
+                        //                 colors = [Colors.white, Colors.white, Colors.white];
+                        //                 colors[1] = Colors.blue;
+                        //                 _selected[1] = true;
+                        //               });
+                        //             },
+                        //             child: Text(_round.round.toString())),
+                        //             FlatButton(color: colors[2],
+                        //               onPressed: () {
+                        //                 _selected = [false, false, false];
+                        //                 setState(() {
+                        //                   colors = [Colors.white, Colors.white, Colors.white];
+                        //                   colors[2] = Colors.blue;
+                        //                   _selected[2] = true;
+                        //                 });
+                        //               },
+                        //               child: Text(_round.rep.toString())
+                        //             ),
+                        //             Expanded(
+                        //               child: new SizedBox(height: 18.0, width: 24.0,
+                        //                 child: new IconButton(
+                        //                   padding: new EdgeInsets.all(0.0),
+                        //                   icon: new Icon(Icons.add, size: 18.0),
+                        //                   onPressed: () {    
+                        //                     _updateCurrentVolume(_round, false);
+                        //                   }
+                        //                 )
+                        //               )
+                        //             )
+                        //           ]
+                        //         )
+                        //       )
+                        //     ).toList()
+                        //   ),     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               Container(
                                 padding: EdgeInsets.only(top: 0.0, bottom: 5.0),
                                 child: Row(
@@ -178,23 +296,23 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                                         onPressed: () async { 
                                           // await DBProvider.db.removeRound(exercise.id);
                                           setState(() {});
-                                          // _updateCurrentVolumeOnRemove(exercise);
+                                          _updateCurrentVolumeOnRemove(_exercise.single);
                                           // refreshVolumes(exercise.id, exercise.name);
                                         }
                                       )
                                     ),
-                                    // Expanded(flex: 1,
-                                    //   child: new IconButton(
-                                    //     padding: new EdgeInsets.all(0.0),
-                                    //     icon: new Icon(Icons.add_circle, size: 24.0),
-                                    //     onPressed: () async {
-                                    //       await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
-                                    //       setState(() {});
-                                    //       // _updateCurrentVolumeOnAdd(exercise);
-                                    //       // refreshVolumes(exercise.id, exercise.name);
-                                    //     },      
-                                    //   )
-                                    // ),
+                                    Expanded(flex: 1,
+                                      child: new IconButton(
+                                        padding: new EdgeInsets.all(0.0),
+                                        icon: new Icon(Icons.add_circle, size: 24.0),
+                                        onPressed: () async {
+                                          // await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
+                                          setState(() {});
+                                          _updateCurrentVolumeOnAdd(_exercise.single);
+                                          // refreshVolumes(exercise.id, exercise.name);
+                                        },      
+                                      )
+                                    ),
                                   ],
                                 ),
                               )
@@ -202,7 +320,7 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                       ),
 
                     );
-                  }, itemCount: _round.length + 1,),
+                  }, itemCount: _rounds.length + 1,),
                 ),
               ),
             ]),
