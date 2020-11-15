@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../db/db_provider.dart';
 import 'exercise.dart';
 import '../models/day.dart';
 import '../models/exercise.dart';
@@ -35,7 +34,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
       return WillPopScope(
         onWillPop: () async {
           // model.updateChart(Day(id: widget.id, target: _targetController.text));
-          print('POP');
+          // print('POP');
           Navigator.pop(context, _targetController.text);
           return Future.value(false);
         },
@@ -45,8 +44,9 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.add),
-                onPressed: () async {
-                  await DBProvider.db.addExercise( Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); setState(() {});
+                onPressed: () {
+                  // await DBProvider.db.addExercise( Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); setState(() {});
+                  model.addExercise(Exercise( name: 'New Exercise', bestVolume: 0, previousVolume: 0, currentVolume: 0, dayId: widget.id, weekId: widget.weekId, programId: widget.programId ));
                 },   
               )
             ],
@@ -87,6 +87,8 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
                     // _days.sort((a, b) => b.seq.compareTo(a.seq));
                       if (index == _exercise.length) { return SizedBox(height: 56); }
                       var exercise = _exercise[index];
+                      // print('Here');
+                      // print(exercise);
                       return Dismissible(key: UniqueKey(), background: Container(color: Colors.red),
                         confirmDismiss: (DismissDirection direction) async {
                           return await showDialog(context: context, builder: (BuildContext context) {

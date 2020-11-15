@@ -13,9 +13,7 @@ class RenderRounds extends StatefulWidget {
     this.parentUpdater
   );
 }
-class _RenderRoundsState extends State<RenderRounds> { _RenderRoundsState(
-  this.parentUpdater
-  );
+class _RenderRoundsState extends State<RenderRounds> { _RenderRoundsState( this.parentUpdater );
   List<Color> colors = [Colors.blue, Colors.white, Colors.white];
   List<bool> _selected = [true, false, false];
   final VoidCallback parentUpdater;
@@ -51,7 +49,8 @@ class _RenderRoundsState extends State<RenderRounds> { _RenderRoundsState(
   Widget build(BuildContext context) {
     return Column(
     children: widget.exercise.round.map((_round) => 
-      Container(padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+      Container(
+        padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
         child: Row(
           children: <Widget>[
               Expanded(

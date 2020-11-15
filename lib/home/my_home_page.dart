@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   refreshVolumes() async {
     var getPreviousExerciseVolume = await DBProvider.db.getAllWeeks();
-    print(getPreviousExerciseVolume);
+    // print(getPreviousExerciseVolume);
   }
 
   void loadChart() async {
@@ -158,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                         child: NotificationListener<ScrollNotification>(
                           onNotification: (notification) {
                             if (notification is ScrollEndNotification) {
-                              print("ScrollNotification = ${_pageController.page}");
+                              // print("ScrollNotification = ${_pageController.page}");
                               var currentPage = _pageController.page.round().toInt();
                               if (_currentPageIndex != currentPage) {
                                 setState(() => _currentPageIndex = currentPage);

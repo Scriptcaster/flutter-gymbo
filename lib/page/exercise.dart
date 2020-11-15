@@ -28,8 +28,6 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
   int bestExerciseVolume = 0;
   String exerciseName;
 
-  
-
   @override
   void initState() {
     _targetController.text = widget.name;
@@ -114,23 +112,22 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
       builder: (BuildContext context, Widget child, WeekListModel model) {
       var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
       var _exercise = model.exercises.where((exercise) => exercise.id == widget.id).toList();
-      print(_exercise.map((e) => e.round));
       TextEditingController _exerciseController = TextEditingController();
         return Scaffold(
           appBar: AppBar(title: Text(exerciseName)),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-            child: Column(children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 16.0),
-                  child: ListView.builder(itemBuilder: (BuildContext context, int index) {
-                    if (index == _rounds.length) { return SizedBox(height: 56); }
-                    _exerciseController.text = widget.name;
-                    previousExerciseVolume = widget.previousVolume;
-                    bestExerciseVolume = widget.bestVolume;
-                    return Container(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
+            // child: Column(children: [
+            //   Expanded(
+            //     child: Padding(
+            //       padding: EdgeInsets.only(top: 16.0),
+            //       child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+            //         // if (index == _rounds.length) { return SizedBox(height: 56); }
+            //         _exerciseController.text = widget.name;
+            //         previousExerciseVolume = widget.previousVolume;
+            //         bestExerciseVolume = widget.bestVolume;
+            //         return Container(
+            //           padding: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 10.0, right: 10.0),
                       child: Column(
                         children: <Widget>[
                           Container(padding: EdgeInsets.only(top: 30.0, bottom: 0.0),
@@ -185,18 +182,8 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                             ],
                           ),
                         ),
-
-
                         
                         RenderRounds(widget.id, _exercise.single, parentUpdater: () => setState(() {})),
-
-
-
-
-
-
-
-
 
                         // Column(
                         //   children: _rounds.map((_round) => 
@@ -263,20 +250,6 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                         //     ).toList()
                         //   ),     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                               Container(
                                 padding: EdgeInsets.only(top: 0.0, bottom: 5.0),
                                 child: Row(
@@ -296,9 +269,10 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                                         padding: new EdgeInsets.all(0.0),
                                         icon: new Icon(Icons.remove_circle, size: 24.0),
                                         onPressed: () async { 
+                                          model.removeRound( Round( weight: 0, round: 0, rep: 0, exerciseId: _exercise.single.id, dayId: _exercise.single.dayId, weekId: _exercise.single.weekId, programId: _exercise.single.programId ) );
                                           // await DBProvider.db.removeRound(exercise.id);
-                                          setState(() {});
-                                          _updateCurrentVolumeOnRemove(_exercise.single);
+                                          // setState(() {});
+                                          // _updateCurrentVolumeOnRemove(_exercise.single);
                                           // refreshVolumes(exercise.id, exercise.name);
                                         }
                                       )
@@ -308,9 +282,10 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                                         padding: new EdgeInsets.all(0.0),
                                         icon: new Icon(Icons.add_circle, size: 24.0),
                                         onPressed: () async {
-                                          // await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: exercise.id, dayId: widget.id, weekId: widget.weekId, programId: widget.programId )); 
-                                          setState(() {});
-                                          _updateCurrentVolumeOnAdd(_exercise.single);
+                                          model.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: _exercise.single.id, dayId: _exercise.single.dayId, weekId: _exercise.single.weekId, programId: _exercise.single.programId ) );
+                                          // await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: _exercise.single.id, dayId: _exercise.single.dayId, weekId: _exercise.single.weekId, programId: _exercise.single.programId )); 
+                                          // setState(() {});
+                                          // _updateCurrentVolumeOnAdd(_exercise.single);
                                           // refreshVolumes(exercise.id, exercise.name);
                                         },      
                                       )
@@ -321,11 +296,12 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                         ] 
                       ),
 
-                    );
-                  }, itemCount: _rounds.length + 1,),
-                ),
-              ),
-            ]),
+              //       );
+              //     }, itemCount: _rounds.length + 1,),
+              //   ),
+              // ),
+            // ]
+            // ),
           ),
 
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -337,35 +313,31 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                 backgroundColor: Colors.blue,
                 label: Text('Save Exercise'),
                 onPressed: () {
-                  if (_exerciseController.text.isEmpty) {
-                    final snackBar = SnackBar(
-                      content: Text('Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
-                      backgroundColor: Colors.black,
-                    );
-                    Scaffold.of(context).showSnackBar(snackBar);
-                    // _scaffoldKey.currentState.showSnackBar(snackBar);
-                  } else {
-                    print(_exercise.single.round);
-                    // model.updateExercise(Exercise(
-                    //   id: widget.id,
-                    //   name: _exerciseController.text,
-                    //   bestVolume: widget.bestVolume,
-                    //   previousVolume: widget.previousVolume,
-                    //   currentVolume: widget.currentVolume,
-                    //   round: _exercise.single.round,
-                    //   dayId: widget.dayId,
-                    //   weekId: widget.weekId,
-                    //   programId: widget.programId
-                    // ));
+                  // if (_exerciseController.text.isEmpty) {
+                  //   final snackBar = SnackBar(
+                  //     content: Text('Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
+                  //     backgroundColor: Colors.black,
+                  //   );
+                  //   Scaffold.of(context).showSnackBar(snackBar);
+                  //   // _scaffoldKey.currentState.showSnackBar(snackBar);
+                  // } else {
+                    model.saveExercise(Exercise(
+                      id: widget.id,
+                      name: widget.name,
+                      bestVolume: widget.bestVolume,
+                      previousVolume: widget.previousVolume,
+                      currentVolume: widget.currentVolume,
+                      round: _exercise.single.round,
+                      dayId: widget.dayId,
+                      weekId: widget.weekId,
+                      programId: widget.programId
+                    ));
                     Navigator.pop(context);
-                  }
+                  // }
                 },
               );
             },
           ),
-
-
-
 
         );
     });

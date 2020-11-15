@@ -65,7 +65,6 @@ class _RenderExercisesState extends State<RenderExercises> { _RenderExercisesSta
     return ScopedModelDescendant<WeekListModel>(builder: (BuildContext context, Widget child, WeekListModel model) {
       return WillPopScope(
         onWillPop: () {
-          print('print');
           // model.updateChart(Day(id: widget.id, target: _targetController.text));
           Navigator.pop(context, 'pop');
           return Future.value(false);

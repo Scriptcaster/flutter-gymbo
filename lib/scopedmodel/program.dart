@@ -51,7 +51,6 @@ class WeekListModel extends Model {
       await _db.addExercises(DefaultData.defaultData.exercises);
       await _db.addRounds(DefaultData.defaultData.rounds);
     }
-    
     _programs = await _db.getAllPrograms();
     _weeks = await _db.getAllWeeks();
     _days = await _db.getAllDaysAll();
@@ -66,17 +65,78 @@ class WeekListModel extends Model {
   @override
   void removeListener(listener) {
     super.removeListener(listener);
-    print("remove listner called");
     // DBProvider.db.closeDB();
   }
-
   void addProgram(Program program) {
     _programs.add(program);
     _calcTaskCompletionPercent(program.id);
     _db.addProgram(program);
     notifyListeners();
   }
-
+  void addWeek(Week week) {
+    _weeks.sort((a, b) => b.seq.compareTo(a.seq));
+    var weeks = _weeks.where((el) => el.program == week.program).toList();
+    if (weeks.length > 0) {
+      Week previousWeek;
+      for (int i = 0; i < 1; i++) {previousWeek = weeks[i];}
+      weeks.sort((a, b) => a.seq.compareTo(b.seq));
+      _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1, id: week.id));      
+      _db.addPreviousWeek(previousWeek.id, previousWeek.seq + 1, week );
+    } else  {
+      _weeks.add(week);
+      _db.addWeek(week);
+       notifyListeners();
+    }
+    _syncJob(week);
+    notifyListeners();
+  }
+  void addExercise(Exercise exercise) {
+    _exercises.add(exercise);
+    _db.addExercise(exercise);
+    notifyListeners();
+  }
+  void addRound(Round round) {
+    var exercise = _exercises.firstWhere((it) => it.id == round.exerciseId);
+    exercise.round.add(round);
+    // _db.addRound(round);
+    notifyListeners();
+  }
+  void updateProgram(Program program) {
+    var oldTask = _programs.firstWhere((it) => it.id == program.id);
+    var replaceIndex = _programs.indexOf(oldTask);
+    _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
+    _db.updateProgram(program);
+    notifyListeners();
+  }
+  void updateWeek(Week week) {
+    var oldTodo = _weeks.lastWhere((it) => it.id == week.id);
+    var replaceIndex = _weeks.indexOf(oldTodo);
+    _weeks.replaceRange(replaceIndex, replaceIndex + 1, [week]);
+    _syncJob(week);
+    _db.updateWeek(week);
+    notifyListeners();
+  }
+  void updateDayTarget(Day day) {
+    var oldDay = _days.firstWhere((it) => it.id == day.id);
+    var replaceIndex = _days.indexOf(oldDay);
+    _days.replaceRange(replaceIndex, replaceIndex + 1, [day]);
+    _db.updateDayTarget(day);
+    notifyListeners();
+  }
+  void saveExercise(Exercise exercise) {
+    var oldExercise = _exercises.firstWhere((it) => it.id == exercise.id);
+    var replaceIndex = _exercises.indexOf(oldExercise);
+    _exercises.replaceRange(replaceIndex, replaceIndex + 1, [exercise]);
+    _db.saveExercise(exercise);
+    notifyListeners();
+  }
+  void updateRound(Round round) {
+    var oldRound = _rounds.firstWhere((it) => it.id == round.id);
+    var replaceIndex = _rounds.indexOf(oldRound);
+    _rounds.replaceRange(replaceIndex, replaceIndex + 1, [round]);
+    _db.updateRound(round);
+    notifyListeners();
+  }
   void removeProgram(Program program) {
     _db.removeProgram(program).then((_) {
       _programs.removeWhere((it) => it.id == program.id);
@@ -84,17 +144,39 @@ class WeekListModel extends Model {
       notifyListeners();
     });
   }
-  
-  void addToChart(Exercise exercise) {
-    _exercises.add(exercise);
+  void removeWeek(Week week) {
+    _weeks.removeWhere((it) => it.id == week.id);
+    _syncJob(week);
+    _db.removeWeek(week);
+    notifyListeners();
+  }
+  void removeRound(Round round) {
+    var theExercise = _exercises.firstWhere((it) => it.id == round.exerciseId);
+    theExercise.round.removeLast();
+    _db.removeRound(round.exerciseId);
     notifyListeners();
   }
 
-  void updateChart(Exercise exercise) {
-    print(exercise);
-    var oldExercise = _exercises.firstWhere((it) => it.id == exercise.id);
-    var replaceIndex = _exercises.indexOf(oldExercise);
-    _exercises.replaceRange(replaceIndex, replaceIndex + 1, [exercise]);
+  _syncJob(Week week) {
+    _calcTaskCompletionPercent(week.program);
+   // _syncTodoToDB();
+  }
+
+  void _calcTaskCompletionPercent(String taskId) {
+    var weeks = this.weeks.where((it) => it.program == taskId);
+    var totalTodos = weeks.length;
+
+    if (totalTodos == 0) {
+      _programCompletionPercentage[taskId] = 0;
+    } else {
+      var totalCompletedTodos = weeks.where((it) => it.isCompleted == 1).length;
+     _programCompletionPercentage[taskId] = (totalCompletedTodos / totalTodos * 100).toInt();
+    }
+  }
+
+
+  void addToChart(Exercise exercise) {
+    _exercises.add(exercise);
     notifyListeners();
   }
 
@@ -138,87 +220,11 @@ class WeekListModel extends Model {
     return data;
   }
 
-  void updateProgram(Program program) {
-    var oldTask = _programs.firstWhere((it) => it.id == program.id);
-    var replaceIndex = _programs.indexOf(oldTask);
-    _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);
-    _db.updateProgram(program);
-    notifyListeners();
-  }
-
-  void updateDayTarget(Day day) {
-    var oldDay = _days.firstWhere((it) => it.id == day.id);
-    var replaceIndex = _days.indexOf(oldDay);
-    _days.replaceRange(replaceIndex, replaceIndex + 1, [day]);
-    _db.updateDayTarget(day);
-    notifyListeners();
-  }
-
-  void updateExercise(Exercise exercise) {
+  void updateChart(Exercise exercise) {
     var oldExercise = _exercises.firstWhere((it) => it.id == exercise.id);
     var replaceIndex = _exercises.indexOf(oldExercise);
     _exercises.replaceRange(replaceIndex, replaceIndex + 1, [exercise]);
-    _db.updateExercise(exercise);
     notifyListeners();
-  }
-
-  void updateRound(Round round) {
-    var oldRound = _rounds.firstWhere((it) => it.id == round.id);
-    var replaceIndex = _rounds.indexOf(oldRound);
-    _rounds.replaceRange(replaceIndex, replaceIndex + 1, [round]);
-    _db.updateRound(round);
-    notifyListeners();
-  }
-
-  void addWeek(Week week) {
-    _weeks.sort((a, b) => b.seq.compareTo(a.seq));
-    var weeks = _weeks.where((el) => el.program == week.program).toList();
-    if (weeks.length > 0) {
-      Week previousWeek;
-      for (int i = 0; i < 1; i++) {previousWeek = weeks[i];}
-      weeks.sort((a, b) => a.seq.compareTo(b.seq));
-      _weeks.add(Week(week.name, program: week.program, seq: previousWeek.seq + 1, id: week.id));      
-      _db.addPreviousWeek(previousWeek.id, previousWeek.seq + 1, week );
-    } else  {
-      _weeks.add(week);
-      _db.addWeek(week);
-       notifyListeners();
-    }
-    _syncJob(week);
-    notifyListeners();
-  }
-
-  void updateWeek(Week week) {
-    var oldTodo = _weeks.lastWhere((it) => it.id == week.id);
-    var replaceIndex = _weeks.indexOf(oldTodo);
-    _weeks.replaceRange(replaceIndex, replaceIndex + 1, [week]);
-    _syncJob(week);
-    _db.updateWeek(week);
-    notifyListeners();
-  }
-
-  void removeWeek(Week week) {
-    _weeks.removeWhere((it) => it.id == week.id);
-    _syncJob(week);
-    _db.removeWeek(week);
-    notifyListeners();
-  }
-
-  _syncJob(Week week) {
-    _calcTaskCompletionPercent(week.program);
-   // _syncTodoToDB();
-  }
-
-  void _calcTaskCompletionPercent(String taskId) {
-    var weeks = this.weeks.where((it) => it.program == taskId);
-    var totalTodos = weeks.length;
-
-    if (totalTodos == 0) {
-      _programCompletionPercentage[taskId] = 0;
-    } else {
-      var totalCompletedTodos = weeks.where((it) => it.isCompleted == 1).length;
-     _programCompletionPercentage[taskId] = (totalCompletedTodos / totalTodos * 100).toInt();
-    }
   }
 
 }
