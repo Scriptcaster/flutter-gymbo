@@ -112,6 +112,7 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
       builder: (BuildContext context, Widget child, WeekListModel model) {
       var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
       var _exercise = model.exercises.where((exercise) => exercise.id == widget.id).toList();
+      print(_exercise.single.round);
       TextEditingController _exerciseController = TextEditingController();
         return Scaffold(
           appBar: AppBar(title: Text(exerciseName)),
@@ -183,72 +184,72 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                           ),
                         ),
                         
-                        RenderRounds(widget.id, _exercise.single, parentUpdater: () => setState(() {})),
+                        // RenderRounds(widget.id, _exercise.single, parentUpdater: () => setState(() {})),
 
-                        // Column(
-                        //   children: _rounds.map((_round) => 
-                        //     Container(padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                        //       child: Row(
-                        //         children: <Widget>[
-                        //             Expanded(
-                        //               child: new SizedBox(height: 18.0, width: 24.0,
-                        //                 child: new IconButton(
-                        //                   padding: new EdgeInsets.all(0.0),
-                        //                   icon: new Icon(Icons.remove, size: 18.0),
-                        //                   onPressed: () {
-                        //                     _updateCurrentVolume(_round, true);
-                        //                   }
-                        //                 )
-                        //               ),
-                        //             ),
-                        //             FlatButton(color: colors[0],
-                        //               onPressed: () async {
-                        //                 _selected = [false, false, false];
-                        //                 setState(() {
-                        //                   colors = [Colors.white, Colors.white, Colors.white];
-                        //                   colors[0] = Colors.blue;
-                        //                   _selected[0] = true;
-                        //                 });
-                        //               },
-                        //               child: Text(_round.weight.toString())
-                        //             ),
-                        //             FlatButton(color: colors[1],
-                        //             onPressed: () {
-                        //               _selected = [false, false, false];
-                        //               setState(() {
-                        //                 colors = [Colors.white, Colors.white, Colors.white];
-                        //                 colors[1] = Colors.blue;
-                        //                 _selected[1] = true;
-                        //               });
-                        //             },
-                        //             child: Text(_round.round.toString())),
-                        //             FlatButton(color: colors[2],
-                        //               onPressed: () {
-                        //                 _selected = [false, false, false];
-                        //                 setState(() {
-                        //                   colors = [Colors.white, Colors.white, Colors.white];
-                        //                   colors[2] = Colors.blue;
-                        //                   _selected[2] = true;
-                        //                 });
-                        //               },
-                        //               child: Text(_round.rep.toString())
-                        //             ),
-                        //             Expanded(
-                        //               child: new SizedBox(height: 18.0, width: 24.0,
-                        //                 child: new IconButton(
-                        //                   padding: new EdgeInsets.all(0.0),
-                        //                   icon: new Icon(Icons.add, size: 18.0),
-                        //                   onPressed: () {    
-                        //                     _updateCurrentVolume(_round, false);
-                        //                   }
-                        //                 )
-                        //               )
-                        //             )
-                        //           ]
-                        //         )
-                        //       )
-                        //     ).toList()
-                        //   ),     
+                        Column(
+                          children: _exercise.single.round.map((_round) => 
+                            Container(padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                              child: Row(
+                                children: <Widget>[
+                                    Expanded(
+                                      child: new SizedBox(height: 18.0, width: 24.0,
+                                        child: new IconButton(
+                                          padding: new EdgeInsets.all(0.0),
+                                          icon: new Icon(Icons.remove, size: 18.0),
+                                          onPressed: () {
+                                            _updateCurrentVolume(_round, true);
+                                          }
+                                        )
+                                      ),
+                                    ),
+                                    FlatButton(color: colors[0],
+                                      onPressed: () async {
+                                        _selected = [false, false, false];
+                                        setState(() {
+                                          colors = [Colors.white, Colors.white, Colors.white];
+                                          colors[0] = Colors.blue;
+                                          _selected[0] = true;
+                                        });
+                                      },
+                                      child: Text(_round.weight.toString())
+                                    ),
+                                    FlatButton(color: colors[1],
+                                    onPressed: () {
+                                      _selected = [false, false, false];
+                                      setState(() {
+                                        colors = [Colors.white, Colors.white, Colors.white];
+                                        colors[1] = Colors.blue;
+                                        _selected[1] = true;
+                                      });
+                                    },
+                                    child: Text(_round.round.toString())),
+                                    FlatButton(color: colors[2],
+                                      onPressed: () {
+                                        _selected = [false, false, false];
+                                        setState(() {
+                                          colors = [Colors.white, Colors.white, Colors.white];
+                                          colors[2] = Colors.blue;
+                                          _selected[2] = true;
+                                        });
+                                      },
+                                      child: Text(_round.rep.toString())
+                                    ),
+                                    Expanded(
+                                      child: new SizedBox(height: 18.0, width: 24.0,
+                                        child: new IconButton(
+                                          padding: new EdgeInsets.all(0.0),
+                                          icon: new Icon(Icons.add, size: 18.0),
+                                          onPressed: () {    
+                                            _updateCurrentVolume(_round, false);
+                                          }
+                                        )
+                                      )
+                                    )
+                                  ]
+                                )
+                              )
+                            ).toList()
+                          ),     
 
                               Container(
                                 padding: EdgeInsets.only(top: 0.0, bottom: 5.0),

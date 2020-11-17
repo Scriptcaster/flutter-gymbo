@@ -18,10 +18,12 @@ class DayLocal extends StatefulWidget {
 }
 class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
   TextEditingController _targetController = TextEditingController();
+  TextEditingController _exerciseNameController = TextEditingController();
 
   @override
   void initState() {
     _targetController.text = widget.target;
+   ;
     super.initState();
   }
 
@@ -153,6 +155,49 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
               ),
             ]),
           ),
+           floatingActionButton: FloatingActionButton(
+              heroTag: 'fab_new_program',
+              onPressed: () {
+                 showDialog(context: context, builder: (BuildContext context) {
+                  _exerciseNameController.text = "";
+                  return AlertDialog(
+                    title: Text("New Exercise"),
+                    content: TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      style: new TextStyle(fontSize: 20.0, color: Colors.blue),
+                      keyboardType: TextInputType.text,
+                      controller: _exerciseNameController,
+                      onSubmitted: (value) => _exerciseNameController.text = value, 
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Close"),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      FlatButton(
+                        child: Text("Save"),
+                         onPressed: () {
+                          if (_exerciseNameController.text.isEmpty) {
+                            final snackBar = SnackBar(
+                              content: Text('Ummm... It seems that you are trying to add an invisible program which is not allowed in this realm.'),
+                              backgroundColor: Colors.white,
+                            );
+                            Scaffold.of(context).showSnackBar(snackBar);
+                          } else {
+                            model.addExercise(Exercise( name: _exerciseNameController.text, bestVolume: 0, previousVolume: 0, currentVolume: 0, round: [], dayId: widget.id, weekId: widget.weekId, programId: widget.programId ));
+                            Navigator.pop(context);
+                          }
+                        },
+                      )
+                    ],
+                  );
+                });
+              },
+              tooltip: 'New Week',
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              child: Icon(Icons.add),
+            ),
 
         )
       );

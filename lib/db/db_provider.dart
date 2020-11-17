@@ -427,10 +427,14 @@ class DBProvider {
   Future<int> saveExercise(Exercise newExercise) async {
     final _db = await database;
     newExercise.round.forEach((element) async {
+    print(element.id);
+    print(element.weight);
     if (element.id == null) {
-      return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [element.id, element.weight, element.round, element.rep, element.exerciseId, element.dayId, element.weekId, element.programId]);
+      print('INSERT NEW');
+      await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [element.id, element.weight, element.round, element.rep, element.exerciseId, element.dayId, element.weekId, element.programId]);
     } else {
-      return await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [element.weight, element.round, element.rep, element.id]);
+      print('UPDATE OLD');
+      await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [element.weight, element.round, element.rep, element.id]);
     }
   });
 

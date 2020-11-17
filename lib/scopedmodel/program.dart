@@ -97,8 +97,11 @@ class WeekListModel extends Model {
   }
   void addRound(Round round) {
     var exercise = _exercises.firstWhere((it) => it.id == round.exerciseId);
-    exercise.round.add(round);
-    // _db.addRound(round);
+    if (exercise.round.length > 0) {
+      exercise.round.add(Round( weight: exercise.round.last.weight, round: exercise.round.last.round, rep: exercise.round.last.rep, exerciseId: round.id, dayId: round.dayId, weekId: round.weekId, programId: round.programId ));
+    } else {
+      exercise.round.add(round);
+    }
     notifyListeners();
   }
   void updateProgram(Program program) {
@@ -146,6 +149,9 @@ class WeekListModel extends Model {
   }
   void removeWeek(Week week) {
     _weeks.removeWhere((it) => it.id == week.id);
+    _days.removeWhere((it) => it.weekId == week.id);
+    _exercises.removeWhere((it) => it.weekId == week.id);
+    _rounds.removeWhere((it) => it.weekId == week.id);
     _syncJob(week);
     _db.removeWeek(week);
     notifyListeners();
