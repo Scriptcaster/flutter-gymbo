@@ -96,13 +96,13 @@ class WeekListModel extends Model {
     notifyListeners();
   }
   void addRound(Round round) {
-    var exercise = _exercises.firstWhere((it) => it.id == round.exerciseId);
-    if (exercise.round.length > 0) {
-      exercise.round.add(Round( weight: exercise.round.last.weight, round: exercise.round.last.round, rep: exercise.round.last.rep, exerciseId: round.id, dayId: round.dayId, weekId: round.weekId, programId: round.programId ));
-    } else {
-      exercise.round.add(round);
-    }
-    _db.addRound(exercise.round.last);
+    _exercises.firstWhere((it) => it.id == round.exerciseId);
+    // if (_exercises.single.round.length > 0) {
+    //   _exercises.single.round.add(Round( id: _exercises.single.round.length, weight: _exercises.single.round.last.weight, round: _exercises.single.round.last.round, rep: _exercises.single.round.last.rep, exerciseId: round.exerciseId, dayId: round.dayId, weekId: round.weekId, programId: round.programId ));
+    // } else {
+    //   _exercises.single.round.add(Round( id: 0, weight: round.weight, round: round.round, rep: round.rep, exerciseId: round.exerciseId, dayId: round.dayId, weekId:round.weekId, programId: round.programId ));
+    // }
+    _exercises.single.round.add(Round(weight: round.weight, round: round.round, rep: round.rep, exerciseId: round.exerciseId, dayId: round.dayId, weekId:round.weekId, programId: round.programId ));
     notifyListeners();
   }
   void updateProgram(Program program) {

@@ -110,9 +110,11 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
   Widget build(BuildContext context) {
     return ScopedModelDescendant<WeekListModel>(
       builder: (BuildContext context, Widget child, WeekListModel model) {
-      var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
+      // var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
       var _exercise = model.exercises.where((exercise) => exercise.id == widget.id).toList();
-      // print(_exercise.single.round);
+      _exercise.single.round.forEach((element) { 
+        // print(element.toJson());
+      });
       TextEditingController _exerciseController = TextEditingController();
         return Scaffold(
           appBar: AppBar(title: Text(exerciseName)),
@@ -283,7 +285,8 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
                                         padding: new EdgeInsets.all(0.0),
                                         icon: new Icon(Icons.add_circle, size: 24.0),
                                         onPressed: () async {
-                                          model.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: _exercise.single.id, dayId: _exercise.single.dayId, weekId: _exercise.single.weekId, programId: _exercise.single.programId ) );
+                                          // print(Round(weight: 0, round: 0, rep: 0, exerciseId: widget.id, dayId: widget.dayId, weekId: widget.weekId, programId: widget.programId).toJson());
+                                          model.addRound(Round(weight: 0, round: 0, rep: 0, exerciseId: widget.id, dayId: widget.dayId, weekId: widget.weekId, programId: widget.programId));
                                           // await DBProvider.db.addRound( Round( weight: 0, round: 0, rep: 0, exerciseId: _exercise.single.id, dayId: _exercise.single.dayId, weekId: _exercise.single.weekId, programId: _exercise.single.programId )); 
                                           // setState(() {});
                                           // _updateCurrentVolumeOnAdd(_exercise.single);

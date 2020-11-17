@@ -299,8 +299,6 @@ class DBProvider {
     return fullList;
   }
 
-
-
   Future<List<Exercise>> getAllExercisesAll() async {
     final db = await database;
     var dayExercises = await db.query('Exercise');
@@ -315,10 +313,12 @@ class DBProvider {
           fullList[i].previousVolume = previousExerciseVolume[e]['currentVolume'];
         }
       }
+      print(_finalRounds);
       fullList[i].round = _finalRounds;
     }
     // print(fullList);
     // return dayExercises.map((it) => Exercise.fromJson(it)).toList();
+    
     return fullList;
   }
 
@@ -337,6 +337,9 @@ class DBProvider {
     // var _res = await _db.rawQuery(
     //     "SELECT * FROM Week WHERE date BETWEEN '2020-11-06' AND '2014-11-06'");
     List<Round> _list = _res.isNotEmpty ? _res.map((c) => Round.fromMap(c)).toList() : [];
+    _list.forEach((element) { 
+      print(element.toJson());
+    });
     return _list;
   }
 
@@ -425,23 +428,41 @@ class DBProvider {
   }
 
 
+ 
+
   // addRounds(List<Round> rounds) async {
   //   final db = await database;
   //   rounds.forEach((round) async { var res = await db.insert("Round", round.toMap()); });
   // }
 
-  Future<int> saveExercise(Exercise newExercise) async {
-    // final _db = await database;
-  
-    
+  saveExercise(Exercise newExercise) async {
+    final _db = await database;
+    var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
+    int _id = _table.first['id'];
+    int incement = _id;
+    newExercise.round.forEach((element) async {
+      // print(newExercise.id);
+      // print(element.toJson());
+      // print(_id);
+      
+      if (element.id == null) {
+        incement = _id++;
+        print(incement);
+        await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [incement, element.weight, element.round, element.rep, newExercise.id, newExercise.dayId, newExercise.weekId, newExercise.programId]);
+      } else {
+        await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [element.weight, element.round, element.rep, element.id]);
+      }
+    });
 
+    // newExercise.round.forEach((round) async { var res = await _db.insert("Round", round.toMap()); });
+   
+  
     // var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
     // int _id = _table.first['id'];
 
     // _db.transaction<void>((txn) async {
     //   await txn.delete('Round', where: 'exerciseId = ?', whereArgs: [newExercise.id]);
     // });
-    
     
     //   if (_id == null) {
     //     //  print(_id);
@@ -519,18 +540,14 @@ class DBProvider {
 
   updateExercisePreviousVolume(previousVolume, id) async {
     final db = await database;
-    return await db.rawUpdate(
-        '''UPDATE Exercise SET previousVolume = ? WHERE id = ?''',
-        [previousVolume, id]);
+    return await db.rawUpdate('''UPDATE Exercise SET previousVolume = ? WHERE id = ?''', [previousVolume, id]);
   }
 
   Future<void> removeProgram(Program program) async {
     final db = await database;
     return db.transaction<void>((txn) async {
-      await txn
-          .delete('Round', where: 'programId = ?', whereArgs: [program.id]);
-      await txn
-          .delete('Exercise', where: 'programId = ?', whereArgs: [program.id]);
+      await txn.delete('Round', where: 'programId = ?', whereArgs: [program.id]);
+      await txn.delete('Exercise', where: 'programId = ?', whereArgs: [program.id]);
       await txn.delete('Day', where: 'programId = ?', whereArgs: [program.id]);
       await txn.delete('Week', where: 'program = ?', whereArgs: [program.id]);
       await txn.delete('Program', where: 'id = ?', whereArgs: [program.id]);
