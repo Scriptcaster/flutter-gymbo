@@ -112,7 +112,7 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
       builder: (BuildContext context, Widget child, WeekListModel model) {
       var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
       var _exercise = model.exercises.where((exercise) => exercise.id == widget.id).toList();
-      print(_exercise.single.round);
+      // print(_exercise.single.round);
       TextEditingController _exerciseController = TextEditingController();
         return Scaffold(
           appBar: AppBar(title: Text(exerciseName)),

@@ -102,6 +102,7 @@ class WeekListModel extends Model {
     } else {
       exercise.round.add(round);
     }
+    _db.addRound(exercise.round.last);
     notifyListeners();
   }
   void updateProgram(Program program) {

@@ -424,19 +424,54 @@ class DBProvider {
     return db.update('Day', day.toMap(), where: 'id = ?', whereArgs: [day.id]);
   }
 
+
+  // addRounds(List<Round> rounds) async {
+  //   final db = await database;
+  //   rounds.forEach((round) async { var res = await db.insert("Round", round.toMap()); });
+  // }
+
   Future<int> saveExercise(Exercise newExercise) async {
-    final _db = await database;
-    newExercise.round.forEach((element) async {
-    print(element.id);
-    print(element.weight);
-    if (element.id == null) {
-      print('INSERT NEW');
-      await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [element.id, element.weight, element.round, element.rep, element.exerciseId, element.dayId, element.weekId, element.programId]);
-    } else {
-      print('UPDATE OLD');
-      await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [element.weight, element.round, element.rep, element.id]);
-    }
-  });
+    // final _db = await database;
+  
+    
+
+    // var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
+    // int _id = _table.first['id'];
+
+    // _db.transaction<void>((txn) async {
+    //   await txn.delete('Round', where: 'exerciseId = ?', whereArgs: [newExercise.id]);
+    // });
+    
+    
+    //   if (_id == null) {
+    //     //  print(_id);
+    //     for (var i = 0; i < newExercise.round.length; i++) {
+    //       // print('insert 1');
+    //       await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [i, newExercise.round[i].weight, newExercise.round[i].round, newExercise.round[i].rep, newExercise.round[i].exerciseId, newExercise.round[i].dayId, newExercise.round[i].weekId, newExercise.round[i].programId]);
+    //     }
+    //   } else {
+    //     // print(_id);
+    //     for (var i = 0; i < newExercise.round.length; i++) {
+    //       print(_id + i);
+    //       await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [_id + i, newExercise.round[i].weight, newExercise.round[i].round, newExercise.round[i].rep, newExercise.round[i].exerciseId, newExercise.round[i].dayId, newExercise.round[i].weekId, newExercise.round[i].programId]);
+    //     }
+    //   }
+    // }
+    // newExercise.round.forEach((element) async {
+       
+      // print(element.weight);
+      // if (_id == null) {
+      //   _id = 1;
+      // //   print(element.id);
+        // return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [_id, element.weight, element.round, element.rep, element.exerciseId, element.dayId, element.weekId, element.programId]);
+      // } else {
+        // return await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [_id, element.weight, element.round, element.rep, element.exerciseId, element.dayId, element.weekId, element.programId]);
+
+      //   print(element.id);
+        // await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [element.weight, element.round, element.rep, element.id]);
+      // }
+    // });
+    // }
 
     // var _lastRow = await _db.query("Round", where: "exerciseId = ?", whereArgs: [round.exerciseId]);
     // var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
