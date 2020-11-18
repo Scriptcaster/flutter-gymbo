@@ -101,7 +101,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
                                 FlatButton(
                                   child: const Text("DELETE"),
                                   onPressed: () {
-                                    // model.removeDay(day);
+                                    model.removeExercise(exercise);
                                     Navigator.of(context).pop(true);
                                   }
                                 ),
@@ -116,6 +116,7 @@ class _StartDayLocalState extends State<DayLocal> { _StartDayLocalState();
                       },
                       child: ListTile(
                         onTap: () {
+                          // print(exercise.toJson());
                           Navigator.push(context,
                             MaterialPageRoute(
                               builder: (context) => ExerciseLocal(

@@ -74,6 +74,7 @@ class WeekListModel extends Model {
     notifyListeners();
   }
   void addWeek(Week week) {
+    print(week.toJson());
     _weeks.sort((a, b) => b.seq.compareTo(a.seq));
     var weeks = _weeks.where((el) => el.program == week.program).toList();
     if (weeks.length > 0) {
@@ -91,6 +92,7 @@ class WeekListModel extends Model {
     notifyListeners();
   }
   void addExercise(Exercise exercise) {
+    print(exercise.toJson());
     _exercises.add(exercise);
     _db.addExercise(exercise);
     notifyListeners();
@@ -155,6 +157,12 @@ class WeekListModel extends Model {
     _rounds.removeWhere((it) => it.weekId == week.id);
     _syncJob(week);
     _db.removeWeek(week);
+    notifyListeners();
+  }
+  void removeExercise(Exercise exercise) {
+    _exercises.removeWhere((it) => it.id == exercise.id);
+    _rounds.removeWhere((it) => it.exerciseId == exercise.id);
+    _db.removeExercise(exercise);
     notifyListeners();
   }
   void removeRound(Round round) {

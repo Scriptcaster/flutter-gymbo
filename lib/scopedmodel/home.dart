@@ -33,12 +33,12 @@ class HomeModel extends Model {
   @override
   void removeListener(listener) {
     super.removeListener(listener);
-    print("remove listner called");
+    // print("remove listner called");
     // DBProvider.db.closeDB();
   }
 
   void updateChart() {
-    print('update chart');
+    // print('update chart');
     // var oldTask = _programs.firstWhere((it) => it.id == program.id);
     // var replaceIndex = _programs.indexOf(oldTask);
     // _programs.replaceRange(replaceIndex, replaceIndex + 1, [program]);

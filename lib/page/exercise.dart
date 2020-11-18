@@ -111,6 +111,9 @@ class _StartExerciseLocalState extends State<ExerciseLocal> { _StartExerciseLoca
     return ScopedModelDescendant<WeekListModel>(
       builder: (BuildContext context, Widget child, WeekListModel model) {
       // var _rounds = model.rounds.where((round) => round.exerciseId == widget.id).toList();
+      model.exercises.forEach((element) { 
+        print(element.toJson());
+      });
       var _exercise = model.exercises.where((exercise) => exercise.id == widget.id).toList();
       _exercise.single.round.forEach((element) { 
         // print(element.toJson());

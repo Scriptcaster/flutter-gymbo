@@ -135,11 +135,12 @@ class DBProvider {
     return await _db.rawInsert("INSERT Into Day (id, dayName, target, completed, weekId, programId)"" VALUES (?,?,?,?,?,?)", [_table.first["id"], day.dayName, day.target, day.isCompleted, day.weekId, day.programId]);
   }
 
-  Future<int> addExercise(Exercise newExercise) async {
+  Future<int> addExercise(Exercise exercise) async {
     final _db = await database;
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Exercise");
     int _id = _table.first["id"];
-    return await _db.rawInsert("INSERT Into Exercise (id, name, bestVolume, previousVolume, currentVolume, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [_id, newExercise.name, newExercise.bestVolume, newExercise.previousVolume, newExercise.currentVolume, newExercise.dayId, newExercise.weekId, newExercise.programId]);
+    if (_id == null) {_id = 0;}
+    return await _db.rawInsert("INSERT Into Exercise (id, name, bestVolume, previousVolume, currentVolume, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [_id, exercise.name, exercise.bestVolume, exercise.previousVolume, exercise.currentVolume, exercise.dayId, exercise.weekId, exercise.programId]);
   }
 
   Future<int> addRound(Round round) async {
@@ -313,7 +314,7 @@ class DBProvider {
           fullList[i].previousVolume = previousExerciseVolume[e]['currentVolume'];
         }
       }
-      print(_finalRounds);
+      print('get exercise');
       fullList[i].round = _finalRounds;
     }
     // print(fullList);
@@ -435,20 +436,24 @@ class DBProvider {
   //   rounds.forEach((round) async { var res = await db.insert("Round", round.toMap()); });
   // }
 
-  saveExercise(Exercise newExercise) async {
+  // await db.insert("Day", Day(dayName: day.dayName, target: day.target, weekId: week.id, programId: week.program).toMap());
+
+  saveExercise(Exercise exercise) async {
     final _db = await database;
     var _table = await _db.rawQuery("SELECT MAX(id)+1 as id FROM Round");
     int _id = _table.first['id'];
     int incement = _id;
-    newExercise.round.forEach((element) async {
+    exercise.round.forEach((element) async {
       // print(newExercise.id);
       // print(element.toJson());
       // print(_id);
       
       if (element.id == null) {
-        incement = _id++;
-        print(incement);
-        await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [incement, element.weight, element.round, element.rep, newExercise.id, newExercise.dayId, newExercise.weekId, newExercise.programId]);
+        print(exercise.id);
+        // incement = _id++;
+        // print(incement);
+        await _db.insert("Round", Round(weight: element.weight, round: element.round, rep: element.rep, exerciseId: exercise.id, dayId: exercise.dayId, weekId: exercise.weekId, programId: exercise.programId).toMap());
+        // await _db.rawInsert("INSERT Into Round (id, weight, round, rep, exerciseId, dayId, weekId, programId)"" VALUES (?,?,?,?,?,?,?,?)", [incement, element.weight, element.round, element.rep, newExercise.id, newExercise.dayId, newExercise.weekId, newExercise.programId]);
       } else {
         await _db.rawUpdate('''UPDATE Round SET weight = ?, round = ?, rep = ? WHERE id = ?''', [element.weight, element.round, element.rep, element.id]);
       }
